@@ -33,7 +33,7 @@ export default function Ticket({ order, code: bookingRef }) {
           <div className="relative rounded-b-lg border border-line bg-white print:rounded-lg">
             <div className="p-5">
               <div className="flex items-center justify-between">
-                {f ? <img src={airlineLogo(f.code)} alt="" className="h-7 w-20 object-contain" /> : <span className="text-sm font-bold text-brand">حياة للسفر</span>}
+                {f ? <img src={airlineLogo(f.code)} alt="" className="h-7 w-20 object-contain" /> : <span className="text-sm font-bold text-brand">الحياة للسفر</span>}
                 <span className="rounded-sm bg-mist px-2 py-0.5 text-[10px] font-semibold tracking-wider text-muted">{f ? 'بطاقة صعود' : 'قسيمة حجز'}</span>
               </div>
               {f ? (

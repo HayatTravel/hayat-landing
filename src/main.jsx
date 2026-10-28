@@ -1,29 +1,17 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Navigate, createBrowserRouter, useLocation, useParams } from 'react-router'
+import { createBrowserRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import './index.css'
+import { I18nProvider } from './lib/i18n'
 import Layout from './components/Layout'
 import Home from './pages/Home'
-import Flights from './pages/Flights'
-import FlightPassengers from './pages/FlightPassengers'
-import FlightSeats from './pages/FlightSeats'
-import Hotels from './pages/Hotels'
-import HotelDetail from './pages/HotelDetail'
-import { EsimCountries, EsimPlans } from './pages/Esim'
-import { DealsList, DealDetail } from './pages/Deals'
-import { CarExtras, CarList } from './pages/Cars'
-import Transfers from './pages/Transfers'
-import { Manage, Status } from './pages/Manage'
 import Checkout from './pages/Checkout'
-import Confirmation from './pages/Confirmation'
+import Done from './pages/Done'
 import NotFound from './pages/NotFound'
 
-// old deep links (/flights/:id) now start at the passengers step
-function ToPassengers() {
-  const { id } = useParams()
-  return <Navigate replace to={`/flights/${id}/passengers${useLocation().search}`} />
-}
+/* Each product area adds its pages in src/routes/<area>.jsx (export default [{ path, element }]). */
+const areaRoutes = Object.values(import.meta.glob('./routes/*.jsx', { eager: true })).flatMap((m) => m.default)
 
 const router = createBrowserRouter([
   {
@@ -31,23 +19,9 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: '/', element: <Home /> },
-      { path: '/flights', element: <Flights /> },
-      { path: '/flights/:id', element: <ToPassengers /> },
-      { path: '/flights/:id/passengers', element: <FlightPassengers /> },
-      { path: '/flights/:id/seats', element: <FlightSeats /> },
-      { path: '/hotels', element: <Hotels /> },
-      { path: '/hotels/:id', element: <HotelDetail /> },
-      { path: '/esim', element: <EsimCountries /> },
-      { path: '/esim/:cc', element: <EsimPlans /> },
-      { path: '/deals', element: <DealsList /> },
-      { path: '/deals/:id', element: <DealDetail /> },
-      { path: '/cars', element: <CarList /> },
-      { path: '/cars/:id', element: <CarExtras /> },
-      { path: '/transfers', element: <Transfers /> },
-      { path: '/manage', element: <Manage /> },
-      { path: '/status', element: <Status /> },
+      ...areaRoutes,
       { path: '/checkout', element: <Checkout /> },
-      { path: '/confirmation', element: <Confirmation /> },
+      { path: '/done/:ref', element: <Done /> },
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -55,6 +29,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <I18nProvider>
+      <RouterProvider router={router} />
+    </I18nProvider>
   </StrictMode>,
 )

@@ -7,7 +7,7 @@ import logoLight from '../assets/hayat-logo-light.png'
 
 export function Logo({ light, className = 'h-9' }) {
   return (
-    <Link to="/" className="shrink-0" aria-label="حياة للسفر — الرئيسية">
+    <Link to="/" className="shrink-0" aria-label="الحياة للسفر — الرئيسية">
       <img src={light ? logoLight : logoDark} alt="Hayat" className={`${className} w-auto`} />
     </Link>
   )

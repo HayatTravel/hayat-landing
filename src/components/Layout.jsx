@@ -1,51 +1,129 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, Outlet, ScrollRestoration, useLocation } from 'react-router'
+import { Link, NavLink, Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router'
 import Icon from './Icon'
-import { Logo, Photo } from './ui'
+import { Logo } from './ui'
+import Help from './Help'
+import { LANGS, useI18n } from '../lib/i18n'
+import { session, useStore } from '../lib/store'
+import D from '../data/catalog'
 
-const nav = [
-  { to: '/flights', label: 'طيران', icon: 'plane' },
-  { to: '/hotels', label: 'فنادق', icon: 'bed' },
-  { to: '/cars', label: 'سيارات', icon: 'car' },
-  { to: '/esim', label: 'eSIM', icon: 'sim' },
-  { to: '/deals', label: 'عروض ساخنة', icon: 'flame' },
+/* Products in the order customers look for them. Every item opens a real page. */
+export const NAV = [
+  { to: '/flights', label: 'nav.flights', icon: 'plane' },
+  { to: '/hotels', label: 'nav.hotels', icon: 'bed' },
+  { to: '/holidays', label: 'nav.holidays', icon: 'luggage' },
+  { to: '/cars', label: 'nav.cars', icon: 'car' },
+  { to: '/visa', label: 'nav.visa', icon: 'passport' },
+  { to: '/esim', label: 'nav.esim', icon: 'sim' },
+  { to: '/events', label: 'nav.events', icon: 'ticket' },
 ]
 
-function Login({ dialog, onDone }) {
+/** Phone-code sign-in (IAM in production). Opens from anywhere via openSignIn(after). */
+function SignIn() {
+  const { t } = useI18n()
+  const dialog = useRef(null)
+  const after = useRef(null)
   const [step, setStep] = useState('phone')
+  const [phone, setPhone] = useState('')
+  const [err, setErr] = useState('')
+  useEffect(() => {
+    const on = (e) => { after.current = e.detail; setStep('phone'); setErr(''); dialog.current?.showModal() }
+    addEventListener('hayat:signin', on)
+    return () => removeEventListener('hayat:signin', on)
+  }, [])
   const submit = (e) => {
     e.preventDefault()
-    if (step === 'phone') return setStep('code')
-    onDone()
+    const f = e.currentTarget
+    if (step === 'phone') {
+      const v = f.phone.value.replace(/\D/g, '')
+      if (v.length < 9) return setErr(t('sign.err'))
+      setPhone(f.phone.value.trim()); setErr(''); return setStep('code')
+    }
+    session.signIn({ name: f.name.value.trim() || t('sign.guest'), phone: `+964 ${phone}` })
     dialog.current.close()
-    setStep('phone')
+    after.current?.()
   }
   return (
     <dialog ref={dialog} className="m-auto w-[min(92vw,420px)] rounded-lg p-0 backdrop:bg-ink/60 open:animate-rise">
-      <form onSubmit={submit} className="p-8" dir="rtl">
+      <form onSubmit={submit} className="p-8" noValidate>
         <div className="flex items-center justify-between">
           <Logo className="h-9" />
-          <button type="button" onClick={() => dialog.current.close()} className="grid size-9 place-items-center rounded-md hover:bg-mist" aria-label="إغلاق"><Icon name="close" className="size-4" /></button>
+          <button type="button" onClick={() => dialog.current.close()} className="grid size-9 place-items-center rounded-md hover:bg-mist" aria-label={t('close')}><Icon name="close" className="size-4" /></button>
         </div>
-        <h2 className="mt-8 text-2xl font-bold">{step === 'phone' ? 'أهلاً بك في حياة' : 'أدخل رمز التحقق'}</h2>
-        <p className="mt-1 text-sm text-muted">{step === 'phone' ? 'سجّل الدخول برقم هاتفك لإدارة حجوزاتك.' : 'أرسلنا رمزاً من 4 أرقام عبر واتساب. (نموذج تجريبي: أي رمز يعمل)'}</p>
+        <h2 className="mt-8 text-2xl font-bold">{t('sign.title')}</h2>
         {step === 'phone' ? (
-          <div className="mt-6 flex items-center gap-2 rounded-2xl border border-line px-4 focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/15" dir="ltr">
-            <span className="text-sm font-semibold text-muted">+964</span>
-            <input required autoFocus type="tel" defaultValue="770 123 4567" className="w-full bg-transparent py-3 outline-none" />
-          </div>
+          <>
+            <p className="mt-1 text-sm text-muted">{t('sign.lede')}</p>
+            <label className="label mt-6" htmlFor="sg-phone">{t('sign.phone')}</label>
+            <div className="flex items-center gap-2 rounded-md border border-line px-4 focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/15" dir="ltr">
+              <span className="text-sm font-semibold text-muted">+964</span>
+              <input id="sg-phone" name="phone" autoFocus type="tel" placeholder="770 000 0000" autoComplete="tel-national" className="w-full bg-transparent py-3 outline-none" />
+            </div>
+            {err && <p role="alert" className="mt-2 text-sm text-red-600">{err}</p>}
+            <button className="btn-primary mt-6 w-full py-3.5">{t('sign.send')}</button>
+            <div className="my-5 flex items-center gap-3 text-xs text-muted"><span className="h-px flex-1 bg-line" />{t('or')}<span className="h-px flex-1 bg-line" /></div>
+            <div className="grid grid-cols-2 gap-3">{['Google', 'Apple'].map((s) => <button key={s} type="button" onClick={() => { setPhone('770 000 0000'); setStep('code') }} className="btn-ghost py-2.5 text-sm">{s}</button>)}</div>
+          </>
         ) : (
-          <input required autoFocus inputMode="numeric" maxLength={4} defaultValue="2026" dir="ltr" className="field mt-6 text-center font-mono text-2xl tracking-[1em]" />
+          <>
+            <p className="mt-1 text-sm text-muted">{t('sign.sent', { phone: `+964 ${phone}` })}</p>
+            <label className="label mt-6" htmlFor="sg-code">{t('sign.code')}</label>
+            <input id="sg-code" autoFocus inputMode="numeric" maxLength={6} dir="ltr" autoComplete="one-time-code" className="field text-center font-mono text-2xl tracking-[.6em]" />
+            <label className="label mt-4" htmlFor="sg-name">{t('sign.name')}</label>
+            <input id="sg-name" name="name" autoComplete="name" className="field" />
+            <p className="mt-2 text-xs text-muted">{t('sign.demo')}</p>
+            <button className="btn-primary mt-6 w-full py-3.5">{t('sign.go')}</button>
+          </>
         )}
-        <button className="btn-primary mt-6 w-full py-3.5">{step === 'phone' ? 'إرسال الرمز' : 'تأكيد'}</button>
       </form>
     </dialog>
   )
 }
 
+function LangMenu({ dark }) {
+  const { lang, setLang, t } = useI18n()
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  useEffect(() => {
+    const off = (e) => !ref.current?.contains(e.target) && setOpen(false)
+    addEventListener('click', off)
+    return () => removeEventListener('click', off)
+  }, [])
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" onClick={() => setOpen(!open)} aria-haspopup="menu" aria-expanded={open} aria-label={t('lang.label')}
+        className={`flex h-10 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium ${dark ? 'text-white/85 hover:bg-white/10' : 'text-ink/75 hover:bg-mist'}`}>
+        <Icon name="globe" className="size-4" /><span>{LANGS.find(([k]) => k === lang)[1]}</span>
+      </button>
+      {open && (
+        <div role="menu" className="absolute end-0 top-12 z-50 w-40 animate-fade rounded-lg border border-line bg-white p-1.5 text-ink shadow-xl">
+          {LANGS.map(([k, n]) => (
+            <button key={k} role="menuitemradio" aria-checked={k === lang} lang={k} onClick={() => { setLang(k); setOpen(false) }}
+              className={`block w-full rounded-md px-3 py-2 text-start text-sm hover:bg-mist ${k === lang ? 'font-bold text-brand' : ''}`}>{n}</button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function CurSwitch({ dark }) {
+  const { cur, setCur, t } = useI18n()
+  return (
+    <div role="radiogroup" aria-label={t('cur.label')} className={`hidden rounded-md p-0.5 text-xs font-bold sm:flex ${dark ? 'bg-white/10' : 'bg-mist'}`}>
+      {['IQD', 'USD'].map((c) => (
+        <button key={c} role="radio" aria-checked={cur === c} onClick={() => setCur(c)}
+          className={`rounded px-2.5 py-1.5 ${cur === c ? 'bg-white text-ink shadow-sm' : dark ? 'text-white/70' : 'text-muted'}`}>{c}</button>
+      ))}
+    </div>
+  )
+}
+
 function Navbar() {
-  const dialog = useRef(null)
-  const [user, setUser] = useState(null)
+  useStore()
+  const { t } = useI18n()
+  const user = session.user()
+  const go = useNavigate()
   const { pathname } = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -57,43 +135,41 @@ function Navbar() {
   }, [])
   useEffect(() => setOpen(false), [pathname])
   const glass = scrolled || open // every page opens on a dark stage
+  const dark = !glass
+  const account = () => (user ? go('/account') : window.dispatchEvent(new CustomEvent('hayat:signin')))
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition print:hidden duration-500 ${glass ? 'bg-white/80 shadow-[0_1px_0_var(--color-line)] backdrop-blur' : 'bg-gradient-to-b from-ink/80 via-ink/40 to-transparent'}`}>
-      <div className="container-x flex h-18 items-center justify-between gap-6">
-        <Logo light={!glass} className="h-10" />
-        {pathname !== '/' && <nav className="hidden items-center gap-1 md:flex">
-          {nav.map((n) => (
-            <NavLink key={n.to} to={n.to} viewTransition className={({ isActive }) => `flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium lg:gap-2 lg:px-4 transition ${isActive ? (glass ? 'bg-ink text-white' : 'bg-white text-ink') : glass ? 'text-ink/70 hover:bg-mist hover:text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>
-              <Icon name={n.icon} className={`size-4 ${n.icon === 'flame' ? 'text-ember' : ''}`} />
-              {n.label}
+    <header className={`fixed inset-x-0 top-0 z-50 transition duration-300 print:hidden ${glass ? 'bg-white/90 shadow-[0_1px_0_var(--color-line)] backdrop-blur' : 'bg-gradient-to-b from-ink/80 via-ink/40 to-transparent'}`}>
+      <div className="container-x flex h-18 items-center justify-between gap-4">
+        <Logo light={dark} className="h-10" />
+        <nav className="hidden items-center gap-0.5 xl:flex" aria-label={t('nav.label')}>
+          {NAV.map((n) => (
+            <NavLink key={n.to} to={n.to} className={({ isActive }) => `flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition ${isActive ? (glass ? 'bg-ink text-white' : 'bg-white text-ink') : glass ? 'text-ink/70 hover:bg-mist hover:text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>
+              <Icon name={n.icon} className="size-4" />{t(n.label)}
             </NavLink>
           ))}
-        </nav>}
-        <div className="flex items-center gap-2">
-          <a href="tel:+9647700000000" className={`hidden items-center gap-2 text-sm font-medium lg:flex ${glass ? 'text-ink/70' : 'text-white/80'}`}>
-            <Icon name="headset" className="size-4" /> <bdi dir="ltr">0770 000 0000</bdi>
-          </a>
-          <button onClick={() => !user && dialog.current.showModal()} className={`hidden items-center gap-2 rounded-md px-5 py-2 text-sm font-semibold transition sm:flex ${glass ? 'bg-ink text-white hover:bg-brand' : 'bg-white text-ink hover:bg-sky'}`}>
-            {user ? <><Icon name="user" className="size-4" /> مرحباً، {user}</> : 'تسجيل الدخول'}
+        </nav>
+        <div className="flex items-center gap-1.5">
+          <LangMenu dark={dark} />
+          <CurSwitch dark={dark} />
+          <Link to="/trips" className={`hidden h-10 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium md:flex ${dark ? 'text-white/85 hover:bg-white/10' : 'text-ink/75 hover:bg-mist'}`}><Icon name="ticket" className="size-4" />{t('nav.trips')}</Link>
+          <button onClick={account} className={`hidden items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition sm:flex ${glass ? 'bg-ink text-white hover:bg-brand' : 'bg-white text-ink hover:bg-sky'}`}>
+            <Icon name="user" className="size-4" />{user ? user.name.split(' ')[0] : t('nav.signin')}
           </button>
-          <button onClick={() => setOpen(!open)} className={`grid size-10 place-items-center rounded-md md:hidden ${glass ? 'text-ink' : 'text-white'}`} aria-label="القائمة">
+          <button onClick={() => setOpen(!open)} className={`grid size-10 place-items-center rounded-md xl:hidden ${glass ? 'text-ink' : 'text-white'}`} aria-label={t('nav.menu')} aria-expanded={open}>
             <Icon name={open ? 'close' : 'menu'} />
           </button>
         </div>
       </div>
-      <span aria-hidden="true" className="scroll-progress absolute inset-x-0 bottom-0 h-0.5 origin-right bg-gradient-to-l from-brand via-plum-400 to-ember" />
-      <Login dialog={dialog} onDone={() => setUser('علي')} />
       {open && (
-        <nav className="container-x grid animate-fade gap-1 bg-white pb-4 md:hidden">
-          {nav.map((n) => (
-            <NavLink key={n.to} to={n.to} className="flex items-center gap-3 rounded-2xl px-4 py-3 font-medium hover:bg-mist">
-              <Icon name={n.icon} className="size-5 text-brand" /> {n.label}
-            </NavLink>
+        <nav className="container-x grid animate-fade gap-1 bg-white pb-4 xl:hidden">
+          {NAV.map((n) => (
+            <NavLink key={n.to} to={n.to} className="flex items-center gap-3 rounded-md px-4 py-3 font-medium hover:bg-mist"><Icon name={n.icon} className="size-5 text-brand" />{t(n.label)}</NavLink>
           ))}
-          <button onClick={() => (user ? null : dialog.current.showModal())} className="btn-primary mt-2">
-            {user ? `مرحباً، ${user}` : 'تسجيل الدخول'}
-          </button>
+          <hr className="my-2 border-line" />
+          <Link to="/trips" className="flex items-center gap-3 rounded-md px-4 py-3 font-medium hover:bg-mist"><Icon name="ticket" className="size-5 text-brand" />{t('nav.trips')}</Link>
+          <Link to="/help" className="flex items-center gap-3 rounded-md px-4 py-3 font-medium hover:bg-mist"><Icon name="info" className="size-5 text-brand" />{t('nav.help')}</Link>
+          <button onClick={account} className="btn-primary mt-2">{user ? user.name : t('nav.signin')}</button>
         </nav>
       )}
     </header>
@@ -101,39 +177,34 @@ function Navbar() {
 }
 
 function Footer() {
+  const { t, L } = useI18n()
   const cols = [
-    ['احجز', [['طيران', '/flights'], ['فنادق', '/hotels'], ['تأجير السيارات', '/cars'], ['مواصلات المطار', '/transfers'], ['eSIM', '/esim'], ['عروض ساخنة', '/deals']]],
-    ['حياة', [['من نحن', '/'], ['الوظائف', '/'], ['المدونة', '/'], ['اتصل بنا', '/']]],
-    ['المساعدة', [['إدارة الحجز', '/manage'], ['حالة الرحلة', '/status'], ['سياسة الإلغاء', '/'], ['الخصوصية', '/'], ['الشروط والأحكام', '/']]],
+    [t('ft.book'), NAV.map((n) => [t(n.label), n.to]).concat([[t('nav.transfers'), '/transfers']])],
+    [t('foot.help'), [[t('nav.trips'), '/trips'], [t('foot.faq'), '/help'], [t('foot.terms'), '/help#terms'], [t('foot.privacy'), '/help#privacy']]],
   ]
   return (
-    <footer className="relative isolate overflow-hidden bg-ink text-white/70 print:hidden">
-      <div aria-hidden="true" className="absolute -top-40 start-1/4 -z-10 size-[520px] animate-[aurora_16s_ease-in-out_infinite] rounded-full bg-brand/20 blur-[130px]" />
-      <div aria-hidden="true" className="absolute -bottom-40 end-0 -z-10 size-[460px] animate-[aurora_20s_ease-in-out_infinite_reverse] rounded-full bg-plum-400/20 blur-[130px]" />
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-l from-transparent via-sky/50 to-transparent" />
-      <div className="container-x relative grid gap-12 py-16 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+    <footer className="bg-ink text-white/70 print:hidden">
+      <div className="container-x grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div className="space-y-5">
           <Logo light className="h-11" />
-          <p className="max-w-xs text-sm leading-7">وكالة سفر عراقية معتمدة من IATA، مقرّها بغداد. احجز الطيران والفنادق والباقات وشرائح eSIM في مكان واحد، وبالدينار العراقي.</p>
-          <div className="flex items-center gap-3 text-xs">
-            <span className="rounded-md border border-white/15 px-3 py-1.5">IATA معتمدة</span>
-            <span className="rounded-md border border-white/15 px-3 py-1.5">دفع آمن</span>
-          </div>
+          <p className="max-w-xs text-sm leading-7">{t('foot.about')}</p>
+          <p className="text-xs text-white/50">{L(D.company.licence)} · IATA —</p>
         </div>
         {cols.map(([title, links]) => (
           <div key={title}>
             <h4 className="mb-4 font-semibold text-white">{title}</h4>
-            <ul className="space-y-3 text-sm">
-              {links.map(([l, to]) => <li key={l}><Link to={to} className="transition hover:text-sky">{l}</Link></li>)}
-            </ul>
+            <ul className="space-y-3 text-sm">{links.map(([l, to]) => <li key={to}><Link to={to} className="transition hover:text-sky">{l}</Link></li>)}</ul>
           </div>
         ))}
+        <div>
+          <h4 className="mb-4 font-semibold text-white">{t('foot.offices')}</h4>
+          <ul className="space-y-3 text-sm">{D.offices.map((o) => <li key={L(o.city)}><b className="text-white/90">{L(o.city)}</b> · {L(o.area)}<br /><span className="text-xs text-white/50">{L(o.hours)}</span></li>)}</ul>
+        </div>
       </div>
-      <div className="container-x relative flex flex-col items-center justify-between gap-3 border-t border-white/10 py-6 text-xs sm:flex-row">
-        <p>© 2026 حياة للسفر. جميع الحقوق محفوظة.</p>
-        <p className="flex items-center gap-4"><span>info@hayat.iq</span><span>بغداد، العراق</span></p>
+      <div className="container-x flex flex-col items-center justify-between gap-4 border-t border-white/10 py-6 text-xs sm:flex-row">
+        <div className="flex flex-wrap items-center gap-2">{D.payments.map((p) => <span key={p.id} className="grid h-7 min-w-12 place-items-center rounded px-2 text-[10px] font-black text-white" style={{ background: p.color }}>{p.mark}</span>)}</div>
+        <p className="flex flex-wrap items-center gap-4"><span>© 2026 {L(D.company.name)}</span><a href="https://booking.hayat.iq" className="hover:text-sky">{t('foot.business')}</a><span className="text-white/45">{t('foot.mock')}</span></p>
       </div>
-      <p aria-hidden="true" className="pointer-events-none -mt-4 -mb-[3vw] bg-gradient-to-b from-white/[.12] to-transparent bg-clip-text text-center font-display text-[16vw] leading-none font-bold text-transparent select-none">حياة</p>
     </footer>
   )
 }
@@ -146,28 +217,25 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
-      {/* film grain over everything, for a printed, less "screen" feel */}
-      <div aria-hidden="true" className="grain pointer-events-none fixed inset-0 z-[70] opacity-[.05] print:hidden" />
+      <Help />
+      <SignIn />
       <ScrollRestoration />
     </>
   )
 }
 
-// Inner-page header band so the fixed nav never overlaps content.
-// Dark stage with aurora, dot grid and an optional destination photo bleeding in from the side.
+// Inner-page header band so the fixed nav never overlaps content: a calm dark stage with an optional photo.
 export function PageHead({ children, className = '', photo }) {
   return (
     <div className={`page-head relative isolate pt-28 pb-8 ${className}`}>
       <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
         {photo && (
-          <div className="absolute inset-y-0 start-0 w-full opacity-45 [mask-image:linear-gradient(to_left,black,transparent_75%)] sm:w-2/3">
-            <Photo id={photo} w={1600} className="size-full animate-kenburns" />
+          <div className="absolute inset-y-0 start-0 w-full opacity-40 [mask-image:linear-gradient(to_left,black,transparent_75%)] sm:w-2/3">
+            <img src={photo} alt="" className="size-full object-cover" />
           </div>
         )}
-        <div className="absolute -top-40 end-[10%] size-[520px] animate-[aurora_14s_ease-in-out_infinite] rounded-full bg-brand/25 blur-[120px]" />
-        <div className="absolute -bottom-60 start-[5%] size-[480px] animate-[aurora_18s_ease-in-out_infinite_reverse] rounded-full bg-plum-400/25 blur-[120px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,.09)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-l from-transparent via-sky/60 to-transparent" />
+        <div className="absolute -top-40 end-[10%] size-[520px] rounded-full bg-brand/20 blur-[120px]" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-l from-transparent via-sky/40 to-transparent" />
       </div>
       <div className="page-head-in container-x">{children}</div>
     </div>

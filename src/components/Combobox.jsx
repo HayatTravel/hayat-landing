@@ -7,7 +7,11 @@ const norm = (s) => s.toLowerCase().replace(/[ً-ْ]/g, '').replace(/[أإآ]/g,
 /**
  * Type-ahead picker. options: [{ value, title, sub, code }]
  */
-export default function Combobox({ label, icon = 'pin', value, onChange, options, placeholder = 'اكتب مدينة أو مطار', className = '' }) {
+import { useI18n } from '../lib/i18n'
+
+export default function Combobox({ label, icon = 'pin', value, onChange, options, placeholder, className = '' }) {
+  const { t } = useI18n()
+  placeholder = placeholder ?? t('cb.ph')
   const id = useId()
   const input = useRef(null)
   const [open, setOpen] = useState(false)
@@ -58,7 +62,7 @@ export default function Combobox({ label, icon = 'pin', value, onChange, options
               {o.code && <span className="font-mono text-xs font-bold text-muted" dir="ltr">{o.code}</span>}
             </li>
           ))}
-          {!list.length && <li className="px-4 py-3 text-sm text-muted">لا توجد نتائج لـ "{q}"</li>}
+          {!list.length && <li className="px-4 py-3 text-sm text-muted">{t('cb.none', { q })}</li>}
         </ul>
       )}
     </div>

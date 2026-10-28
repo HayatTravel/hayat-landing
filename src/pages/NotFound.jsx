@@ -1,16 +1,18 @@
+import { Link } from 'react-router'
 import Icon from '../components/Icon'
 import { PageHead } from '../components/Layout'
-import { Cta } from '../components/ui'
+import { useI18n } from '../lib/i18n'
 
 export default function NotFound() {
+  const { t } = useI18n()
   return (
-    <PageHead className="grid min-h-dvh place-content-center pb-20 text-center">
-      <Icon name="plane" className="mx-auto size-14 animate-float text-sky" />
-      <p className="text-shimmer mt-6 font-display text-[clamp(6rem,22vw,14rem)] leading-none font-bold" dir="ltr">404</p>
+    <PageHead className="grid min-h-[70dvh] place-content-center pb-20 text-center">
+      <Icon name="plane" className="mx-auto size-12 text-sky" />
+      <p className="mt-6 font-display text-[clamp(5rem,18vw,10rem)] leading-none font-bold text-white/90" dir="ltr">404</p>
       <div>
-        <h1 className="mt-4 text-2xl font-bold sm:text-3xl">يبدو أن هذه الرحلة غير موجودة</h1>
-        <p className="mt-2 text-muted">ربما غيّرت مسارها. لنعدك إلى صالة المغادرة.</p>
-        <Cta to="/" className="mt-8">العودة للرئيسية</Cta>
+        <h1 className="mt-4 text-2xl font-bold sm:text-3xl">{t('nf.title')}</h1>
+        <p className="mt-2 text-muted">{t('nf.body')}</p>
+        <Link to="/" className="btn-primary mt-8">{t('nf.home')}</Link>
       </div>
     </PageHead>
   )

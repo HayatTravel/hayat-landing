@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0B1220" />
-    <title>حياة للسفر — طيران، فنادق، eSIM</title>
+    <title>الحياة للسفر والسياحة</title>
+    <meta name="description" content="طيران وفنادق وعطلات وتأجير سيارات وتأشيرات وشرائح eSIM وتذاكر فعاليات من العراق." />
+    <script>
+      /* pre-paint language/direction so RTL/LTR never flashes */
+      (function () { var q = new URLSearchParams(location.search).get('lang'); var l; try { l = q || localStorage.getItem('hayat-lang') } catch (e) { l = q }
+        if (l !== 'en' && l !== 'ckb') l = 'ar'; document.documentElement.lang = l; document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl' })()
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
