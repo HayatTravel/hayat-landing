@@ -6,7 +6,7 @@ import { Ltr } from '../components/ui'
 import { inDays, useI18n } from '../lib/i18n'
 import { openHelp, openSignIn, session, trips, useStore } from '../lib/store'
 import D from '../data/catalog'
-import { docKinds } from '../components/docs/index'
+import { docKinds, flightStatusHref } from '../components/docs/index'
 import {
   Badge, EntryCards, Kv, Modal, ModalHead, Next, Receipt, Ref, StatusBadges, clock, dayOf, hasReq, holdEnd, imgSrc, isPast, kind, lookups, normalise, payment, tripDate, typeOf, useToast, view,
 } from '../components/account/kit'
@@ -249,6 +249,8 @@ export default function TripsDetail() {
               })}</ul>
             </Section>
             <section className="card p-3"><ul>
+              {flightStatusHref(b) && <li className="border-line [&+&]:border-t"><Link to={flightStatusHref(b)} className="flex min-h-13 w-full items-center gap-3 rounded-md px-2 py-2 text-start font-semibold transition hover:bg-mist">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand/10 text-brand"><Icon name="clock" className="size-4.5" /></span><span className="flex-1">{t('fs.tab')}</span></Link></li>}
               <ActRow icon="printer" label={t('tp.print')} onClick={() => print()} chevron={false} />
               <ActRow icon="chat" label={t('tp.helpBk')} onClick={() => openHelp(t('tp.rq.ctx', { ref: b.ref, action: v.title }))} chevron={false} />
             </ul></section>

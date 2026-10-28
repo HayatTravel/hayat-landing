@@ -10,6 +10,7 @@ import { HotelForm } from '../components/stays/Forms'
 import { BoardLine, CancelLine, Facts, HStars, PriceFrom, Score } from '../components/stays/ui'
 import { baseQ, cheapest, imgSrc, cityBy, guestsText, hotelBy, hq, place, plural, stayText, withQs } from '../components/stays/lib'
 import NotFound from './NotFound'
+import ComparePanel from '../components/compare/ComparePanel'
 
 /** #/hotels/:id?in&out&rooms&ad&ch — gallery, about, rooms (Choose → checkout), location, good to know. */
 export default function HotelsDetail() {
@@ -84,6 +85,8 @@ export default function HotelsDetail() {
                   </article>
                 ))}
               </div>
+              <ComparePanel kind="hotel" className="mt-4 bg-white" hayatUsd={rooms[0].base * h.rooms * h.n} hayatNote={`${i.L(rooms[0].name)} · ${stayText(i, h)}`}
+                params={{ city: c?.name.en || '', in: h.in, out: h.out, ad: h.ad, ch: h.ch, rooms: h.rooms }} />
             </section>
 
             <section>

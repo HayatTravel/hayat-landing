@@ -6,6 +6,7 @@ import { airlineLogo } from '../../lib/format'
 import { useI18n } from '../../lib/i18n'
 import { openHelp } from '../../lib/store'
 import Sheet from './Sheet'
+import ComparePanel from '../compare/ComparePanel'
 import {
   airlineName, clock, fareName, isInbound, nextCharterDate, norm, place, priceFor, qs, resultsHref, routeTitle, searchParams, season, travText, paxText,
 } from './engine'
@@ -152,6 +153,8 @@ export function FlightDetails({ x, q, fare, setFare, how, setHow, onClose }) {
           </div>
         </fieldset>
       )}
+      {!hotel && <ComparePanel kind="flight" className="mt-6" hayatUsd={total} hayatNote={`${fareName(f, i)} · ${travText(q, i)}`}
+        params={{ from: q.from, to: q.to, d1: q.d1, d2: q.trip === 'rt' ? q.d2 : '', ad: q.ad, ch: q.ch, inf: q.inf, cabin: q.cabin }} />}
       {isInbound(q) && (
         <div className="mt-6 rounded-md bg-mist p-4 text-sm">
           <b className="block">{t('fl.in.visa.t')}</b><p className="mt-1 text-muted">{t('fl.in.visa.d')}</p>

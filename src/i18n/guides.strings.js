@@ -1,0 +1,22 @@
+/* Travel guides (both audiences). [ar, en, ku] */
+export default {
+  "gd.title": ["أدلة السفر", "Travel guides", "ڕێنماییەکانی گەشت"],
+  "gd.sub": ["نصائح عملية لمن يسافر من العراق ولمن يزوره.", "Practical advice for travelling from Iraq and for visiting it.", "ئامۆژگاری کرداری بۆ گەشت لە عێراقەوە و بۆ سەردانی عێراق."],
+  "gd.out": ["السفر من العراق", "Travelling from Iraq", "گەشت لە عێراقەوە"],
+  "gd.in": ["زيارة العراق", "Visiting Iraq", "سەردانی عێراق"],
+  "gd.tabs": ["نوع الأدلة", "Guide type", "جۆری ڕێنمایی"],
+  "gd.m.1": ["دقيقة قراءة", "{n} min read", "{n} خولەک خوێندنەوە"],
+  "gd.m.2": ["دقيقتان قراءة", "{n} min read", "{n} خولەک خوێندنەوە"],
+  "gd.m.n": ["{n} دقائق قراءة", "{n} min read", "{n} خولەک خوێندنەوە"],
+  "gd.m.m": ["{n} دقيقة قراءة", "{n} min read", "{n} خولەک خوێندنەوە"],
+  "gd.updated": ["آخر تحديث: {d}", "Last updated: {d}", "دوایین نوێکردنەوە: {d}"],
+  "gd.good": ["من المفيد أن تعرف", "Good to know", "باشە بزانیت"],
+  "gd.related": ["خطط واحجز", "Plan and book", "پلان دابنێ و حیجز بکە"],
+  "gd.contents": ["في هذا الدليل", "In this guide", "لەم ڕێنماییەدا"],
+  "gd.more": ["أدلة أخرى", "More guides", "ڕێنمایی زیاتر"],
+  "gd.all": ["كل الأدلة", "All guides", "هەموو ڕێنماییەکان"],
+  "gd.note": ["معلومات إرشادية؛ القواعد تتغير ونؤكد التفاصيل قبل سفرك.", "Guidance only; rules change and we confirm the details before you travel.", "تەنها ڕێنمایی؛ یاساکان دەگۆڕێن و پێش گەشتەکەت وردەکارییەکان پشتڕاست دەکەینەوە."],
+  "gd.photo": ["الصورة: {by} · {lic}", "Photo: {by} · {lic}", "وێنە: {by} · {lic}"],
+  "gd.notFound": ["لم نجد هذا الدليل", "We could not find this guide", "ئەم ڕێنماییە نەدۆزرایەوە"],
+  "gd.home.s": ["مقالات قصيرة تساعدك على التحضير لرحلتك.", "Short articles to help you prepare your trip.", "وتاری کورت بۆ یارمەتیدانت لە ئامادەکردنی گەشتەکەت."],
+}

@@ -5,6 +5,7 @@ import Icon from '../components/Icon'
 import { Ltr, Photo, Stepper } from '../components/ui'
 import CarForm from '../components/cars/CarForm'
 import Sheet from '../components/flights/Sheet'
+import ComparePanel from '../components/compare/ComparePanel'
 import { CATS, EXTRAS, YOUNG_FEE, carParams, location, normCar, rentalDays, searchCars } from '../components/cars/engine'
 import { qs } from '../components/flights/engine'
 import { media } from '../data/catalog'
@@ -58,6 +59,8 @@ function CarDetails({ c, q, days, onClose }) {
           </li>
         ))}
       </ul>
+      <ComparePanel kind="car" className="mt-6" hayatUsd={total} hayatNote={`${i.L(c.name)} · ${dl}`}
+        params={{ city: loc.name.en, pick: q.pick, pt: q.pt, drop: q.drop, dt: q.dt, age: q.age }} />
       <button type="button" onClick={() => openHelp(`${i.L(c.name)} · ${i.L(loc.name)} · ${i.date(q.pick)}`)} className="mt-6 flex items-center gap-2 text-sm font-medium text-brand"><Icon name="chat" className="size-4" />{t('help.line')}</button>
     </Sheet>
   )

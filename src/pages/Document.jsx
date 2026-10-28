@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Link, useParams } from 'react-router'
 import Icon from '../components/Icon'
 import { DocBody } from '../components/docs/Templates'
-import { docKinds, hasCalendar, icsText } from '../components/docs/index'
+import { docKinds, flightStatusHref, hasCalendar, icsText } from '../components/docs/index'
 import D from '../data/catalog'
 import { useI18n } from '../lib/i18n'
 import { buildOrder } from '../lib/products'
@@ -53,6 +53,7 @@ export default function Document() {
             <button type="button" onClick={() => print()} className="btn-primary px-5 py-2.5 text-sm"><Icon name="printer" className="size-4" />{t('doc.print')}</button>
             {hasCalendar(b, i) && <button type="button" onClick={calendar} className="btn-ghost px-5 py-2.5 text-sm"><Icon name="calendar" className="size-4" />{t('doc.cal')}</button>}
             <a href={wa} target="_blank" rel="noreferrer" className="btn-ghost px-5 py-2.5 text-sm"><Icon name="whatsapp" className="size-4" />{t('doc.wa')}</a>
+            {kind === 'eticket' && flightStatusHref(b) && <Link to={flightStatusHref(b)} className="btn-ghost px-5 py-2.5 text-sm"><Icon name="clock" className="size-4" />{t('fs.tab')}</Link>}
           </div>
         </div>
       </div>
