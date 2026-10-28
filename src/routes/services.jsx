@@ -1,10 +1,13 @@
-import Visa from '../pages/Visa'
-import VisaDetail from '../pages/VisaDetail'
-import Esim from '../pages/Esim'
-import EsimPlans from '../pages/EsimPlans'
-import Events from '../pages/Events'
-import EventsDetail from '../pages/EventsDetail'
-import Transfers from '../pages/Transfers'
+import { lazy } from 'react'
+
+/* Pages load on demand (see main.jsx: they are also warmed in the background after the first paint). */
+const Visa = lazy(() => import('../pages/Visa'))
+const VisaDetail = lazy(() => import('../pages/VisaDetail'))
+const Esim = lazy(() => import('../pages/Esim'))
+const EsimPlans = lazy(() => import('../pages/EsimPlans'))
+const Events = lazy(() => import('../pages/Events'))
+const EventsDetail = lazy(() => import('../pages/EventsDetail'))
+const Transfers = lazy(() => import('../pages/Transfers'))
 
 /* Services: visa · eSIM · events · airport transfers. Booking continues at /checkout?type=visa|esim|event|transfer. */
 export default [

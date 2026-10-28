@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { EXTRA, STRINGS } from '../i18n'
+import { EXTRA, STRINGS, loadExtra } from '../i18n'
 
 /* Languages. Base: ar (default) · ckb (Kurdish Sorani) · en — every string has these three ([ar, en, ku]).
    International (offered to visitors coming to Iraq): fa · tr · fr · de — strings in src/i18n/extra/<lang>.js
@@ -43,6 +43,15 @@ export function I18nProvider({ children }) {
     const l = q || read('hayat-lang', 'ar')
     return LANG_INFO[l] ? l : 'ar'
   })
+  // international languages load on demand; render waits for them so English never flashes first
+  const [ready, setReady] = useState(() => idx[lang] != null || !!EXTRA[lang])
+  useEffect(() => {
+    if (idx[lang] != null || EXTRA[lang]) { setReady(true); return }
+    let on = true
+    setReady(false)
+    loadExtra(lang).then(() => on && setReady(true))
+    return () => { on = false }
+  }, [lang])
   const [cur, setCurState] = useState(() => (read('hayat-cur', 'IQD') === 'USD' ? 'USD' : 'IQD'))
 
   useEffect(() => {
@@ -79,8 +88,9 @@ export function I18nProvider({ children }) {
     }
     const dur = (mins) => (lang !== 'ar' && lang !== 'ckb' ? `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, '0')}m` : `${Math.floor(mins / 60)}${t('u.h')} ${mins % 60 ? `${mins % 60}${t('u.m')}` : ''}`.trim())
     return { lang, setLang, cur, setCur, t, L, money, iqd, date, dur, monthName: (m) => (base ? MONTHS[lang][m] : new Intl.DateTimeFormat(LANG_INFO[lang].locale, { month: 'long' }).format(new Date(2026, m, 1))), rtl: LANG_INFO[lang].dir === 'rtl', num: (n) => nf.format(n) }
-  }, [lang, cur, setLang, setCur])
+  }, [lang, cur, setLang, setCur, ready])
 
+  if (!ready) return null
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

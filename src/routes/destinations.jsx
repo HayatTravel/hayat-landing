@@ -1,5 +1,8 @@
-import Destinations from '../pages/Destinations'
-import DestinationsDetail from '../pages/DestinationsDetail'
+import { lazy } from 'react'
+
+/* Pages load on demand (see main.jsx: they are also warmed in the background after the first paint). */
+const Destinations = lazy(() => import('../pages/Destinations'))
+const DestinationsDetail = lazy(() => import('../pages/DestinationsDetail'))
 
 /* Travelling from Iraq: the worldwide destination explorer. */
 export default [

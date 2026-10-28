@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router'
 import Icon from './Icon'
 import { Logo } from './ui'
@@ -258,18 +258,47 @@ function Footer() {
   )
 }
 
+/** Browser tab title = the page's heading · brand (read after the page has drawn, so every page gets it for free). */
+function useTabTitle() {
+  const { pathname, search } = useLocation()
+  const { lang } = useI18n()
+  useEffect(() => {
+    const brand = LANG_INFO[lang].title
+    const set = () => {
+      const h = document.querySelector('main h1')?.textContent?.trim()
+      document.title = h && pathname !== '/' ? `${h} · ${brand}` : brand
+    }
+    const t = setTimeout(set, 60)
+    const t2 = setTimeout(set, 600) // pages that load on demand
+    return () => { clearTimeout(t); clearTimeout(t2) }
+  }, [pathname, search, lang])
+}
+
 export default function Layout() {
+  useTabTitle()
   return (
     <>
       <Navbar />
       <main className="min-h-dvh print:min-h-0">
-        <Outlet />
+        <Suspense fallback={<PageLoading />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
       <Help />
       <SignIn />
       <ScrollRestoration />
     </>
+  )
+}
+
+/** Shown only if a page is opened before its code has arrived: the dark band plus a calm skeleton. */
+function PageLoading() {
+  return (
+    <div aria-busy="true">
+      <div className="page-head h-56 bg-[#070b16]" />
+      <div className="container-x grid gap-4 py-10">{[0, 1, 2].map((k) => <div key={k} className="h-28 animate-pulse rounded-lg bg-mist" />)}</div>
+    </div>
   )
 }
 
