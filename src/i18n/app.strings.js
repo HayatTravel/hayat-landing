@@ -6,6 +6,7 @@ export default {
   'nav.events': ['فعاليات', 'Events', 'بۆنەکان'], 'nav.transfers': ['مواصلات المطار', 'Airport transfers', 'گواستنەوەی فڕۆکەخانە'],
   'home.airlines': ['شركات طيران نحجز عليها يومياً', 'Airlines we book every day', 'ئەو کۆمپانیا ئاسمانییانەی ڕۆژانە حیجزیان لەسەر دەکەین'],
   'cb.ph': ['اكتب مدينة أو مطار', 'Type a city or airport', 'شار یان فڕۆکەخانە بنووسە'], 'cb.none': ['لا توجد نتائج لـ «{q}»', 'No results for “{q}”', 'هیچ ئەنجامێک نییە بۆ «{q}»'],
+  'co.sample': ['نموذج تجريبي: الحقول معبأة ببيانات تجريبية لتجربة الحجز بسرعة، ويمكنك تغييرها.', 'Design mockup: the fields are filled with sample details so you can test a booking quickly. You can change them.', 'نموونەی دیزاین: خانەکان بە زانیاری نموونە پڕکراونەتەوە بۆ تاقیکردنەوەی خێرای حیجز، دەتوانیت بیانگۆڕیت.'],
   'ft.book': ['احجز', 'Book', 'حیجز بکە'],
   'rc.title': ['إيصال حجز', 'Booking receipt', 'پسوولەی حیجز'], 'rc.paid': ['المبلغ المدفوع', 'Amount paid', 'بڕی پارەی دراو'], 'rc.due': ['المبلغ المستحق', 'Amount due', 'بڕی پارەی ماوە'],
   'rc.scan': ['امسح لفتح الحجز', 'Scan to open the booking', 'سکان بکە بۆ کردنەوەی حیجز'],

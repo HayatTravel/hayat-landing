@@ -48,8 +48,14 @@ function Section({ n, title, note, children }) {
   )
 }
 
+/* Design mockup: every field starts with sample details so a test booking goes through in one click. */
+const SAMPLE = [['Ali', 'Hassan', '1988-04-12'], ['Sara', 'Hassan', '1991-09-03'], ['Omar', 'Hassan', '2015-02-20'], ['Noor', 'Hassan', '2018-07-11'], ['Zaid', 'Kareem', '1985-12-01'], ['Huda', 'Kareem', '1987-05-26'], ['Yusuf', 'Kareem', '2012-10-15'], ['Maryam', 'Kareem', '2024-03-08'], ['Ahmed', 'Jabbar', '1979-01-30']]
+const sample = (i) => SAMPLE[i % SAMPLE.length]
+
 function TravellerFields({ i, fields, t }) {
-  const F = ({ id, label, ...p }) => <div><label className="label" htmlFor={`${id}-${i}`}>{label}</label><input id={`${id}-${i}`} name={`${id}-${i}`} className="field" required {...p} /></div>
+  const [first, last, dob] = sample(i)
+  const def = { first, last, dob, pass: `A${String(31045872 + i * 1117).padStart(8, '0')}`, exp: '2031-06-30' }
+  const F = ({ id, label, ...p }) => <div><label className="label" htmlFor={`${id}-${i}`}>{label}</label><input id={`${id}-${i}`} name={`${id}-${i}`} className="field" required defaultValue={def[id]} {...p} /></div>
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       {fields.includes('name') && <><F id="first" label={t('co.first')} autoComplete={i ? 'off' : 'given-name'} /><F id="last" label={t('co.last')} autoComplete={i ? 'off' : 'family-name'} /></>}
@@ -128,6 +134,7 @@ export default function Checkout() {
 
       <form onSubmit={submit} noValidate className="container-x grid gap-8 py-10 lg:grid-cols-[1fr_380px]">
         <div className="space-y-5">
+          <p className="flex items-center gap-2 rounded-md bg-sky/20 px-4 py-3 text-sm text-ink"><Icon name="info" className="size-4 shrink-0 text-brand" />{t('co.sample')}</p>
           {o.travellers && (
             <Section n={++step} title={t('co.who')} note={o.travellers.note || t('co.whoNote')}>
               <div className="space-y-6">
@@ -176,9 +183,9 @@ export default function Checkout() {
               <div><label className="label" htmlFor="phone">{t('sign.phone')}</label>
                 <div className="flex items-center rounded-md border border-line bg-white focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/10" dir="ltr">
                   <span className="border-e border-line px-3 text-sm text-muted">+964</span>
-                  <input id="phone" name="phone" required inputMode="tel" defaultValue={user?.phone?.replace('+964 ', '') || ''} placeholder="770 000 0000" className="w-full bg-transparent px-3 py-3 outline-none" />
+                  <input id="phone" name="phone" required inputMode="tel" defaultValue={user?.phone?.replace('+964 ', '') || '770 123 4567'} placeholder="770 000 0000" className="w-full bg-transparent px-3 py-3 outline-none" />
                 </div></div>
-              <div><label className="label" htmlFor="email">{t('co.email')}</label><input id="email" type="email" dir="ltr" className="field text-start" /></div>
+              <div><label className="label" htmlFor="email">{t('co.email')}</label><input id="email" type="email" dir="ltr" defaultValue="ali.hassan@example.com" className="field text-start" /></div>
             </div>
           </Section>
 
@@ -194,7 +201,7 @@ export default function Checkout() {
               ))}
             </div>
             {office && <p className="mt-4 flex items-start gap-2 rounded-md bg-amber-50 p-3 text-sm text-amber-800"><Icon name="clock" className="mt-0.5 size-4 shrink-0" />{t('co.officeNote', { time: hhmm })}</p>}
-            <label className="mt-5 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" name="agree" className="size-4 accent-[var(--color-brand)]" />{t('co.agree')}</label>
+            <label className="mt-5 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" name="agree" defaultChecked className="size-4 accent-[var(--color-brand)]" />{t('co.agree')}</label>
             {err && <p role="alert" className="mt-3 text-sm font-medium text-red-600">{err}</p>}
           </Section>
         </div>
