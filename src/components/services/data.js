@@ -1,6 +1,8 @@
 /* Services helpers (visa · eSIM · events · transfers), shared by pages, search tabs, home sections and orders.
    Everything takes the i18n object `i` from useI18n() when it produces text. */
-import D from '../../data/catalog'
+import D, { media } from '../../data/catalog'
+import { PURPOSES, PURPOSE_DOCS, PURPOSE_ICON, VISAS } from '../../data/visas-world'
+import { img } from '../../lib/format'
 import { inDays, iso } from '../../lib/i18n'
 
 export const clamp = (n, a, b) => Math.min(b, Math.max(a, Number.isFinite(n) ? n : a))
@@ -16,7 +18,7 @@ export const pl = (i, n, base) => {
 }
 
 /* ---------- visa ---------- */
-export const VISA_FLIGHT = { TR: 'IST', AE: 'DXB', AZ: 'GYD', EG: 'CAI', GE: 'TBS', MY: 'KUL' }
+export const VISA_FLIGHT = { TR: 'IST', AE: 'DXB', AZ: 'GYD', EG: 'CAI', GE: 'TBS', MY: 'KUL', IR: 'IKA', MV: 'MLE' }
 export const SERVICE_FEE = { evisa: 15, arrival: 10, embassy: 45, free: 0 }
 export const ARRANGE = ['hotel', 'ticket', 'insurance']
 export const KIND_TONE = {
@@ -25,7 +27,29 @@ export const KIND_TONE = {
   embassy: 'bg-[#efe9f7] text-plum',
   free: 'bg-emerald-50 text-emerald-700',
 }
-export const visa = (id) => D.visas.find((v) => v.id === String(id || '').toUpperCase())
+export const visa = (id) => VISAS.find((v) => v.id === String(id || '').toUpperCase())
+export { VISAS, PURPOSES, PURPOSE_ICON }
+/** Purposes we handle for this destination (transit only where a transit visa applies). */
+export const purposesOf = (v) => [...v.purposes, ...(v.transit ? ['transit'] : [])]
+export const purposeOk = (p) => PURPOSES.includes(p)
+/** Documents for one destination and purpose: passport/photo/ID (+ insurance) and the purpose's own papers. */
+export function docsFor(v, purpose = 'tourism') {
+  const core = v.docs.filter((d) => ['passport', 'photo', 'id', 'insurance'].includes(d))
+  const add = PURPOSE_DOCS[purpose] || v.docs
+  return [...new Set(['passport', ...core, ...add])]
+}
+/** The visa case for a purpose: kind, processing days, illustrative fee and documents.
+    Study usually needs a student visa through the embassy, even where visits are easier. */
+export function caseOf(v, purpose) {
+  const list = purposesOf(v)
+  const p = list.includes(purpose) ? purpose : list[0]
+  const docs = docsFor(v, p)
+  if (p === 'transit') return { ...v.transit, purpose: p, docs }
+  if (p === 'study' && v.kind !== 'embassy') return { kind: 'embassy', days: Math.max(v.days, 15), fee: Math.max(v.fee, 110), purpose: p, docs }
+  return { kind: v.kind, days: v.days, fee: v.fee, purpose: p, docs }
+}
+/** Image source: a media name, an Unsplash photo id, or null (the caller shows a quiet placeholder). */
+export const pic = (x, w = 900) => (!x ? null : x.startsWith('photo-') ? img(x, w) : media(x))
 export const procTime = (i, v) => (v.kind === 'free' ? i.t('vi.kind.free') : v.kind === 'arrival' ? i.t('vi.atArrival') : pl(i, v.days, 'vi.wd'))
 export const leadDays = (v) => v.days + 3
 /** The requested travel date if it leaves enough time to apply, else a sensible default. */

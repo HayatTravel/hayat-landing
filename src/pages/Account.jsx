@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { PageHead } from '../components/Layout'
 import Icon from '../components/Icon'
 import { Ltr } from '../components/ui'
-import { LANGS, inDays, useI18n } from '../lib/i18n'
+import { LANG_INFO, LANGS_FOR, inDays, useI18n } from '../lib/i18n'
 import { openHelp, openSignIn, session, store, useStore } from '../lib/store'
 import { Badge, Modal, ModalHead, Next, useToast } from '../components/account/kit'
 
@@ -118,7 +118,7 @@ export default function Account() {
             <hr className="my-5 border-line" />
             <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="label" htmlFor="ac-lang">{t('ac.lang')}</label>
-                <select id="ac-lang" value={lang} onChange={(e) => setLang(e.target.value)} className="field">{LANGS.map(([k, n]) => <option key={k} value={k} lang={k}>{n}</option>)}</select></div>
+                <select id="ac-lang" value={lang} onChange={(e) => setLang(e.target.value)} className="field">{LANGS_FOR.in.map((k) => <option key={k} value={k} lang={k} dir={LANG_INFO[k].dir}>{LANG_INFO[k].name}</option>)}</select></div>
               <div><label className="label" htmlFor="ac-cur">{t('ac.cur')}</label>
                 <select id="ac-cur" value={cur} onChange={(e) => setCur(e.target.value)} className="field">{[['IQD', 'ac.iqd'], ['USD', 'ac.usd']].map(([c, k]) => <option key={c} value={c}>{c} · {t(k)}</option>)}</select></div>
             </div>

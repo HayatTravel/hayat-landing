@@ -1,0 +1,6 @@
+/* Customer documents: A4 with real page margins (the site default is margin 0), cards never split across pages. */
+@media print {
+  @page docs { size: A4; margin: 12mm 12mm 14mm; }
+  .doc-sheet { page: docs; }
+  .doc-sheet section, .doc-sheet table tr { break-inside: avoid; }
+}

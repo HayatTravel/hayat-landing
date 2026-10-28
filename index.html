@@ -9,7 +9,7 @@
     <script>
       /* pre-paint language/direction so RTL/LTR never flashes */
       (function () { var q = new URLSearchParams(location.search).get('lang'); var l; try { l = q || localStorage.getItem('hayat-lang') } catch (e) { l = q }
-        if (l !== 'en' && l !== 'ckb') l = 'ar'; document.documentElement.lang = l; document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl' })()
+        var rtl = { ar: 1, ckb: 1, fa: 1 }, ok = { ar: 1, ckb: 1, en: 1, fa: 1, tr: 1, fr: 1, de: 1 }; if (!ok[l]) l = 'ar'; document.documentElement.lang = l; document.documentElement.dir = rtl[l] ? 'rtl' : 'ltr' })()
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -1,9 +1,22 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { STRINGS } from '../i18n'
+import { EXTRA, STRINGS } from '../i18n'
 
-/* Languages: ar (default) · ckb (Kurdish Sorani, RTL) · en.
-   Strings live in src/i18n/*.js as { key: [ar, en, ku] }. Catalogue texts are { ar, en, ku } objects. */
-export const LANGS = [['ar', 'العربية'], ['ckb', 'کوردی'], ['en', 'English']]
+/* Languages. Base: ar (default) · ckb (Kurdish Sorani) · en — every string has these three ([ar, en, ku]).
+   International (offered to visitors coming to Iraq): fa · tr · fr · de — strings in src/i18n/extra/<lang>.js
+   ({ key: text }); anything missing falls back to English. Catalogue texts are { ar, en, ku, fa?, tr?, fr?, de? }.
+   To add a language: add it here and drop src/i18n/extra/<code>.js. */
+export const LANG_INFO = {
+  ar: { name: 'العربية', dir: 'rtl', locale: 'ar-IQ-u-nu-latn', title: 'الحياة للسفر والسياحة' },
+  ckb: { name: 'کوردی', dir: 'rtl', locale: 'ckb-IQ-u-nu-latn', title: 'حەیات بۆ گەشت و گوزار' },
+  en: { name: 'English', dir: 'ltr', locale: 'en-GB', title: 'Hayat Travel & Tourism' },
+  fa: { name: 'فارسی', dir: 'rtl', locale: 'fa-IR-u-ca-gregory-nu-latn', title: 'الحیاة برای سفر و گردشگری' },
+  tr: { name: 'Türkçe', dir: 'ltr', locale: 'tr-TR', title: 'Hayat Seyahat ve Turizm' },
+  fr: { name: 'Français', dir: 'ltr', locale: 'fr-FR', title: 'Hayat Voyages et Tourisme' },
+  de: { name: 'Deutsch', dir: 'ltr', locale: 'de-DE', title: 'Hayat Reisen & Tourismus' },
+}
+/** Languages offered per audience: travelling from Iraq vs visiting Iraq. */
+export const LANGS_FOR = { out: ['ar', 'ckb', 'en'], in: ['en', 'ar', 'ckb', 'fa', 'tr', 'fr', 'de'] }
+export const LANGS = LANGS_FOR.out.map((k) => [k, LANG_INFO[k].name])
 const idx = { ar: 0, en: 1, ckb: 2 }
 const RATE = 1310 // illustrative IQD per USD
 const nf = new Intl.NumberFormat('en-US')
@@ -28,15 +41,15 @@ export function I18nProvider({ children }) {
   const [lang, setLangState] = useState(() => {
     const q = new URLSearchParams(location.search).get('lang')
     const l = q || read('hayat-lang', 'ar')
-    return l === 'en' || l === 'ckb' ? l : 'ar'
+    return LANG_INFO[l] ? l : 'ar'
   })
   const [cur, setCurState] = useState(() => (read('hayat-cur', 'IQD') === 'USD' ? 'USD' : 'IQD'))
 
   useEffect(() => {
     const r = document.documentElement
     r.lang = lang
-    r.dir = lang === 'en' ? 'ltr' : 'rtl'
-    document.title = { ar: 'الحياة للسفر والسياحة', en: 'Hayat Travel & Tourism', ckb: 'حەیات بۆ گەشت و گوزار' }[lang]
+    r.dir = LANG_INFO[lang].dir
+    document.title = LANG_INFO[lang].title
   }, [lang])
 
   const setLang = useCallback((l) => { write('hayat-lang', l); setLangState(l) }, [])
@@ -44,26 +57,28 @@ export function I18nProvider({ children }) {
 
   const value = useMemo(() => {
     const i = idx[lang]
-    /** UI string; {name} placeholders. Missing Kurdish falls back to Arabic. */
+    const base = i != null
+    /** UI string; {name} placeholders. Missing Kurdish falls back to Arabic; international languages fall back to English. */
     const t = (key, vars) => {
       const row = STRINGS[key]
-      let s = row ? (row[i] ?? row[0]) : key
+      let s = base ? (row ? (row[i] ?? row[0]) : key) : (EXTRA[lang]?.[key] ?? (row ? row[1] : key))
       if (vars) s = s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? ''))
       return s
     }
     /** Pick a catalogue text { ar, en, ku }. */
-    const L = (o) => (o && typeof o === 'object' ? (lang === 'ckb' ? o.ku ?? o.ar : o[lang] ?? o.ar) : o ?? '')
-    const unit = lang === 'en' ? 'IQD' : 'د.ع'
+    const L = (o) => (o && typeof o === 'object' ? (lang === 'ckb' ? o.ku ?? o.ar : base ? o[lang] ?? o.ar : o[lang] ?? o.en ?? o.ar) : o ?? '')
+    const unit = lang === 'ar' || lang === 'ckb' ? 'د.ع' : 'IQD'
     const iqd = (usd) => Math.round((usd * RATE) / 1000) * 1000
     /** Amount in the chosen currency; source prices are USD. Returns a string (wrap in <bdi dir="ltr">). */
     const money = (usd) => (usd == null ? t('price.ask') : cur === 'USD' ? `$${nf.format(Math.round(usd))}` : `${nf.format(iqd(usd))} ${unit}`)
     const parse = (s) => { if (s instanceof Date) return s; const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1) }
     const date = (s, { weekday = false, year = false } = {}) => {
       const d = parse(s)
+      if (!base) return new Intl.DateTimeFormat(LANG_INFO[lang].locale, { day: 'numeric', month: 'short', ...(weekday ? { weekday: 'short' } : {}), ...(year ? { year: 'numeric' } : {}) }).format(d)
       return [weekday ? WEEKDAYS[lang][d.getDay()] : '', d.getDate(), MONTHS[lang][d.getMonth()], year ? d.getFullYear() : ''].filter((x) => x !== '').join(' ')
     }
-    const dur = (mins) => (lang === 'en' ? `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, '0')}m` : `${Math.floor(mins / 60)}${t('u.h')} ${mins % 60 ? `${mins % 60}${t('u.m')}` : ''}`.trim())
-    return { lang, setLang, cur, setCur, t, L, money, iqd, date, dur, monthName: (m) => MONTHS[lang][m], rtl: lang !== 'en', num: (n) => nf.format(n) }
+    const dur = (mins) => (lang !== 'ar' && lang !== 'ckb' ? `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, '0')}m` : `${Math.floor(mins / 60)}${t('u.h')} ${mins % 60 ? `${mins % 60}${t('u.m')}` : ''}`.trim())
+    return { lang, setLang, cur, setCur, t, L, money, iqd, date, dur, monthName: (m) => (base ? MONTHS[lang][m] : new Intl.DateTimeFormat(LANG_INFO[lang].locale, { month: 'long' }).format(new Date(2026, m, 1))), rtl: LANG_INFO[lang].dir === 'rtl', num: (n) => nf.format(n) }
   }, [lang, cur, setLang, setCur])
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

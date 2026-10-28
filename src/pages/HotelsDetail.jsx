@@ -3,13 +3,12 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { PageHead } from '../components/Layout'
 import Icon from '../components/Icon'
 import { Ltr, Stepper } from '../components/ui'
-import { media } from '../data/catalog'
 import { useI18n } from '../lib/i18n'
 import { openHelp } from '../lib/store'
 import { bookingSteps } from './Checkout'
 import { HotelForm } from '../components/stays/Forms'
 import { BoardLine, CancelLine, Facts, HStars, PriceFrom, Score } from '../components/stays/ui'
-import { baseQ, cheapest, cityBy, guestsText, hotelBy, hq, place, plural, stayText, withQs } from '../components/stays/lib'
+import { baseQ, cheapest, imgSrc, cityBy, guestsText, hotelBy, hq, place, plural, stayText, withQs } from '../components/stays/lib'
 import NotFound from './NotFound'
 
 /** #/hotels/:id?in&out&rooms&ad&ch — gallery, about, rooms (Choose → checkout), location, good to know. */
@@ -38,11 +37,11 @@ export default function HotelsDetail() {
       <div className="container-x py-10">
         <div className="grid gap-3 overflow-hidden rounded-lg md:h-[420px] md:grid-cols-4 md:grid-rows-2">
           <div className="aspect-[16/10] overflow-hidden bg-mist md:col-span-3 md:row-span-2 md:aspect-auto">
-            <img key={pics[active]} src={media(pics[active])} alt={i.L(hotel.name)} className="size-full animate-fade object-cover" />
+            <img key={pics[active]} src={imgSrc(pics[active])} alt={i.L(hotel.name)} className="size-full animate-fade object-cover" />
           </div>
           {pics.map((p, k) => k !== active && (
             <button key={p} type="button" onClick={() => setActive(k)} aria-label={t('ht.photo', { n: k + 1, total: pics.length })} className="hidden overflow-hidden bg-mist md:block">
-              <img src={media(p)} alt="" loading="lazy" className="size-full object-cover transition duration-700 hover:scale-105" />
+              <img src={imgSrc(p)} alt="" loading="lazy" className="size-full object-cover transition duration-700 hover:scale-105" />
             </button>
           ))}
         </div>

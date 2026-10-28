@@ -11,7 +11,7 @@ import { LOCATIONS, carParams, normCar } from './engine'
 const TIMES = Array.from({ length: 34 }, (_, k) => { const m = 360 + k * 30; return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}` })
 
 /** Car search: city, pick-up and drop-off date + time, driver 25+. Navigates to /cars?… */
-export default function CarForm({ initial = {}, onDone }) {
+export default function CarForm({ initial = {}, onDone, bare = false }) {
   const i = useI18n(); const { t } = i
   const go = useNavigate()
   const [f, setF] = useState(() => normCar(initial.city ? initial : { ...store.get('car-last', {}), ...initial }))
@@ -32,7 +32,7 @@ export default function CarForm({ initial = {}, onDone }) {
     </select>
   )
   return (
-    <form onSubmit={submit} noValidate className="space-y-3 rounded-lg border border-line bg-white p-4 text-ink sm:p-5">
+    <form onSubmit={submit} noValidate className={`space-y-3 text-ink ${bare ? '' : 'rounded-lg border border-line bg-white p-4 sm:p-5'}`}>
       <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr_1fr_auto]">
         <Combobox label={t('car.city')} icon="car" value={f.city} onChange={(v) => set({ city: v })} options={opts} placeholder={t('car.cityPh')} />
         <Field label={t('car.pick')} icon="calendar" as="div">

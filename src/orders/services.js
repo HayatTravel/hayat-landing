@@ -1,34 +1,36 @@
 /* Checkout orders for visa, eSIM, event tickets and airport transfers (contract: src/lib/products.js). */
 import {
-  ESIM_IMG, clamp, esDays, esim, ev, evDate, pl, planLabel, procTime, qs, tiersOf, trFacts, trParams, trPrice, trState, airportCity, cars, visa, visaDate,
+  ESIM_IMG, caseOf, clamp, pic, esDays, esim, ev, evDate, pl, planLabel, procTime, qs, tiersOf, trFacts, trParams, trPrice, trState, airportCity, cars, visa, visaDate,
 } from '../components/services/data'
 import D from '../data/catalog'
 
 export default {
-  /** /checkout?type=visa&id&n&date */
+  /** /checkout?type=visa&id&purpose&n&date — purpose: tourism|family|medical|study|business|transit */
   visa: (q, i) => {
     const { t, L } = i
     const v = visa(q.id)
-    if (!v || v.kind === 'free') return null
+    if (!v) return null
+    const c = caseOf(v, q.purpose || 'tourism')
+    if (c.kind === 'free') return null
     const n = clamp(+q.n || 1, 1, 9)
-    const d = visaDate(v, q.date)
-    const schengen = v.id === 'SCH'
+    const d = visaDate(c, q.date)
+    const schengen = v.id === 'SCH' && c.purpose !== 'transit'
     const country = L(v.country)
     return {
-      title: t('vi.orderTitle', { country }), sub: t(`vi.kind.${v.kind}`), img: v.img,
-      facts: [[t('vi.dest'), country], [t('vi.kindL'), t(`vi.kind.${v.kind}`)], [t('vi.date'), i.date(d, { weekday: true, year: true })],
-        [t('vi.travellers'), pl(i, n, 'vi.t')], [t('vi.time'), procTime(i, v)]],
-      price: [{ label: n > 1 ? `${t('vi.fee')} × ${i.num(n)}` : t('vi.fee'), usd: v.fee * n }],
+      title: t('vi.orderTitle', { country }), sub: `${t(`vi.kind.${c.kind}`)} · ${t(`vi.p.${c.purpose}`)}`, img: pic(v.img) || 'visa-passport',
+      facts: [[t('vi.dest'), country], [t('vi.purpose'), t(`vi.p.${c.purpose}`)], [t('vi.kindL'), t(`vi.kind.${c.kind}`)],
+        [t('vi.date'), i.date(d, { weekday: true, year: true })], [t('vi.travellers'), pl(i, n, 'vi.t')], [t('vi.time'), procTime(i, c)]],
+      price: [{ label: n > 1 ? `${t('vi.fee')} × ${i.num(n)}` : t('vi.fee'), usd: c.fee * n }],
       travellers: { count: n, fields: ['name', 'dob', 'nationality', 'passport'] },
       extras: [
-        v.kind === 'evisa' && { id: 'express', label: t('vi.express'), sub: t('vi.expressD'), usd: 25, per: 'traveller' },
-        { id: 'insurance', label: t('vi.ins'), sub: schengen ? t('vi.insReq') : t('vi.insD'), usd: 15, per: 'traveller', checked: schengen, required: schengen },
+        c.kind === 'evisa' && { id: 'express', label: t('vi.express'), sub: t('vi.expressD'), usd: 25, per: 'traveller' },
+        c.purpose !== 'transit' && { id: 'insurance', label: t('vi.ins'), sub: schengen ? t('vi.insReq') : t('vi.insD'), usd: 15, per: 'traveller', checked: schengen, required: schengen },
       ].filter(Boolean),
-      uploads: v.docs.map((k) => ({ id: k, label: t(`vi.d.${k}`) })),
+      uploads: c.docs.map((k) => ({ id: k, label: t(`vi.d.${k}`) })),
       hold: null,
       terms: t('vi.terms'),
       docs: [t('vi.doc1'), t('vi.doc2'), t('vi.doc3')],
-      back: `/visa/${v.id}${qs({ n, date: d })}`,
+      back: `/visa/${v.id}${qs({ purpose: c.purpose === 'tourism' ? '' : c.purpose, n, date: d })}`,
     }
   },
 

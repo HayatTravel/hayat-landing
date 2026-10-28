@@ -1,4 +1,7 @@
+import { Navigate } from 'react-router'
 import SearchTabs from '../components/SearchTabs'
+import { ModeSwitch } from '../components/Layout'
+import { useMode } from '../lib/mode'
 import Icon from '../components/Icon'
 import { Reveal } from '../components/ui'
 import { useI18n } from '../lib/i18n'
@@ -7,9 +10,11 @@ import { media } from '../data/catalog'
 /* Home, top to bottom, each thing once:
    search → airlines we book → product sections (src/home/*: popular flights, holidays, visa check, events) → how booking works.
    Products without a home section (hotels, cars, eSIM, transfers) are reached from the search tabs and the menu. */
-const SECTIONS = Object.values(import.meta.glob('../home/*.jsx', { eager: true }))
+/* Home sections for this audience: a section may set mode: 'in' (visiting Iraq) — default 'out'. */
+export const HOME_SECTIONS = Object.values(import.meta.glob('../home/*.jsx', { eager: true }))
   .flatMap((m) => m.default)
   .sort((a, b) => a.order - b.order)
+const SECTIONS = HOME_SECTIONS.filter((x) => (x.mode || 'out') === 'out')
 
 const AIRLINES = ['IA', 'IF', 'TK', 'QR', 'EK', 'FZ', 'RJ', 'PC', 'J2', 'MS', 'ME', 'G9']
 
@@ -20,6 +25,7 @@ function Hero() {
       <img src={media('hero-wing')} alt="" fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-l from-ink/85 via-ink/45 to-ink/30 ltr:bg-gradient-to-r" />
       <div className="container-x pb-24">
+        <div className="mb-6"><ModeSwitch big /></div>
         <h1 className="max-w-2xl text-4xl leading-[1.25] font-bold text-white sm:text-6xl">{t('hero.title')}</h1>
         <p className="mt-4 max-w-xl text-lg leading-8 text-white/80">{t('hero.sub')}</p>
       </div>
@@ -63,6 +69,8 @@ function HowItWorks() {
 }
 
 export default function Home() {
+  const { mode } = useMode()
+  if (mode === 'in') return <Navigate to="/visit" replace />
   return (
     <>
       <Hero />

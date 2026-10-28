@@ -7,7 +7,7 @@ import { useI18n } from '../../lib/i18n'
 import { openHelp } from '../../lib/store'
 import Sheet from './Sheet'
 import {
-  airlineName, clock, fareName, nextCharterDate, norm, place, priceFor, qs, resultsHref, routeTitle, searchParams, season, travText, paxText,
+  airlineName, clock, fareName, isInbound, nextCharterDate, norm, place, priceFor, qs, resultsHref, routeTitle, searchParams, season, travText, paxText,
 } from './engine'
 
 export const Logo = ({ c, className = 'h-6 w-14' }) => <img src={airlineLogo(c)} alt="" loading="lazy" className={`${className} shrink-0 object-contain`} onError={(e) => { e.currentTarget.style.visibility = 'hidden' }} />
@@ -151,6 +151,12 @@ export function FlightDetails({ x, q, fare, setFare, how, setHow, onClose }) {
             ))}
           </div>
         </fieldset>
+      )}
+      {isInbound(q) && (
+        <div className="mt-6 rounded-md bg-mist p-4 text-sm">
+          <b className="block">{t('fl.in.visa.t')}</b><p className="mt-1 text-muted">{t('fl.in.visa.d')}</p>
+          <Link to="/visit/visa" className="mt-2 inline-flex items-center gap-1.5 font-semibold text-brand">{t('fl.in.visa.link')}<Icon name="arrow" className="size-4 rtl:-scale-x-100" /></Link>
+        </div>
       )}
       <button type="button" onClick={() => openHelp(`${routeTitle(q.from, q.to, i)} · ${i.date(q.d1)} · ${x.id}`)} className="mt-6 flex items-center gap-2 text-sm font-medium text-brand"><Icon name="chat" className="size-4" />{t('help.line')}</button>
     </Sheet>

@@ -3,6 +3,7 @@
    scheduled `${carrier}-${n}`, charter = programme id (e.g. CH-SSH). Prices are USD. */
 import D from '../../data/catalog'
 import { addDaysIso, inDays } from '../../lib/i18n'
+import { WORLD_AIRLINES, WORLD_AIRPORTS, WORLD_IMG, WORLD_ROUTES, WORLD_TZ } from './world'
 
 export const IRAQ = ['BGW', 'EBL', 'BSR', 'NJF', 'ISU']
 const ORIGIN_F = { BGW: 1, EBL: 1.04, BSR: 1.03, NJF: 1.06, ISU: 1.08 }
@@ -10,7 +11,7 @@ const ORIGIN_D = { BGW: 0, EBL: -10, BSR: 15, NJF: 5, ISU: -5 }
 export const CABIN_F = { economy: 1, premium: 1.6, business: 2.6, first: 4 }
 export const CABINS = Object.keys(CABIN_F)
 /** Hours relative to Iraq, for local arrival times. */
-const TZ = { IST: 0, AYT: 0, TZX: 0, DXB: 1, SHJ: 1, DOH: 0, GYD: 1, TBS: 1, BUS: 1, SSH: -1, CAI: -1, AMM: 0, BEY: -1, KUL: 5, MLE: 2 }
+const TZ = { ...WORLD_TZ, IST: 0, AYT: 0, TZX: 0, DXB: 1, SHJ: 1, DOH: 0, GYD: 1, TBS: 1, BUS: 1, SSH: -1, CAI: -1, AMM: 0, BEY: -1, KUL: 5, MLE: 2 }
 /** Connection airports that are not bookable destinations. */
 const VIA = { DOH: { ar: 'الدوحة', en: 'Doha', ku: 'دۆحە' }, SHJ: { ar: 'الشارقة', en: 'Sharjah', ku: 'شارجە' } }
 /** Network carriers sell from Classic (bag included); low-cost carriers also sell Light. */
@@ -32,11 +33,17 @@ export const clockText = (m) => { const c = clock(m); return `${c.hm}${c.day ? `
 export const isIso = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s || '')
 export const parse = (s) => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1) }
 export const tomorrow = () => inDays(1)
-export const airport = (c) => D.airports.find((a) => a.code === c)
+export const AIRPORTS = [...D.airports, ...WORLD_AIRPORTS.filter((w) => !D.airports.some((a) => a.code === w.code))]
+export const airport = (c) => AIRPORTS.find((a) => a.code === c)
+const ROUTES = [...D.routes, ...WORLD_ROUTES.filter((w) => !D.routes.some((r) => r.to === w.to))]
+const AIRLINES = { ...WORLD_AIRLINES, ...D.airlines }
 export const place = (c, L) => (airport(c) ? L(airport(c).city) : VIA[c] ? L(VIA[c]) : c)
 export const routeTitle = (a, b, i) => `${place(a, i.L)} ${i.rtl ? '←' : '→'} ${place(b, i.L)}`
-export const airlineName = (c, L) => L(D.airlines[c]) || c
+export const airlineName = (c, L) => L(AIRLINES[c]) || c
+/** Visitors: from abroad into an Iraqi airport. */
+export const isInbound = (q) => IRAQ.includes(q.to) && !IRAQ.includes(q.from)
 export const imgFor = (code) => {
+  if (WORLD_IMG[code]) return WORLD_IMG[code]
   const a = airport(code); if (!a) return 'hero-wing'
   const c = D.cities.find((x) => x.name.en === a.city.en) || D.cities.find((x) => x.country.en === a.country.en && !IRAQ.includes(code))
   return c ? c.img : 'hero-wing'
@@ -70,8 +77,8 @@ export const resultsHref = (q, extra) => `/flights/results?${qs({ ...searchParam
 
 /* ---------- generator ---------- */
 function routeOf(from, to) {
-  if (IRAQ.includes(from) && !IRAQ.includes(to)) { const r = D.routes.find((x) => x.to === to); return r && { r, iraqi: from } }
-  if (IRAQ.includes(to) && !IRAQ.includes(from)) { const r = D.routes.find((x) => x.to === from); return r && { r, iraqi: to } }
+  if (IRAQ.includes(from) && !IRAQ.includes(to)) { const r = ROUTES.find((x) => x.to === to); return r && { r, iraqi: from } }
+  if (IRAQ.includes(to) && !IRAQ.includes(from)) { const r = ROUTES.find((x) => x.to === from); return r && { r, iraqi: to } }
   return null
 }
 /** Departures per carrier depend on the route only, so outbound and return pair up. */
@@ -124,7 +131,7 @@ export function searchFlights(q) {
   const info = routeOf(q.from, q.to)
   if (info) {
     const dest = info.r.to
-    info.r.carriers.forEach((cr) => {
+    info.r.carriers.filter((cr) => !cr[3] || cr[3].includes(info.iraqi)).forEach((cr) => {
       const n = depsPerCarrier(info.iraqi, dest, cr[0], cr[2])
       for (let k = 0; k < n; k += 1) {
         const legs = [scheduledLeg(q.from, q.to, q.d1, info, cr, k, n, q.cabin)]

@@ -7,7 +7,7 @@ import { addDaysIso, useI18n } from '../lib/i18n'
 import { openHelp } from '../lib/store'
 import { bookingSteps } from './Checkout'
 import { Counter, FlightBadge, HStars, PriceFrom, Score } from '../components/stays/ui'
-import { charterOf, cityBy, closestDep, dayLabels, depDates, hotelBy, minPP, perPerson, pkgBy, pkgTotal, place, plural, pq, qs, withQs } from '../components/stays/lib'
+import { charterOf, imgSrc, cityBy, closestDep, dayLabels, depDates, hotelBy, minPP, perPerson, pkgBy, pkgTotal, place, plural, pq, qs, withQs } from '../components/stays/lib'
 import NotFound from './NotFound'
 
 const cityOf = (code, L) => L(D.airports.find((a) => a.code === code)?.city) || code
@@ -88,7 +88,7 @@ export default function HolidaysDetail() {
               <h2 className="mb-4 text-xl font-bold">{t('pk.hotel')}</h2>
               {hotel ? (
                 <Link to={withQs(`/hotels/${hotel.id}`, { in: st.dep, out: ret(st.dep), rooms: 1, ad: st.ad, ch: st.ch })} className="card card-hover group grid grid-cols-[110px_1fr] overflow-hidden sm:grid-cols-[180px_1fr]">
-                  <div className="overflow-hidden bg-mist"><img src={media(hotel.img)} alt="" loading="lazy" className="size-full object-cover transition duration-700 group-hover:scale-105" /></div>
+                  <div className="overflow-hidden bg-mist"><img src={imgSrc(hotel.img)} alt="" loading="lazy" className="size-full object-cover transition duration-700 group-hover:scale-105" /></div>
                   <div className="grid gap-1 p-4">
                     <HStars n={hotel.stars} />
                     <h3 className="font-bold">{i.L(hotel.name)}</h3>

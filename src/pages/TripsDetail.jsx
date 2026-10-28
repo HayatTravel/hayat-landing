@@ -6,6 +6,7 @@ import { Ltr } from '../components/ui'
 import { inDays, useI18n } from '../lib/i18n'
 import { openHelp, openSignIn, session, trips, useStore } from '../lib/store'
 import D from '../data/catalog'
+import { docKinds } from '../components/docs/index'
 import {
   Badge, EntryCards, Kv, Modal, ModalHead, Next, Receipt, Ref, StatusBadges, clock, dayOf, hasReq, holdEnd, imgSrc, isPast, kind, lookups, normalise, payment, tripDate, typeOf, useToast, view,
 } from '../components/account/kit'
@@ -126,7 +127,7 @@ export default function TripsDetail() {
     return (
       <>
         <PageHead>
-          <Link to="/trips" className="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-sky"><Icon name="arrow" className="size-4 rtl:-scale-x-100" />{t('tp.title')}</Link>
+          <Link to="/trips" className="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-sky"><Icon name="arrow" className="size-4 ltr:-scale-x-100" />{t('tp.title')}</Link>
           <h1 className="text-3xl font-bold">{found ? t('tp.find.title') : t('tp.notfound')}</h1>
           <p className="mt-2 text-muted">{found ? t('tp.lock') : t('tp.notfoundD')}</p>
         </PageHead>
@@ -163,7 +164,7 @@ export default function TripsDetail() {
       <Receipt b={b} v={v} i={i} />
       <div className="contents print:hidden">
         <PageHead>
-          <Link to="/trips" className="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-sky"><Icon name="arrow" className="size-4 rtl:-scale-x-100" />{t('tp.title')}</Link>
+          <Link to="/trips" className="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-sky"><Icon name="arrow" className="size-4 ltr:-scale-x-100" />{t('tp.title')}</Link>
           <p className="text-sm text-muted">{t('tp.ref')}</p>
           <div className="mt-1 flex flex-wrap items-center gap-3"><h1 className="text-3xl font-bold"><Ref>{b.ref}</Ref></h1><StatusBadges b={b} t={t} /></div>
           {b.demo && <p className="mt-2 text-xs italic text-muted">{t('tp.sample')}</p>}
@@ -203,16 +204,17 @@ export default function TripsDetail() {
               </div>
             </section>
 
-            {v.docs.length > 0 && (
+            {docKinds(b, i).length > 0 && (
               <Section title={t('tp.docs')} note={t('tp.docsNote')}>
-                <ul className="grid gap-2">{v.docs.map((d, n) => {
-                  const ready = paid && n === 0
-                  return (
-                    <li key={d} className="flex flex-wrap items-center gap-3 rounded-md border border-line p-3 text-sm"><Icon name="documents" className="size-5 text-muted" /><span className="flex-1">{d}</span>
-                      {ready ? <><Badge tone="ok">{t('tp.doc.ready')}</Badge><button type="button" onClick={() => show(t('tp.mock'))} className="btn-ghost px-3 py-1.5 text-sm"><Icon name="download" className="size-4" />{t('tp.doc.dl')}</button></>
-                        : <Badge>{paid ? t('tp.doc.soon') : t('tp.doc.afterPay')}</Badge>}</li>
-                  )
-                })}</ul>
+                <ul className="grid gap-2">{docKinds(b, i).map((d) => (
+                  <li key={d.kind}>
+                    <Link to={`/trips/${b.ref}/doc/${d.kind}`} className="flex flex-wrap items-center gap-3 rounded-md border border-line p-3 text-sm transition hover:border-brand/40">
+                      <Icon name={d.icon} className="size-5 text-muted" /><span className="flex-1 font-medium">{d.label}</span>
+                      {d.ready ? <Badge tone="ok">{t('tp.doc.ready')}</Badge> : <Badge>{t('tp.doc.afterPay')}</Badge>}
+                      <Icon name="arrow" className="size-4 text-brand rtl:-scale-x-100" />
+                    </Link>
+                  </li>
+                ))}</ul>
               </Section>
             )}
 

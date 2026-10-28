@@ -4,18 +4,19 @@ import Icon from '../Icon'
 import Combobox from '../Combobox'
 import { addDaysIso, inDays, useI18n } from '../../lib/i18n'
 import { Counter, Field, Popover, control } from './ui'
-import { cityBy, guestsText, hotelCities, hq, int, monthOptions, pkgCities, pq, travText, withQs } from './lib'
+import { cityBy, guestsText, hotelCities, hq, int, monthOptions, pkgCities, pq, scopeOf, travText, withQs } from './lib'
 
 /** Hotel search: city · check-in · check-out · rooms and guests.
     noCity: the hotel page's "change dates" (city fixed). onSubmit(params) overrides the default navigation. */
-export function HotelForm({ initial = {}, noCity = false, label, onSubmit }) {
+export function HotelForm({ initial = {}, noCity = false, label, onSubmit, scope }) {
   const i = useI18n(); const { t } = i
   const go = useNavigate()
   const h0 = hq(initial)
-  const [f, setF] = useState(() => ({ ...h0, city: h0.city || hotelCities()[0].slug }))
+  const sc = scope ?? scopeOf(h0.city)
+  const [f, setF] = useState(() => ({ ...h0, city: h0.city || hotelCities(sc)[0].slug }))
   const [err, setErr] = useState('')
   const set = (patch) => setF((x) => ({ ...x, ...patch }))
-  const cities = hotelCities().map((c) => ({ value: c.slug, title: i.L(c.name), sub: i.L(c.country) }))
+  const cities = hotelCities(sc).map((c) => ({ value: c.slug, title: i.L(c.name), sub: i.L(c.country) }))
 
   const submit = (e) => {
     e.preventDefault()

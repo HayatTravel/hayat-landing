@@ -3,11 +3,22 @@ import { Link, NavLink, Outlet, ScrollRestoration, useLocation, useNavigate } fr
 import Icon from './Icon'
 import { Logo } from './ui'
 import Help from './Help'
-import { LANGS, useI18n } from '../lib/i18n'
+import { LANG_INFO, LANGS_FOR, useI18n } from '../lib/i18n'
+import { useMode } from '../lib/mode'
 import { session, useStore } from '../lib/store'
 import D from '../data/catalog'
 
-/* Products in the order customers look for them. Every item opens a real page. */
+/* Visiting Iraq: inbound tourism site. Every item opens a real page (src/routes/incoming.jsx). */
+export const NAV_IN = [
+  { to: '/visit', label: 'in.nav.home', icon: 'home', end: true },
+  { to: '/visit/places', label: 'in.nav.places', icon: 'map' },
+  { to: '/visit/tours', label: 'in.nav.tours', icon: 'luggage' },
+  { to: '/flights', label: 'in.nav.flights', icon: 'plane' },
+  { to: '/visit/visa', label: 'in.nav.visa', icon: 'passport' },
+  { to: '/visit/hotels', label: 'in.nav.hotels', icon: 'bed' },
+  { to: '/visit/plan', label: 'in.nav.plan', icon: 'info' },
+]
+/* Travelling from Iraq: products in the order customers look for them. */
 export const NAV = [
   { to: '/flights', label: 'nav.flights', icon: 'plane' },
   { to: '/hotels', label: 'nav.hotels', icon: 'bed' },
@@ -16,7 +27,39 @@ export const NAV = [
   { to: '/visa', label: 'nav.visa', icon: 'passport' },
   { to: '/esim', label: 'nav.esim', icon: 'sim' },
   { to: '/events', label: 'nav.events', icon: 'ticket' },
+  { to: '/destinations', label: 'nav.destinations', icon: 'globe' },
 ]
+export const useNav = () => (useMode().mode === 'in' ? NAV_IN : NAV)
+
+/** From Iraq / To Iraq — the audience switch. Switching goes to that audience's home. */
+export function ModeSwitch({ dark, big = false }) {
+  const { t, setCur } = useI18n()
+  const { mode, setMode } = useMode()
+  const go = useNavigate()
+  // visitors think in dollars, Iraqi travellers in dinars (the currency switch still works after)
+  const pick = (m) => { if (m !== mode) { setMode(m); setCur(m === 'in' ? 'USD' : 'IQD'); go(m === 'in' ? '/visit' : '/') } }
+  const opts = [['out', 'mode.out', 'plane'], ['in', 'mode.in', 'pin']]
+  if (big) {
+    return (
+      <div role="radiogroup" aria-label={t('mode.label')} className="inline-flex rounded-lg bg-white/10 p-1 backdrop-blur">
+        {opts.map(([m, k, ic]) => (
+          <button key={m} role="radio" aria-checked={mode === m} onClick={() => pick(m)}
+            className={`flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition sm:px-5 ${mode === m ? 'bg-white text-ink shadow' : 'text-white/80 hover:text-white'}`}>
+            <Icon name={ic} className="size-4" />{t(k)}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  return (
+    <div role="radiogroup" aria-label={t('mode.label')} className={`hidden rounded-md p-0.5 text-xs font-semibold lg:flex ${dark ? 'bg-white/10' : 'bg-mist'}`}>
+      {opts.map(([m, k]) => (
+        <button key={m} role="radio" aria-checked={mode === m} onClick={() => pick(m)}
+          className={`rounded px-2.5 py-1.5 ${mode === m ? 'bg-white text-ink shadow-sm' : dark ? 'text-white/70' : 'text-muted'}`}>{t(`${k}.short`)}</button>
+      ))}
+    </div>
+  )
+}
 
 /** Phone-code sign-in (IAM in production). Opens from anywhere via openSignIn(after). */
 function SignIn() {
@@ -82,6 +125,8 @@ function SignIn() {
 
 function LangMenu({ dark }) {
   const { lang, setLang, t } = useI18n()
+  const { mode } = useMode()
+  const list = LANGS_FOR[mode].map((k) => [k, LANG_INFO[k].name])
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   useEffect(() => {
@@ -93,11 +138,11 @@ function LangMenu({ dark }) {
     <div ref={ref} className="relative">
       <button type="button" onClick={() => setOpen(!open)} aria-haspopup="menu" aria-expanded={open} aria-label={t('lang.label')}
         className={`flex h-10 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium ${dark ? 'text-white/85 hover:bg-white/10' : 'text-ink/75 hover:bg-mist'}`}>
-        <Icon name="globe" className="size-4" /><span>{LANGS.find(([k]) => k === lang)[1]}</span>
+        <Icon name="globe" className="size-4" /><span>{LANG_INFO[lang].name}</span>
       </button>
       {open && (
         <div role="menu" className="absolute end-0 top-12 z-50 w-40 animate-fade rounded-lg border border-line bg-white p-1.5 text-ink shadow-xl">
-          {LANGS.map(([k, n]) => (
+          {list.map(([k, n]) => (
             <button key={k} role="menuitemradio" aria-checked={k === lang} lang={k} onClick={() => { setLang(k); setOpen(false) }}
               className={`block w-full rounded-md px-3 py-2 text-start text-sm hover:bg-mist ${k === lang ? 'font-bold text-brand' : ''}`}>{n}</button>
           ))}
@@ -122,6 +167,7 @@ function CurSwitch({ dark }) {
 function Navbar() {
   useStore()
   const { t } = useI18n()
+  const nav = useNav()
   const user = session.user()
   const go = useNavigate()
   const { pathname } = useLocation()
@@ -141,15 +187,16 @@ function Navbar() {
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition duration-300 print:hidden ${glass ? 'bg-white/90 shadow-[0_1px_0_var(--color-line)] backdrop-blur' : 'bg-gradient-to-b from-ink/80 via-ink/40 to-transparent'}`}>
       <div className="container-x flex h-18 items-center justify-between gap-4">
-        <Logo light={dark} className="h-10" />
+        <Logo light={dark} className="h-10" to={useMode().mode === 'in' ? '/visit' : '/'} />
         <nav className="hidden items-center gap-0.5 xl:flex" aria-label={t('nav.label')}>
-          {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} className={({ isActive }) => `flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition ${isActive ? (glass ? 'bg-ink text-white' : 'bg-white text-ink') : glass ? 'text-ink/70 hover:bg-mist hover:text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>
+          {nav.map((n) => (
+            <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition ${isActive ? (glass ? 'bg-ink text-white' : 'bg-white text-ink') : glass ? 'text-ink/70 hover:bg-mist hover:text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>
               <Icon name={n.icon} className="size-4" />{t(n.label)}
             </NavLink>
           ))}
         </nav>
         <div className="flex items-center gap-1.5">
+          <ModeSwitch dark={dark} />
           <LangMenu dark={dark} />
           <CurSwitch dark={dark} />
           <Link to="/trips" className={`hidden h-10 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium md:flex ${dark ? 'text-white/85 hover:bg-white/10' : 'text-ink/75 hover:bg-mist'}`}><Icon name="ticket" className="size-4" />{t('nav.trips')}</Link>
@@ -163,7 +210,8 @@ function Navbar() {
       </div>
       {open && (
         <nav className="container-x grid animate-fade gap-1 bg-white pb-4 xl:hidden">
-          {NAV.map((n) => (
+          <div className="mb-2 rounded-lg bg-ink p-2"><ModeSwitch big /></div>
+          {nav.map((n) => (
             <NavLink key={n.to} to={n.to} className="flex items-center gap-3 rounded-md px-4 py-3 font-medium hover:bg-mist"><Icon name={n.icon} className="size-5 text-brand" />{t(n.label)}</NavLink>
           ))}
           <hr className="my-2 border-line" />
@@ -178,8 +226,9 @@ function Navbar() {
 
 function Footer() {
   const { t, L } = useI18n()
+  const { mode } = useMode()
   const cols = [
-    [t('ft.book'), NAV.map((n) => [t(n.label), n.to]).concat([[t('nav.transfers'), '/transfers']])],
+    mode === 'in' ? [t('in.ft.title'), NAV_IN.map((n) => [t(n.label), n.to])] : [t('ft.book'), NAV.map((n) => [t(n.label), n.to]).concat([[t('nav.transfers'), '/transfers']])],
     [t('foot.help'), [[t('nav.trips'), '/trips'], [t('foot.faq'), '/help'], [t('foot.terms'), '/help#terms'], [t('foot.privacy'), '/help#privacy']]],
   ]
   return (

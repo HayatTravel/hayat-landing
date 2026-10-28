@@ -6,7 +6,7 @@ import { PageHead } from '../Layout'
 import { useI18n } from '../../lib/i18n'
 import { openHelp } from '../../lib/store'
 import { bookingSteps } from '../../pages/Checkout'
-import { KIND_TONE } from './data'
+import { KIND_TONE, PURPOSE_ICON, pic } from './data'
 
 /** Forward arrow that follows the reading direction. */
 export const Arrow = ({ className = 'size-4' }) => <Icon name="arrow" className={`${className} rtl:-scale-x-100`} />
@@ -142,4 +142,30 @@ export function Field({ label, icon, children, className = '' }) {
 export const control = 'w-full appearance-none bg-transparent pt-0.5 text-[15px] font-semibold text-ink outline-none'
 export function Submit({ children }) {
   return <button className="btn-primary min-h-14 w-full px-8 text-base md:w-auto"><Icon name="search" className="size-5" />{children}</button>
+}
+
+/** Photo, or a quiet placeholder with the place name when we have no verified photo. */
+export function Pic({ src, alt = '', label, className = '' }) {
+  const s = pic(src)
+  if (s) return <img src={s} alt={alt} loading="lazy" className={`object-cover ${className}`} />
+  return (
+    <div role={alt ? 'img' : undefined} aria-label={alt || undefined} className={`grid place-items-center bg-gradient-to-br from-mist to-[#e6ecf7] text-muted ${className}`}>
+      <span className="flex flex-col items-center gap-2 px-4 text-center text-sm font-semibold text-ink/55"><Icon name="globe" className="size-7 text-brand/50" />{label}</span>
+    </div>
+  )
+}
+
+/** Purpose of travel as a row of choices. */
+export function PurposeChips({ list, value, onChange, label }) {
+  const { t } = useI18n()
+  return (
+    <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-2">
+      {list.map((p) => (
+        <button key={p} type="button" role="radio" aria-checked={p === value} onClick={() => onChange(p)}
+          className={`inline-flex items-center gap-1.5 rounded-md border px-3.5 py-2 text-sm font-medium transition ${p === value ? 'border-ink bg-ink text-white' : 'border-line bg-white text-ink/75 hover:border-ink/40'}`}>
+          <Icon name={PURPOSE_ICON[p]} className="size-4" />{t(`vi.p.${p}`)}
+        </button>
+      ))}
+    </div>
+  )
 }

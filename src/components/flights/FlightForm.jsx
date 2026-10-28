@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Icon from '../Icon'
 import Combobox from '../Combobox'
-import D from '../../data/catalog'
 import { addDaysIso, useI18n } from '../../lib/i18n'
 import { store } from '../../lib/store'
-import { CABINS, IRAQ, norm, parse, qs, searchParams, tomorrow, travText } from './engine'
+import { AIRPORTS, CABINS, IRAQ, airport, norm, parse, qs, searchParams, tomorrow, travText } from './engine'
+import { INBOUND_FROM } from './world'
 
 export const control = 'w-full min-w-0 appearance-none bg-transparent pt-0.5 text-[14px] sm:text-[15px] font-semibold text-ink outline-none'
 
@@ -59,24 +59,29 @@ export function Popover({ label, icon, value, children }) {
   )
 }
 
-export const airportOptions = (L) => [...IRAQ, ...D.airports.map((a) => a.code).filter((c) => !IRAQ.includes(c))]
-  .map((c) => D.airports.find((a) => a.code === c)).map((a) => ({ value: a.code, code: a.code, title: L(a.city), sub: L(a.country) }))
+const option = (L) => (c) => { const a = airport(c); return { value: c, code: c, title: L(a.city), sub: L(a.country) } }
+export const airportOptions = (L) => [...IRAQ, ...AIRPORTS.map((a) => a.code).filter((c) => !IRAQ.includes(c))].map(option(L))
 
-/** Last search, if its dates are still ahead. */
-function defaults(initial = {}) {
-  const last = store.get('fl-last', null)
+/** Last search, if its dates are still ahead. Inbound (visitors) keeps its own memory and defaults (Istanbul → Baghdad). */
+function defaults(initial = {}, inbound = false) {
+  const last = store.get(inbound ? 'fl-in-last' : 'fl-last', null)
   const base = initial.from || initial.to ? initial : last && last.d1 && parse(last.d1) >= parse(tomorrow()) ? last : {}
-  return norm({ ...base, to: initial.to || base.to })
+  const q = norm({ ...(inbound ? { from: 'IST', to: 'BGW' } : {}), ...base, to: initial.to || base.to || (inbound ? 'BGW' : undefined) })
+  if (inbound) { if (!INBOUND_FROM.includes(q.from)) q.from = 'IST'; if (!IRAQ.includes(q.to)) q.to = 'BGW' }
+  return q
 }
 
-/** Flights search. Navigates to /flights/results; `onDone` runs after submit (close an inline editor). */
-export default function FlightForm({ initial, onDone }) {
+/** Flights search. Navigates to /flights/results; `onDone` runs after submit (close an inline editor).
+    `inbound`: "Flights to Iraq" (from abroad to an Iraqi airport). `bare`: no own card frame (inside SearchTabs). */
+export default function FlightForm({ initial, onDone, inbound = false, bare = false }) {
   const i = useI18n(); const { t } = i
   const go = useNavigate()
-  const [f, setF] = useState(() => defaults(initial))
+  const [f, setF] = useState(() => defaults(initial, inbound))
   const [err, setErr] = useState('')
   const set = (patch) => setF((x) => ({ ...x, ...patch }))
-  const opts = airportOptions(i.L)
+  const all = airportOptions(i.L)
+  const fromOpts = inbound ? INBOUND_FROM.filter((c) => airport(c)).map(option(i.L)) : all
+  const toOpts = inbound ? IRAQ.map(option(i.L)) : all
   const rt = f.trip === 'rt'
 
   const submit = (e) => {
@@ -84,13 +89,13 @@ export default function FlightForm({ initial, onDone }) {
     if (f.from === f.to) return setErr(t('fl.same'))
     setErr('')
     const next = norm({ ...f, inf: Math.min(f.inf, f.ad) })
-    store.set('fl-last', next)
+    store.set(inbound ? 'fl-in-last' : 'fl-last', next)
     onDone?.()
     go(`/flights/results?${qs(searchParams(next))}`)
   }
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-3 rounded-lg border border-line bg-white p-4 text-ink sm:p-5">
+    <form onSubmit={submit} noValidate className={`space-y-3 text-ink ${bare ? '' : 'rounded-lg border border-line bg-white p-4 sm:p-5'}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div role="group" aria-label={t('fl.tab')} className="inline-flex rounded-md bg-mist p-1">
           {['rt', 'ow'].map((v) => (
@@ -105,12 +110,12 @@ export default function FlightForm({ initial, onDone }) {
 
       <div className="grid gap-3 lg:grid-cols-[2fr_1.3fr_1fr_auto]">
         <div className="relative grid gap-3 sm:grid-cols-2">
-          <Combobox label={t('fl.from')} icon="plane" value={f.from} onChange={(v) => set({ from: v })} options={opts.filter((o) => o.value !== f.to)} placeholder={t('fl.cityPh')} />
-          <button type="button" onClick={() => set({ from: f.to, to: f.from })} aria-label={t('fl.swap')}
+          <Combobox label={inbound ? t('fl.in.from') : t('fl.from')} icon="plane" value={f.from} onChange={(v) => set({ from: v })} options={fromOpts.filter((o) => o.value !== f.to)} placeholder={t('fl.cityPh')} />
+          {!inbound && <button type="button" onClick={() => set({ from: f.to, to: f.from })} aria-label={t('fl.swap')}
             className="absolute top-1/2 left-1/2 z-10 hidden size-9 -translate-1/2 place-items-center rounded-md border border-line bg-white text-brand transition hover:rotate-180 sm:grid">
             <Icon name="swap" className="size-4" />
-          </button>
-          <Combobox label={t('fl.to')} icon="pin" value={f.to} onChange={(v) => set({ to: v })} options={opts.filter((o) => o.value !== f.from)} placeholder={t('fl.cityPh')} />
+          </button>}
+          <Combobox label={inbound ? t('fl.in.to') : t('fl.to')} icon="pin" value={f.to} onChange={(v) => set({ to: v })} options={toOpts.filter((o) => o.value !== f.from)} placeholder={t('fl.cityPh')} />
         </div>
         <div className={`grid gap-3 ${rt ? 'grid-cols-2' : ''}`}>
           <Field label={t('fl.date')} icon="calendar">

@@ -6,6 +6,7 @@ import { useI18n } from '../lib/i18n'
 import { trips, useStore } from '../lib/store'
 import { bookingSteps } from './Checkout'
 import D from '../data/catalog'
+import { docKinds } from '../components/docs/index'
 
 const qr = (data) => `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data=${encodeURIComponent(data)}`
 
@@ -33,7 +34,7 @@ export function Receipt({ b }) {
 
 export default function Done() {
   useStore()
-  const { t, money } = useI18n()
+  const i18n = useI18n(); const { t, money } = i18n
   const { ref } = useParams()
   const b = trips.find(ref)
   if (!b) return <><PageHead><h1 className="text-3xl font-bold">{t('dn.notfound')}</h1></PageHead><div className="container-x py-16 text-center"><Link to="/trips" className="btn-primary">{t('nav.trips')}</Link></div></>
@@ -59,11 +60,13 @@ export default function Done() {
               <ol className="mt-4 space-y-4">{tl.map(([label, s]) => (
                 <li key={label} className="flex items-center gap-3 text-sm"><span className={`size-3 rounded-full ${s === 'done' ? 'bg-emerald-500' : s === 'now' ? 'bg-brand ring-4 ring-brand/20' : 'bg-line'}`} />{label}</li>))}</ol></div>
           </div>
-          {b.docs?.length > 0 && (
+          {docKinds(b, i18n).length > 0 && (
             <div className="card mt-6 p-6"><h2 className="font-bold">{t('dn.docs')}</h2>
-              <ul className="mt-4 grid gap-2">{b.docs.map((d, k) => (
-                <li key={d} className="flex items-center gap-3 rounded-md border border-line p-3 text-sm"><Icon name="documents" className="size-5 text-muted" /><span className="flex-1">{d}</span>
-                  <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${paid && k === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-mist text-muted'}`}>{paid && k === 0 ? t('dn.ready') : t('dn.soon')}</span></li>))}</ul></div>
+              <ul className="mt-4 grid gap-2">{docKinds(b, i18n).map((d) => (
+                <li key={d.kind}><Link to={`/trips/${b.ref}/doc/${d.kind}`} className="flex items-center gap-3 rounded-md border border-line p-3 text-sm transition hover:border-brand/40">
+                  <Icon name={d.icon} className="size-5 text-muted" /><span className="flex-1 font-medium">{d.label}</span>
+                  <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${d.ready ? 'bg-emerald-50 text-emerald-700' : 'bg-mist text-muted'}`}>{d.ready ? t('dn.ready') : t('dn.soon')}</span>
+                  <Icon name="arrow" className="size-4 text-brand rtl:-scale-x-100" /></Link></li>))}</ul></div>
           )}
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link to={`/trips/${b.ref}`} className="btn-primary"><Icon name="ticket" className="size-4" />{t('dn.trips')}</Link>

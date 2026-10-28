@@ -2,15 +2,19 @@ import { useRef, useState } from 'react'
 import Icon from './Icon'
 import { useI18n } from '../lib/i18n'
 import { store } from '../lib/store'
+import { useMode } from '../lib/mode'
 
 /* Hosts every product's search form. Each area exports tabs from src/search/<area>.jsx:
    export default [{ id, icon, label, order, Form }] — Form({ initial }) renders the form and navigates on submit. */
-export const TABS = Object.values(import.meta.glob('../search/*.jsx', { eager: true }))
+/* A tab may set modes: ['out'] (default), ['in'] or ['out', 'in'] — which audience sees it. */
+export const ALL_TABS = Object.values(import.meta.glob('../search/*.jsx', { eager: true }))
   .flatMap((m) => m.default)
   .sort((a, b) => a.order - b.order)
 
 export default function SearchTabs({ initial, lock = false, query = {} }) {
   const { t, rtl } = useI18n()
+  const { mode } = useMode()
+  const TABS = ALL_TABS.filter((x) => (x.modes || ['out']).includes(mode) || x.id === initial)
   const [tab, setTab] = useState(() => (TABS.some((x) => x.id === initial) ? initial : store.get('tab', TABS[0]?.id)))
   const refs = useRef([])
   const active = TABS.find((x) => x.id === tab) || TABS[0]

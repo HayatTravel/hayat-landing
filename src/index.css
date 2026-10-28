@@ -224,3 +224,6 @@ html:lang(ckb) body { line-height: 1.8; }
 .btn-primary::after { animation: none !important; display: none; }
 /* checkout's sticky pay bar on phones: lift the help button above it */
 @media (max-width: 1023px) { body:has(.co-bar) .help-fab { bottom: 88px; } }
+/* one visible focus ring everywhere (keyboard users), without changing mouse clicks */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 4px; }
+.page-head :where(a, button):focus-visible { outline-color: #fff; }

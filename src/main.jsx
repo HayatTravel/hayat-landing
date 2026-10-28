@@ -4,6 +4,7 @@ import { createBrowserRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import './index.css'
 import { I18nProvider } from './lib/i18n'
+import { ModeProvider } from './lib/mode'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Checkout from './pages/Checkout'
@@ -30,7 +31,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <I18nProvider>
-      <RouterProvider router={router} />
+      <ModeProvider>
+        <RouterProvider router={router} />
+      </ModeProvider>
     </I18nProvider>
   </StrictMode>,
 )

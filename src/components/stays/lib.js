@@ -1,28 +1,37 @@
 /* Stays (hotels + holidays): pure helpers shared by pages, search forms, home section and orders.
    Ported from the tathkara v2 mockup (stays.js). `i` is the useI18n() value. */
-import D from '../../data/catalog'
+import D, { media } from '../../data/catalog'
+import { IN_CITIES, IN_HOTELS } from '../../data/incoming'
 import { addDaysIso, inDays, nightsBetween } from '../../lib/i18n'
 
 /** Counted phrase: plural(i, 'st.nights', 5) → "5 ليالٍ" / "5 nights" / "5 شەو". */
 export function plural(i, base, n) {
-  const suf = i.lang === 'ar' ? (n === 1 ? '.1' : n === 2 ? '.2' : n > 10 ? '.m' : '') : i.lang === 'en' && n === 1 ? '.1' : ''
+  // Arabic: one / two / 3–10 / 11+. Kurdish and Persian: one form. Other languages: singular for 1.
+  const suf = i.lang === 'ar' ? (n === 1 ? '.1' : n === 2 ? '.2' : n > 10 ? '.m' : '') : i.lang !== 'ckb' && i.lang !== 'fa' && n === 1 ? '.1' : ''
   const k = `${base}${suf}`
   return i.t(i.t(k) === k ? base : k, { n: i.num(n) })
 }
 
 export const int = (v, d, lo, hi) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d }
 export const isoOk = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && s >= inDays(0)
-export const cityBy = (slug) => D.cities.find((c) => c.slug === slug)
-export const hotelBy = (id) => D.hotels.find((h) => h.id === id)
+/* Hotels abroad (catalog) and hotels in Iraq (data/incoming) share one engine. */
+export const ALL_CITIES = [...D.cities, ...IN_CITIES]
+export const ALL_HOTELS = [...D.hotels, ...IN_HOTELS]
+export const cityBy = (slug) => ALL_CITIES.find((c) => c.slug === slug)
+export const hotelBy = (id) => ALL_HOTELS.find((h) => h.id === id)
+/** Image source: a media name (public/media) or a full URL. */
+export const imgSrc = (x) => (!x ? '' : /^https?:/.test(x) ? x : media(x))
 export const pkgBy = (id) => D.packages.find((p) => p.id === id)
-export const hotelCities = () => D.cities.filter((c) => D.hotels.some((h) => h.city === c.slug))
+/** Cities with hotels: abroad (default) or in Iraq (scope 'iq'). */
+export const hotelCities = (scope) => (scope === 'iq' ? IN_CITIES : D.cities).filter((c) => ALL_HOTELS.some((h) => h.city === c.slug))
+export const scopeOf = (slug) => (cityBy(slug)?.iq ? 'iq' : '')
 export const pkgCities = () => D.cities.filter((c) => D.packages.some((p) => p.city === c.slug))
 export const cheapest = (h) => h.rooms.reduce((a, r) => (r.base < a.base ? r : a), h.rooms[0])
 export const qs = (o) => new URLSearchParams(Object.entries(o).filter(([, v]) => v != null && v !== '')).toString()
 export const withQs = (path, o) => { const s = qs(o); return s ? `${path}?${s}` : path }
 
 /** "City, Country" with the right comma; the country is dropped when it repeats the city (Maldives). */
-export const place = (i, c) => { if (!c) return ''; const a = i.L(c.name); const b = i.L(c.country); return a === b ? a : `${a}${i.lang === 'en' ? ', ' : '، '}${b}` }
+export const place = (i, c) => { if (!c) return ''; const a = i.L(c.name); const b = i.L(c.country); return a === b ? a : `${a}${i.rtl ? '، ' : ', '}${b}` }
 
 export const FACT_IC = { wifi: 'wifi', breakfast: 'meal', pool: 'sparkle', family: 'users', beach: 'globe', metro: 'truck', allinc: 'meal' }
 export const BOARD_IC = { RO: 'bed', BB: 'meal', HB: 'meal', AI: 'meal' }
@@ -37,7 +46,7 @@ export function hq(q = {}) {
   let b = isoOk(q.out) && q.out > a ? q.out : addDaysIso(a, 5)
   if (nightsBetween(a, b) > 30) b = addDaysIso(a, 30)
   const rooms = int(q.rooms, 1, 1, 5)
-  const city = cityBy(q.city) && D.hotels.some((h) => h.city === q.city) ? q.city : ''
+  const city = cityBy(q.city) && ALL_HOTELS.some((h) => h.city === q.city) ? q.city : ''
   return { city, in: a, out: b, rooms, ad: Math.max(rooms, int(q.ad, 2, 1, 10)), ch: int(q.ch, 0, 0, 6), n: nightsBetween(a, b) }
 }
 export const baseQ = (h) => ({ city: h.city, in: h.in, out: h.out, rooms: h.rooms, ad: h.ad, ch: h.ch })

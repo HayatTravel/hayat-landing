@@ -1,8 +1,10 @@
 /* Hayat B2C mock catalogue (ported from the tathkara v2 mockup). Every text is { ar, en, ku } (ku = Kurdish Sorani).
    Prices are in USD and illustrative; the page converts to IQD. In production all of this comes from
    the Booking Portal customer API (/api/v1/customer/*) — never from this file. */
+import INTL from './catalog.intl.js'
+
 const D = (() => {
-  const N = (ar, en, ku) => ({ ar, en, ku });
+  const N = (ar, en, ku) => ({ ar, en, ku, ...INTL[en] }); // fa · tr · fr · de from catalog.intl.js
   return {
     company: {
       name: N('الحياة للسفر والسياحة', 'Hayat Travel & Tourism', 'حەیات بۆ گەشت و گوزار'),

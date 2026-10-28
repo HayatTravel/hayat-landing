@@ -3,12 +3,11 @@ import { Link, useSearchParams } from 'react-router'
 import { PageHead } from '../components/Layout'
 import Icon from '../components/Icon'
 import { Ltr, Stepper } from '../components/ui'
-import D, { media } from '../data/catalog'
 import { useI18n } from '../lib/i18n'
 import { bookingSteps } from './Checkout'
 import { HotelForm } from '../components/stays/Forms'
 import { BoardLine, CancelLine, Facts, HStars, Score } from '../components/stays/ui'
-import { BOARD_ORDER, baseQ, cheapest, cityBy, guestsText, hotelCities, hq, plural, stayText, withQs } from '../components/stays/lib'
+import { ALL_HOTELS, BOARD_ORDER, baseQ, imgSrc, cheapest, cityBy, guestsText, hotelCities, hq, plural, stayText, withQs } from '../components/stays/lib'
 
 const SORTS = ['rec', 'price', 'rating']
 const BY = {
@@ -24,7 +23,7 @@ function ResultCard({ hotel, h }) {
   const shown = hotel.facts.filter((f) => f !== 'breakfast' && f !== 'allinc').slice(0, 3)
   return (
     <Link to={withQs(`/hotels/${hotel.id}`, baseQ(h))} className="card card-hover group grid overflow-hidden md:grid-cols-[230px_1fr_auto]">
-      <div className="aspect-[16/9] overflow-hidden bg-mist md:aspect-auto md:min-h-48"><img src={media(hotel.img)} alt="" loading="lazy" className="size-full object-cover transition duration-700 group-hover:scale-105" /></div>
+      <div className="aspect-[16/9] overflow-hidden bg-mist md:aspect-auto md:min-h-48"><img src={imgSrc(hotel.img)} alt="" loading="lazy" className="size-full object-cover transition duration-700 group-hover:scale-105" /></div>
       <div className="grid content-start gap-3 p-5">
         <div className="flex items-start justify-between gap-3">
           <div><h3 className="text-lg font-bold">{i.L(hotel.name)}</h3>
@@ -53,7 +52,7 @@ export default function HotelsResults() {
   const [edit, setEdit] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
 
-  const all = D.hotels.filter((x) => x.city === h.city)
+  const all = ALL_HOTELS.filter((x) => x.city === h.city)
   const boards = BOARD_ORDER.filter((b) => all.some((x) => x.rooms.some((r) => r.board === b)))
   const facs = ['pool', 'beach', 'family', 'metro'].filter((f) => all.some((x) => x.facts.includes(f)))
   const stars = [...new Set(all.map((x) => x.stars))].sort((a, b) => b - a)

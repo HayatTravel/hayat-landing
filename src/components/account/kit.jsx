@@ -56,7 +56,7 @@ export function seedIfNeeded(user) {
 function newDemoRef() { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = 'HY'; for (let k = 0; k < 6; k += 1) s += a[Math.floor(Math.random() * a.length)]; return s }
 /** Keep the sample hotel's hold alive so the pay flow can always be shown. */
 export function normalise(b) {
-  if (b.demo && b.status === 'pending' && holdEnd(b) < Date.now()) { const nb = { ...b, created: Date.now() - 8 * 60000, payBy: null }; trips.save(nb); return nb }
+  if (b.demo && b.status === 'pending' && holdEnd(b) < Date.now()) { const nb = { ...b, created: Date.now() - 8 * 60000, payBy: null }; setTimeout(() => trips.save(nb), 0); return nb } // saved after render, never during it
   return b
 }
 

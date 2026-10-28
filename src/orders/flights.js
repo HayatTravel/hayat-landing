@@ -2,11 +2,14 @@
    q: id (carrier-n or charter id), fare, from, to, d1, d2, trip, ad, ch, inf, cabin. */
 import D from '../data/catalog'
 import {
-  ESIM_CC, IRAQ, airlineName, airport, clockText, fareName, imgFor, norm, paxText, place, qs, routeTitle, searchFlights, searchParams,
+  ESIM_CC, IRAQ, airlineName, isInbound, airport, clockText, fareName, imgFor, norm, paxText, place, qs, routeTitle, searchFlights, searchParams,
 } from '../components/flights/engine'
 
 const SEAT_FEE = 6
 const BAG_FEE = 30
+const MEET_FEE = 35
+const IQ_SIM = 10
+const VISA_HELP = 25
 
 function flight(raw, i) {
   const { t } = i
@@ -25,7 +28,16 @@ function flight(raw, i) {
   const extras = [{ id: 'seat', label: t('fl.x.seat'), sub: f.seat ? t('fl.x.seatFree') : t('fl.x.seatD'), usd: f.seat ? 0 : SEAT_FEE * segs, per: 'traveller', count: seated, checked: !!f.seat }]
   if (!f.bag) extras.push({ id: 'bag', label: t('fl.x.bag'), sub: rt ? t('fl.x.bagRt') : t('fl.x.bagD'), usd: BAG_FEE * x.legs.length, per: 'traveller', count: seated })
   const dest = IRAQ.includes(q.to) ? null : q.to
-  extras.push({ id: 'transfer', label: t('fl.x.tr', { city: place(q.to, i.L) }), sub: t('fl.x.trD'), usd: D.transfers.sic.price, per: 'traveller', count: seated })
+  const city = place(q.to, i.L)
+  if (isInbound(q)) {
+    // Visitors to Iraq: arrival help, local SIM, visa assistance, transfer to the hotel.
+    extras.push(
+      { id: 'meet', label: t('fl.in.x.meet'), sub: t('fl.in.x.meetD'), usd: MEET_FEE, per: 'booking' },
+      { id: 'iq-sim', label: t('fl.in.x.sim'), sub: t('fl.in.x.simD'), usd: IQ_SIM, per: 'traveller', count: seated },
+      { id: 'iq-visa', label: t('fl.in.x.visa'), sub: t('fl.in.x.visaD'), usd: VISA_HELP, per: 'traveller', count: q.ad + q.ch + q.inf },
+      { id: 'transfer', label: t('fl.in.x.tr', { city }), sub: t('fl.in.x.trD'), usd: D.transfers.sic.price, per: 'traveller', count: seated },
+    )
+  } else extras.push({ id: 'transfer', label: t('fl.x.tr', { city }), sub: t('fl.x.trD'), usd: D.transfers.sic.price, per: 'traveller', count: seated })
   const es = dest && D.esim.find((e) => e.cc === ESIM_CC[airport(dest)?.country.en])
   if (es) {
     const plan = es.plans.filter((p) => p[0] === 7).sort((a, b) => a[2] - b[2])[0] || es.plans[0]
@@ -35,7 +47,7 @@ function flight(raw, i) {
   return {
     title: routeTitle(q.from, q.to, i),
     sub: `${airlineName(x.carrier, i.L)} · ${fareName(f, i)} · ${t(`fl.cab.${q.cabin}`)}`,
-    img: imgFor(dest || q.from),
+    img: dest ? imgFor(dest) : 'hero-wing',
     facts: [
       [t('fl.out'), legFact(x.legs[0])],
       ...(rt ? [[t('fl.ret'), legFact(x.legs[1])]] : []),
