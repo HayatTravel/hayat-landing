@@ -1,0 +1,22 @@
+/* tr · guides — international strings (fallback: English). Source keys: guides.strings.js */
+export default {
+  "gd.title": "Seyahat rehberleri",
+  "gd.sub": "Irak'tan seyahat ve Irak'ı ziyaret için pratik öneriler.",
+  "gd.out": "Irak'tan seyahat",
+  "gd.in": "Irak'ı ziyaret",
+  "gd.tabs": "Rehber türü",
+  "gd.m.1": "{n} dk okuma",
+  "gd.m.2": "{n} dk okuma",
+  "gd.m.n": "{n} dk okuma",
+  "gd.m.m": "{n} dk okuma",
+  "gd.updated": "Son güncelleme: {d}",
+  "gd.good": "Bilmeniz gerekenler",
+  "gd.related": "Planlayın ve ayırtın",
+  "gd.contents": "Bu rehberde",
+  "gd.more": "Diğer rehberler",
+  "gd.all": "Tüm rehberler",
+  "gd.note": "Yalnızca bilgi amaçlıdır; kurallar değişir ve ayrıntıları seyahatinizden önce teyit ederiz.",
+  "gd.photo": "Fotoğraf: {by} · {lic}",
+  "gd.notFound": "Bu rehberi bulamadık",
+  "gd.home.s": "Seyahatinize hazırlanmanız için kısa yazılar.",
+}

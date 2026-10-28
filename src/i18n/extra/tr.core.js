@@ -58,7 +58,7 @@ export default {
   "sign.go": "Onayla",
   "sign.guest": "Misafir",
   "sign.ok": "Hoş geldiniz, {name}",
-  "foot.about": "2010'dan beri lisanslı bir Irak seyahat acentesi. Rezervasyonunuzu yapar, evinize dönene kadar seyahatinizi takip ederiz.",
+  "foot.about": "2002'den beri lisanslı bir Irak seyahat acentesi. Rezervasyonunuzu yapar, evinize dönene kadar seyahatinizi takip ederiz.",
   "foot.offices": "Ofislerimiz",
   "foot.help": "Yardım",
   "foot.faq": "Sorular",

@@ -27,6 +27,7 @@ export default {
   "in.nav.plan": "Reise planen",
   "in.ft.title": "Den Irak besuchen",
   "co.sample": "Design-Entwurf: Die Felder sind mit Beispieldaten ausgefüllt, damit Sie eine Buchung schnell testen können. Sie können sie ändern.",
+  "ft.status": "Flugstatus",
   "ft.company": "Unternehmen",
   "ft.about": "Über uns",
   "ft.vision": "Vision und Mission",

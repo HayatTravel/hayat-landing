@@ -1,7 +1,10 @@
 /* The company side of Hayat: who we are, offices, business lines, careers, announcements, legal summaries.
    Every text is { ar, en, ku } (fa/tr/fr/de may be added beside them). Only facts Hayat has confirmed are stated as fact;
    anything else carries tbc: true and shows the "To be confirmed by Hayat" chip. Careers and news are samples. */
-const N = (ar, en, ku) => ({ ar, en, ku })
+import INTL from './company.intl.js'
+
+/* fa · tr · fr · de come from company.intl.js (keyed by the English text). */
+const N = (ar, en, ku) => ({ ar, en, ku, ...INTL[en] })
 
 export const CONTACT = { email: 'info@hayat.iq', domain: 'hayat.iq', portal: 'https://booking.hayat.iq' }
 
@@ -43,7 +46,7 @@ export const LINES = [
 
 /* ---------- milestones: no invented dates ---------- */
 export const MILESTONES = [
-  { when: null, title: N('تأسيس الحياة للسفر والسياحة في بغداد', 'Hayat Travel & Tourism founded in Baghdad', 'دامەزراندنی حەیات بۆ گەشت و گوزار لە بەغدا') },
+  { when: '2002', title: N('تأسيس الحياة للسفر والسياحة في بغداد', 'Hayat Travel & Tourism founded in Baghdad', 'دامەزراندنی حەیات بۆ گەشت و گوزار لە بەغدا') },
   { when: null, title: N('افتتاح مكاتب أربيل والبصرة', 'Offices open in Erbil and Basra', 'کردنەوەی ئۆفیسەکانی هەولێر و بەسرە') },
   { when: null, title: N('أول برنامج طيران عارض (تشارتر)', 'First charter programme', 'یەکەم بەرنامەی چارتەر') },
   { when: null, title: N('إطلاق بوابة الحجز للوكالات', 'Booking portal for agencies launched', 'دەستپێکردنی دەروازەی حیجز بۆ ئاژانسەکان') },
@@ -79,7 +82,7 @@ export const OFFICES = [
 export const mapsUrl = (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`
 
 /* ---------- careers (sample roles) ---------- */
-export const DEPARTMENTS = ['retail', 'visa', 'inbound', 'corporate', 'ops', 'tech']
+export const DEPARTMENTS = ['retail', 'visa', 'inbound', 'corporate', 'finance', 'ops', 'tech']
 export const ROLES = [
   { id: 'travel-consultant', dept: 'retail', city: 'baghdad', type: 'full',
     title: N('مستشار سفر', 'Travel consultant', 'ڕاوێژکاری گەشت'),
@@ -106,6 +109,16 @@ export const ROLES = [
     summary: N('تطور الموقع وبوابة الوكالات بثلاث لغات، من اليمين إلى اليسار ومن اليسار إلى اليمين.', 'Build the website and the agency portal in three languages, right-to-left and left-to-right.', 'ماڵپەڕ و دەروازەی ئاژانسەکان بە سێ زمان دروست دەکەیت، لە ڕاستەوە بۆ چەپ و لە چەپەوە بۆ ڕاست.'),
     duties: [N('بناء صفحات سريعة وسهلة الاستخدام', 'Build fast, accessible pages', 'دروستکردنی پەڕەی خێرا و ئاسان'), N('العمل مع فريق المنتج والتصميم', 'Work with product and design', 'کارکردن لەگەڵ تیمی بەرهەم و دیزاین')],
     needs: [N('React وCSS حديثة', 'React and modern CSS', 'React و CSSی نوێ'), N('اهتمام بالعربية والكوردية في الواجهات', 'Care for Arabic and Kurdish interfaces', 'گرنگیدان بە ڕووکاری عەرەبی و کوردی')] },
+  { id: 'accountant', dept: 'finance', city: 'baghdad', type: 'full',
+    title: N('محاسب', 'Accountant', 'ژمێریار'),
+    summary: N('تتابع المدفوعات والفوترة ومطابقة حسابات شركات الطيران والفنادق والوكالات.', 'Follow payments and invoicing, and reconcile accounts with airlines, hotels and agencies.', 'بەدواداچوون بۆ پارەدان و پسوولە دەکەیت، و هەژمارەکان لەگەڵ کۆمپانیاکانی فڕین، هوتێل و ئاژانسەکان یەکسان دەکەیتەوە.'),
+    duties: [N('تسجيل المدفوعات اليومية', 'Record daily payments', 'تۆمارکردنی پارەدانی ڕۆژانە'), N('إعداد فواتير الشركات الشهرية', 'Prepare monthly company invoices', 'ئامادەکردنی پسوولەی مانگانەی کۆمپانیاکان'), N('مطابقة الحسابات', 'Reconcile accounts', 'یەکسانکردنەوەی هەژمارەکان')],
+    needs: [N('شهادة في المحاسبة', 'A degree in accounting', 'بڕوانامە لە ژمێریاری'), N('دقة وتنظيم', 'Accuracy and organisation', 'وردی و ڕێکخستن')] },
+  { id: 'summer-intern', dept: 'retail', city: 'erbil', type: 'intern',
+    title: N('متدرب صيفي في المبيعات', 'Summer intern, sales', 'ڕاهێنەری هاوینە، فرۆشتن'),
+    summary: N('ستة أسابيع مع فريق مكتب أربيل: تتعلم الحجز وخدمة العملاء خطوة بخطوة.', 'Six weeks with the Erbil office team, learning booking and customer care step by step.', 'شەش هەفتە لەگەڵ تیمی ئۆفیسی هەولێر، فێری حیجز و خزمەتی کڕیار دەبیت هەنگاو بە هەنگاو.'),
+    duties: [N('مساعدة المستشارين في الحجوزات', 'Help consultants with bookings', 'یارمەتیدانی ڕاوێژکاران لە حیجزەکاندا'), N('مشروع صغير مع مشرفك', 'A small project with your supervisor', 'پرۆژەیەکی بچووک لەگەڵ سەرپەرشتیارەکەت')],
+    needs: [N('طالب جامعي أو خريج حديث', 'A university student or recent graduate', 'خوێندکاری زانکۆ یان دەرچووی نوێ'), N('العربية أو الكوردية، والإنجليزية', 'Arabic or Kurdish, and English', 'عەرەبی یان کوردی، و ئینگلیزی')] },
 ]
 
 /* ---------- announcements (samples) ---------- */

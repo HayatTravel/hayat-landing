@@ -1,0 +1,22 @@
+/* de · guides — international strings (fallback: English). Source keys: guides.strings.js */
+export default {
+  "gd.title": "Reiseführer",
+  "gd.sub": "Praktische Tipps für Reisen aus dem Irak und für Besuche im Irak.",
+  "gd.out": "Reisen aus dem Irak",
+  "gd.in": "Den Irak besuchen",
+  "gd.tabs": "Art des Reiseführers",
+  "gd.m.1": "{n} Min. Lesezeit",
+  "gd.m.2": "{n} Min. Lesezeit",
+  "gd.m.n": "{n} Min. Lesezeit",
+  "gd.m.m": "{n} Min. Lesezeit",
+  "gd.updated": "Zuletzt aktualisiert: {d}",
+  "gd.good": "Gut zu wissen",
+  "gd.related": "Planen und buchen",
+  "gd.contents": "In diesem Reiseführer",
+  "gd.more": "Weitere Reiseführer",
+  "gd.all": "Alle Reiseführer",
+  "gd.note": "Nur zur Orientierung; Regeln ändern sich, und wir bestätigen die Details vor Ihrer Reise.",
+  "gd.photo": "Foto: {by} · {lic}",
+  "gd.notFound": "Wir konnten diesen Reiseführer nicht finden",
+  "gd.home.s": "Kurze Artikel zur Vorbereitung Ihrer Reise.",
+}

@@ -58,7 +58,7 @@ export default {
   "sign.go": "Bestätigen",
   "sign.guest": "Gast",
   "sign.ok": "Willkommen, {name}",
-  "foot.about": "Ein lizenziertes irakisches Reisebüro seit 2010. Wir buchen und betreuen Ihre Reise, bis Sie wieder zu Hause sind.",
+  "foot.about": "Ein lizenziertes irakisches Reisebüro seit 2002. Wir buchen und betreuen Ihre Reise, bis Sie wieder zu Hause sind.",
   "foot.offices": "Unsere Büros",
   "foot.help": "Hilfe",
   "foot.faq": "Fragen",

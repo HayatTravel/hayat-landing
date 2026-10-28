@@ -58,7 +58,7 @@ export default {
   "sign.go": "Confirmer",
   "sign.guest": "Invité",
   "sign.ok": "Bienvenue, {name}",
-  "foot.about": "Agence de voyages irakienne agréée depuis 2010. Nous réservons et suivons votre voyage jusqu’à votre retour.",
+  "foot.about": "Agence de voyages irakienne agréée depuis 2002. Nous réservons et suivons votre voyage jusqu’à votre retour.",
   "foot.offices": "Nos agences",
   "foot.help": "Aide",
   "foot.faq": "Questions",

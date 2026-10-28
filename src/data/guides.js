@@ -1,7 +1,10 @@
 /* Travel guides. mode 'out' = travelling from Iraq, 'in' = visiting Iraq (these get fa/tr/fr/de added by the translator).
    Factual, practical, no invented statistics. Rules change: every visa point says we confirm before travel.
    img: media name, Unsplash photo id (checked by eye), or a key of PHOTOS in data/incoming.js (Wikimedia, credited). */
-const N = (ar, en, ku) => ({ ar, en, ku })
+import INTL from './guides.intl.js'
+
+/* fa · tr · fr · de for the Visiting-Iraq guides come from guides.intl.js (keyed by the English text). */
+const N = (ar, en, ku) => ({ ar, en, ku, ...INTL[en] })
 
 export const GUIDES = [
   /* ---------------- travelling from Iraq ---------------- */

@@ -6,6 +6,7 @@ import Help from './Help'
 import { LANG_INFO, LANGS_FOR, useI18n } from '../lib/i18n'
 import { useMode } from '../lib/mode'
 import { session, useStore } from '../lib/store'
+import { demoFill } from '../lib/demoFill'
 import D from '../data/catalog'
 
 /* Visiting Iraq: inbound tourism site. Every item opens a real page (src/routes/incoming.jsx). */
@@ -326,8 +327,18 @@ function SkipLink() {
   return <a href="#main" className="fixed start-3 top-3 z-[100] -translate-y-24 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white transition focus:translate-y-0">{t('skip')}</a>
 }
 
+/* Mockup: sample details in request forms (see lib/demoFill.js). Runs after the page (and lazy chunks) have drawn. */
+function useDemoFill() {
+  const { pathname, search } = useLocation()
+  useEffect(() => {
+    const ts = [300, 900, 1800].map((ms) => setTimeout(() => demoFill(pathname), ms))
+    return () => ts.forEach(clearTimeout)
+  }, [pathname, search])
+}
+
 export default function Layout() {
   useTabTitle()
+  useDemoFill()
   return (
     <>
       <SkipLink />

@@ -6,7 +6,7 @@ import { Hero } from '../components/company/ui'
 export const SITEMAP = [
   ['cp.map.book', [['/flights', 'nav.flights'], ['/hotels', 'nav.hotels'], ['/holidays', 'nav.holidays'], ['/cars', 'nav.cars'], ['/visa', 'nav.visa'], ['/esim', 'nav.esim'], ['/events', 'nav.events'], ['/transfers', 'nav.transfers'], ['/destinations', 'nav.destinations']]],
   ['cp.map.visit', [['/visit', 'in.nav.home'], ['/visit/places', 'in.nav.places'], ['/visit/tours', 'in.nav.tours'], ['/visit/visa', 'in.nav.visa'], ['/visit/hotels', 'in.nav.hotels'], ['/visit/plan', 'in.nav.plan']]],
-  ['cp.map.company', [['/about', 'cp.nav.about'], ['/about/offices', 'cp.nav.offices'], ['/careers', 'cp.nav.careers'], ['/news', 'cp.nav.news'], ['/partners', 'cp.nav.partners']]],
+  ['cp.map.company', [['/about', 'cp.nav.about'], ['/about/offices', 'cp.nav.offices'], ['/careers', 'cp.nav.careers'], ['/careers/how-we-hire', 'hr.nav.how'], ['/careers/life', 'hr.nav.life'], ['/careers/students', 'hr.nav.students'], ['/careers/track', 'hr.nav.track'], ['/careers/onboarding', 'hr.nav.onboarding'], ['/news', 'cp.nav.news'], ['/partners', 'cp.nav.partners']]],
   ['cp.map.help', [['/trips', 'nav.trips'], ['/help', 'nav.help'], ['/contact', 'cp.nav.contact'], ['/feedback', 'cp.nav.feedback']]],
   ['cp.map.legal', [['/legal/terms', 'cp.legal.terms'], ['/legal/privacy', 'cp.legal.privacy'], ['/legal/cookies', 'cp.legal.cookies'], ['/legal/payments', 'cp.legal.payments']]],
 ]

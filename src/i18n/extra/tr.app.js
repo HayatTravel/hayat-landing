@@ -27,6 +27,7 @@ export default {
   "in.nav.plan": "Seyahatinizi planlayın",
   "in.ft.title": "Irak'ı ziyaret",
   "co.sample": "Tasarım taslağı: rezervasyonu hızlıca denemeniz için alanlar örnek bilgilerle doldurulmuştur. Bunları değiştirebilirsiniz.",
+  "ft.status": "Uçuş durumu",
   "ft.company": "Şirket",
   "ft.about": "Hakkımızda",
   "ft.vision": "Vizyon ve misyon",

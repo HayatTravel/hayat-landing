@@ -58,7 +58,7 @@ export default {
   "sign.go": ["تأكيد", "Confirm", "پشتڕاستکردنەوە"],
   "sign.guest": ["ضيف", "Guest", "میوان"],
   "sign.ok": ["أهلاً {name}", "Welcome, {name}", "بەخێربێیت {name}"],
-  "foot.about": ["وكالة سفر عراقية مرخّصة منذ 2010، نحجز ونتابع رحلتك حتى تعود.", "A licensed Iraqi travel agency since 2010. We book and look after your trip until you are home.", "ئاژانسێکی گەشتی عێراقی مۆڵەتدار لە 2010ەوە."],
+  "foot.about": ['وكالة سفر عراقية مرخّصة منذ عام 2002، نحجز ونتابع رحلتك حتى تعود.', 'A licensed Iraqi travel agency since 2002. We book and look after your trip until you are home.', 'ئاژانسێکی گەشتی عێراقی مۆڵەتدار لە ساڵی 2002ەوە؛ حیجز دەکەین و بەدواداچوون بۆ گەشتەکەت دەکەین تا دەگەڕێیتەوە.'],
   "foot.offices": ["مكاتبنا", "Our offices", "ئۆفیسەکانمان"],
   "foot.help": ["المساعدة", "Help", "یارمەتی"],
   "foot.faq": ["الأسئلة الشائعة", "Questions", "پرسیارەکان"],

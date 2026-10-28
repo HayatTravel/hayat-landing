@@ -27,6 +27,7 @@ export default {
   "in.nav.plan": "Préparer votre voyage",
   "in.ft.title": "Visiter l’Irak",
   "co.sample": "Maquette : les champs sont pré-remplis avec des données d’exemple pour tester rapidement une réservation. Vous pouvez les modifier.",
+  "ft.status": "Statut du vol",
   "ft.company": "Entreprise",
   "ft.about": "À propos",
   "ft.vision": "Vision et mission",

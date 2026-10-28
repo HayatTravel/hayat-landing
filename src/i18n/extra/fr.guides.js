@@ -1,0 +1,22 @@
+/* fr · guides — international strings (fallback: English). Source keys: guides.strings.js */
+export default {
+  "gd.title": "Guides de voyage",
+  "gd.sub": "Des conseils pratiques pour voyager depuis l’Irak et pour le visiter.",
+  "gd.out": "Voyager depuis l’Irak",
+  "gd.in": "Visiter l’Irak",
+  "gd.tabs": "Type de guide",
+  "gd.m.1": "{n} min de lecture",
+  "gd.m.2": "{n} min de lecture",
+  "gd.m.n": "{n} min de lecture",
+  "gd.m.m": "{n} min de lecture",
+  "gd.updated": "Dernière mise à jour : {d}",
+  "gd.good": "Bon à savoir",
+  "gd.related": "Préparer et réserver",
+  "gd.contents": "Dans ce guide",
+  "gd.more": "Autres guides",
+  "gd.all": "Tous les guides",
+  "gd.note": "À titre indicatif ; les règles changent et nous confirmons les détails avant votre voyage.",
+  "gd.photo": "Photo : {by} · {lic}",
+  "gd.notFound": "Nous n’avons pas trouvé ce guide",
+  "gd.home.s": "Des articles courts pour préparer votre voyage.",
+}

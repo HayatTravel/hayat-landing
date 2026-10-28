@@ -9,9 +9,9 @@ import { mapsUrl } from '../../data/company'
 /* Building blocks for the company pages (about, offices, contact, careers, news, legal, feedback). */
 
 /** Small visible marker for a fact Hayat still has to confirm. */
-export function Tbc({ className = '', dark }) {
+export function Tbc({ className = '', dark, hr }) {
   const { t } = useI18n()
-  return <span className={`inline-flex items-center gap-1 rounded border px-1.5 py-0.5 align-middle text-[11px] font-semibold whitespace-nowrap ${dark ? 'border-white/20 bg-white/10 text-white/80' : 'border-amber-300 bg-amber-50 text-amber-800'} ${className}`}><Icon name="info" className="size-3" />{t('co.tbc')}</span>
+  return <span className={`inline-flex items-center gap-1 rounded border px-1.5 py-0.5 align-middle text-[11px] font-semibold whitespace-nowrap ${dark ? 'border-white/20 bg-white/10 text-white/80' : 'border-amber-300 bg-amber-50 text-amber-800'} ${className}`}><Icon name="info" className="size-3" />{t(hr ? 'hr.tbc' : 'co.tbc')}</span>
 }
 
 /** Sample content marker (careers, news). */

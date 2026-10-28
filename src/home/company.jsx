@@ -9,7 +9,7 @@ function AboutStrip({ visitor }) {
   const i = useI18n(); const { t } = i
   const facts = [
     [t('cp.fact.offices'), OFFICES.map((o) => i.L(o.city)).join(' · '), false],
-    [t('cp.fact.since'), t('cp.fact.sinceV'), true],
+    [t('cp.fact.since'), t('cp.fact.sinceV'), false],
     visitor ? [t('cp.fact.langs'), t('cp.fact.langsV'), false] : [t('cp.fact.lines'), t('cp.fact.linesV', { n: LINES.length }), false],
   ]
   return (

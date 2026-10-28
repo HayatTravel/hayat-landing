@@ -19,6 +19,9 @@ function LineCard({ x }) {
     : <Link to={x.to} className="card card-hover block p-5">{body}</Link>
 }
 
+/* Team → careers department filter. */
+const TEAM_DEPT = { retail: 'retail', visa: 'visa', inbound: 'inbound', corporate: 'corporate', ops: 'ops' }
+
 /** /about — who we are, vision, mission, values, what we do, how we work, milestones, licences, teams. */
 export default function About() {
   const i = useI18n(); const { t } = i
@@ -40,7 +43,7 @@ export default function About() {
           </div>
           <dl className="grid content-start gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <div className="card p-5"><dt className="text-sm text-muted">{t('cp.fact.offices')}</dt><dd className="mt-1 font-bold">{OFFICES.map((o) => i.L(o.city)).join(' · ')}</dd></div>
-            <div className="card p-5"><dt className="text-sm text-muted">{t('cp.fact.since')}</dt><dd className="mt-1 flex items-center gap-2 font-bold">{t('cp.fact.sinceV')} <Tbc /></dd></div>
+            <div className="card p-5"><dt className="text-sm text-muted">{t('cp.fact.since')}</dt><dd className="mt-1 flex items-center gap-2 font-bold">{t('cp.fact.sinceV')}</dd></div>
             <div className="card p-5"><dt className="text-sm text-muted">{t('cp.fact.lines')}</dt><dd className="mt-1 font-bold">{t('cp.fact.linesV', { n: LINES.length })}</dd></div>
             <div className="card p-5"><dt className="text-sm text-muted">{t('cp.fact.langs')}</dt><dd className="mt-1 font-bold">{t('cp.fact.langsV')}</dd></div>
           </dl>
@@ -90,7 +93,7 @@ export default function About() {
               {MILESTONES.map((m, k) => (
                 <li key={k} className="relative">
                   <span className="absolute -start-[31px] top-1 size-3.5 rounded-full border-2 border-ink bg-white" />
-                  <p className="flex items-center gap-2 text-sm text-muted">{m.when || t('cp.year')}<Tbc /></p>
+                  <p className="flex items-center gap-2 text-sm text-muted">{m.when || t('cp.year')}{!m.when && <Tbc />}</p>
                   <p className="mt-0.5 font-semibold">{i.L(m.title)}</p>
                 </li>
               ))}
@@ -117,11 +120,17 @@ export default function About() {
             {TEAMS.map((x) => (
               <div key={x.id} className="flex gap-4 rounded-lg border border-line bg-white p-5">
                 <span className="grid size-11 shrink-0 place-items-center rounded-full bg-mist text-ink"><Icon name={x.icon} className="size-5" /></span>
-                <div><h3 className="font-bold">{i.L(x.title)}</h3><p className="mt-1 text-sm leading-6 text-ink/70">{i.L(x.text)}</p></div>
+                <div><h3 className="font-bold">{i.L(x.title)}</h3><p className="mt-1 text-sm leading-6 text-ink/70">{i.L(x.text)}</p>
+                  {TEAM_DEPT[x.id] && <Link to={`/careers?dept=${TEAM_DEPT[x.id]}`} className="mt-2 inline-block text-sm font-semibold text-brand hover:underline">{t('hr.about.roles')}</Link>}</div>
               </div>
             ))}
           </div>
-          <p className="mt-6 text-sm"><Link to="/careers" className="font-semibold text-brand hover:underline">{t('cp.teams.join')}</Link></p>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <Link to="/careers" className="font-semibold text-brand hover:underline">{t('cp.teams.join')}</Link>
+            <Link to="/careers/how-we-hire" className="font-semibold text-brand hover:underline">{t('hr.nav.how')}</Link>
+            <Link to="/careers/life" className="font-semibold text-brand hover:underline">{t('hr.nav.life')}</Link>
+            <Link to="/careers/students" className="font-semibold text-brand hover:underline">{t('hr.nav.students')}</Link>
+          </div>
         </section>
 
         <section className="flex flex-col items-start justify-between gap-6 rounded-lg border border-line bg-mist/60 p-8 md:flex-row md:items-center">

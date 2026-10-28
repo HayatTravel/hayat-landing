@@ -8,7 +8,7 @@ const D = (() => {
   return {
     company: {
       name: N('الحياة للسفر والسياحة', 'Hayat Travel & Tourism', 'حەیات بۆ گەشت و گوزار'),
-      phone: '+964 770 000 0000', whatsapp: '9647700000000', email: 'hello@hayat.iq', since: 2010,
+      phone: '+964 770 000 0000', whatsapp: '9647700000000', email: 'hello@hayat.iq', since: 2002,
       licence: N('رخصة وزارة السياحة رقم —', 'Ministry of Tourism licence no. —', 'مۆڵەتی وەزارەتی گەشتوگوزار ژمارە —'),
     },
 
