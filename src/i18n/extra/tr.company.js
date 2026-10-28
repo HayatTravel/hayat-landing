@@ -119,7 +119,7 @@ export default {
   "cp.why.languagesd": "Her gün Arapça, Kürtçe ve İngilizce; pek çok ülkeden ziyaretçiyle.",
   "cp.why.growth": "Büyüyen bir alan",
   "cp.why.growthd": "Irak'a ve Irak'tan seyahat büyüyor, yükselme fırsatları da.",
-  "cp.dept.retail": "Satış ve bilet",
+  "cp.dept.retail": "Satış ve biletleme",
   "cp.dept.finance": "Finans",
   "cp.dept.visa": "Vize merkezi",
   "cp.dept.inbound": "Gelen turizm",
