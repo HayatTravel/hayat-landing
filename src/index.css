@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display: "Readex Pro", "IBM Plex Sans Arabic", sans-serif;
+
+  /* hayat.iq palette + logo purple */
+  --color-ink: #0b1220;
+  --color-ink-2: #141c2e;
+  --color-mist: #f5f7fb;
+  --color-line: #e3e8f2;
+  --color-muted: #8f9bb3;
+  --color-sky: #9dbcff;
+  --color-brand: #3d7eff;
+  --color-brand-600: #2563eb;
+  --color-plum: #2d0f55;
+  --color-plum-400: #7c4dff;
+  --color-ember: #ff6b3d;
+
+  /* flat, minimal geometry: 6px surfaces, 4px controls */
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 6px;
+
+  --animate-rise: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 0.6s ease both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-kenburns: kenburns 24s ease-in-out infinite alternate;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-dash: dash 3s linear infinite;
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.14) translate(-1.5%, -1%); } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* art: route map, loaders, tickets */
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes pulse-ring { from { transform: scale(1); opacity: .9; } to { transform: scale(4.5); opacity: 0; } }
+@keyframes print { from { transform: translateY(-104%); } to { transform: translateY(0); } }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes drive { from { transform: translateX(-140px); } to { transform: translateX(250px); } }
+@keyframes fly { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes wheel { to { transform: rotate(360deg); } }
+@keyframes road { to { stroke-dashoffset: -48; } }
+@keyframes twinkle { 0%, 100% { opacity: .15; } 50% { opacity: 1; } }
+@keyframes bob { 50% { transform: translateY(-3px); } }
+@keyframes flicker { 0%, 100% { transform: scaleY(1) skewX(0); } 33% { transform: scaleY(1.08) skewX(-3deg); } 66% { transform: scaleY(.94) skewX(2deg); } }
+@keyframes wave { 0% { opacity: 0; transform: scale(.6); } 40% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+@keyframes takeoff { 0% { transform: translate(0, 0) rotate(0); } 60% { transform: translate(-10px, -8px) rotate(-12deg); opacity: 1; } 61% { opacity: 0; } 62% { transform: translate(12px, 8px); opacity: 0; } 100% { transform: translate(0, 0); opacity: 1; } }
+.rm-draw { stroke-dashoffset: 1; animation: draw 1.6s cubic-bezier(.4,0,.2,1) forwards; }
+.rm-pulse { animation: pulse-ring 2.4s ease-out infinite; }
+/* a bright dash running along a route (dash .14, period 1.44, starts just before the path) */
+@keyframes comet { from { stroke-dashoffset: .14; } to { stroke-dashoffset: -1.3; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes float { 50% { transform: translateY(-6px); } }
+/* RTL: content flows right-to-left, so the track moves toward +x */
+@keyframes marquee { to { transform: translateX(50%); } }
+@keyframes dash { to { stroke-dashoffset: -40; } }
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white text-ink font-sans antialiased; }
+  h1, h2, h3, .font-display { font-family: var(--font-display); }
+  ::selection { background: var(--color-brand); color: white; }
+}
+
+@utility container-x { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 font-semibold transition duration-200 disabled:pointer-events-none disabled:opacity-60; }
+/* primary: brand→plum gradient that slides on hover, soft glow, periodic shine (same language as .cta) */
+@utility btn-primary {
+  @apply btn relative isolate overflow-hidden text-white;
+  background: linear-gradient(110deg, var(--color-brand), #5b5cff 45%, var(--color-plum-400), var(--color-brand)) 0 0 / 220% 100%;
+  box-shadow: 0 10px 28px -12px rgba(61,126,255,.7);
+  transition: background-position .7s cubic-bezier(.2,.7,.2,1), transform .3s, box-shadow .3s;
+  &:hover, &:focus-visible { background-position: 100% 0; transform: translateY(-2px); box-shadow: 0 18px 40px -14px rgba(124,77,255,.75); }
+  &:active { transform: translateY(0); }
+  &::after { content: ''; position: absolute; inset-block: -50%; left: 0; width: 35%; z-index: -1; background: linear-gradient(100deg, transparent, rgba(255,255,255,.28), transparent); transform: translateX(-160%) skewX(-20deg); animation: cta-shine 5s cubic-bezier(.6,0,.2,1) infinite; pointer-events: none; }
+}
+@utility btn-ghost { @apply btn border border-line bg-transparent text-ink hover:-translate-y-0.5 hover:border-brand hover:text-brand hover:shadow-[0_12px_30px_-16px_rgba(61,126,255,.6)]; }
+@utility card { @apply rounded-lg border border-line bg-white transition duration-300; }
+@utility card-hover { @apply hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-[0_24px_50px_-28px_rgba(11,18,32,.35)]; }
+@utility field { @apply w-full rounded-md border border-line bg-white px-4 py-3 text-ink outline-none transition placeholder:text-muted focus:border-brand focus:ring-4 focus:ring-brand/10; }
+
+/* Inner-page header: a dark stage. Tokens flip so the existing text-ink / text-muted / border-line content reads on it;
+   forms inside (search panel) flip back to the light palette. */
+.page-head { --color-ink: #fff; --color-muted: rgba(255,255,255,.6); --color-line: rgba(255,255,255,.14); background: #070b16; color: #fff; }
+.page-head form { --color-ink: #0b1220; --color-muted: #8f9bb3; --color-line: #e3e8f2; color: var(--color-ink); box-shadow: 0 30px 80px -30px rgba(0,0,0,.7); }
+.page-head-in > * { animation: rise .8s cubic-bezier(.2,.7,.2,1) both; }
+.page-head-in > :nth-child(2) { animation-delay: .1s; }
+.page-head-in > :nth-child(3) { animation-delay: .2s; }
+@utility label { @apply mb-1.5 block text-xs font-medium text-muted; }
+@utility chip { @apply inline-flex items-center gap-1 rounded-md border border-line px-2.5 py-1 text-xs font-medium text-ink/70; }
+
+@keyframes word { from { transform: translateY(105%); } to { transform: none; } }
+
+/* hero: pointer parallax (vars set from JS, default 0) */
+.hero-layer { transform: translate3d(calc(var(--mx, 0) * -28px), calc(var(--my, 0) * -18px), 0); transition: opacity 1.4s, transform 1s cubic-bezier(.2,.7,.2,1); }
+.hero-copy { transform: translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 8px), 0); transition: transform 1s cubic-bezier(.2,.7,.2,1); }
+
+/* signature CTA */
+.cta {
+  --bg: #fff; --fg: #0b1220; --chip: #0b1220; --chip-fg: #fff; --chip-on: #fff; --chip-on-fg: var(--color-brand);
+  --fill: linear-gradient(100deg, var(--color-brand), var(--color-plum-400)); --shine: rgba(61,126,255,.28); --glow: rgba(61,126,255,.55);
+  position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; gap: 1.1rem;
+  padding-block: .4rem; padding-inline: 1.5rem .4rem; border-radius: var(--radius-md); background: var(--bg); color: var(--fg);
+  font-weight: 600; white-space: nowrap; transition: color .5s cubic-bezier(.7,0,.2,1), transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .5s;
+}
+.cta::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--fill); transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.7,0,.2,1); }
+.cta::after { content: ''; position: absolute; inset-block: -50%; left: 0; width: 35%; z-index: -1; background: linear-gradient(100deg, transparent, var(--shine), transparent); transform: translateX(-160%) skewX(-20deg); animation: cta-shine 5s cubic-bezier(.6,0,.2,1) infinite; }
+.cta:hover, .cta:focus-visible { color: #fff; transform: translateY(-2px); box-shadow: 0 18px 40px -14px var(--glow); }
+.cta:hover::before, .cta:focus-visible::before { transform: scaleX(1); }
+.cta-chip { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; overflow: hidden; border-radius: 3px; background: var(--chip); color: var(--chip-fg); transition: background .5s, color .5s; }
+.cta:hover .cta-chip, .cta:focus-visible .cta-chip { background: var(--chip-on); color: var(--chip-on-fg); }
+.cta:hover .cta-arrow { animation: cta-arrow .7s cubic-bezier(.7,0,.2,1); }
+.cta-arrow { display: block; }
+.cta-solid { --bg: var(--color-ink); --fg: #fff; --chip: rgba(255,255,255,.12); --shine: rgba(255,255,255,.22); }
+.cta-ghost { --bg: transparent; --fg: var(--color-ink); --chip: var(--color-mist); --chip-fg: var(--color-ink); --fill: var(--color-ink); --chip-on: rgba(255,255,255,.14); --chip-on-fg: #fff; --shine: transparent; --glow: rgba(11,18,32,.35); box-shadow: inset 0 0 0 1px var(--color-line); }
+@keyframes cta-shine { 0%, 65% { transform: translateX(-160%) skewX(-20deg); } 100% { transform: translateX(420%) skewX(-20deg); } }
+@keyframes cta-arrow { 0% { transform: none; } 45% { transform: translateX(-170%); } 46% { transform: translateX(170%); } 100% { transform: none; } }
+
+/* animated gradient ink for key words */
+.text-shimmer { background: linear-gradient(100deg, #9dbcff, #c9b8ff 30%, #ffc6a8 50%, #9dbcff 70%, #c9b8ff); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 7s linear infinite; }
+@keyframes shimmer { to { background-position: -250% 0; } }
+
+/* glass boarding pass with punched notches at the perforation */
+.pass-tilt { transform: rotateY(calc(var(--mx, 0) * -16deg)) rotateX(calc(var(--my, 0) * 12deg)); transition: transform 1s cubic-bezier(.2,.7,.2,1); transform-style: preserve-3d; }
+.pass-card { -webkit-mask: radial-gradient(circle at 0 var(--perf), transparent 11px, #000 11.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% var(--perf), transparent 11px, #000 11.5px) right / 51% 100% no-repeat; mask: radial-gradient(circle at 0 var(--perf), transparent 11px, #000 11.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% var(--perf), transparent 11px, #000 11.5px) right / 51% 100% no-repeat; }
+@keyframes pass-in { from { opacity: 0; transform: translateY(40px) rotateX(35deg) rotateZ(-6deg); } to { opacity: 1; transform: none; } }
+
+/* giant words filled with a moving photograph */
+.text-photo { background-color: var(--color-brand); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 60% auto; animation: pan 30s linear infinite; }
+@keyframes pan { to { background-position: 300% 50%; } }
+
+/* eSIM showcase */
+@keyframes scan { from { top: 4%; } to { top: 92%; } }
+@keyframes gauge { from { stroke-dashoffset: 1; } to { stroke-dashoffset: var(--v, 0); } }
+@keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes counter { to { transform: rotate(-360deg); } }
+@keyframes aurora { 50% { transform: translate(8%, -6%) scale(1.15); } }
+
+/* split-flap departure board */
+.flap { position: relative; display: inline-grid; min-width: 1.05em; place-items: center; overflow: hidden; border-radius: 3px; padding: .12em .08em; background: linear-gradient(#1a2030 50%, #121723 50%); perspective: 300px; }
+.flap::after { content: ''; position: absolute; inset: calc(50% - .5px) 0 auto; height: 1px; background: #05070b; }
+.flap-wide { padding-inline: .55em; }
+.flap-in { display: block; animation: flap .14s cubic-bezier(.3,.7,.4,1); }
+@keyframes flap { from { transform: rotateX(-90deg); opacity: .3; } }
+
+/* shared-element morph between a deal card and its detail page */
+::view-transition-group(*) { animation-duration: .7s; animation-timing-function: cubic-bezier(.7,0,.2,1); }
+::view-transition-old(*.morph), ::view-transition-new(*.morph) { height: 100%; object-fit: cover; }
+
+/* scroll progress in the header */
+.scroll-progress { transform: scaleX(0); }
+.grain { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.journey-fill { transform: scaleX(0); }
+.ws-shade { transform: translateY(-101%); }
+.ws-seat { display: none; }
+
+/*
+ * Scroll-driven scenes. Resting styles above are the finished state, so browsers without
+ * scroll timelines (and reduced-motion users) get plain, fully visible sections.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress { animation: grow linear both; animation-timeline: scroll(root); }
+
+    /* window seat: the porthole opens into a full-bleed view */
+    .window-seat { height: 280vh; view-timeline: --ws block; --py: 22%; --px: 14%; --r: 140px; }
+    @media (min-width: 768px) { .window-seat { --py: 17%; --px: 37%; --r: 240px; } }
+    .ws-pin { position: sticky; top: 0; }
+    .ws-frame, .ws-bezel { animation: porthole linear both; animation-timeline: --ws; animation-range: contain 6% contain 58%; }
+    .ws-frame { --b: 0px; }
+    .ws-bezel { --b: 22px; }
+    .ws-photo { animation: ws-zoom linear both; animation-timeline: --ws; animation-range: contain 0% contain 80%; }
+    .ws-shade { animation: ws-shade linear both; animation-timeline: --ws; animation-range: contain 0% contain 12%; }
+    .ws-seat { display: block; animation: ws-out linear both; animation-timeline: --ws; animation-range: contain 4% contain 22%; }
+    .ws-word { animation: ws-word linear both; animation-timeline: --ws; animation-range: contain calc(46% + var(--i) * 5%) contain calc(58% + var(--i) * 5%); }
+
+    /* destinations: vertical scroll drives a horizontal journey (RTL, so the track moves toward +x) */
+    @media (min-width: 768px) {
+      .journey { height: 320vh; overflow: visible; view-timeline: --journey block; }
+      .journey-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+      .journey-track { width: max-content; overflow: visible; animation: journey linear both; animation-timeline: --journey; animation-range: contain 4% contain 96%; }
+      .journey-fill { animation: grow linear both; animation-timeline: --journey; animation-range: contain 4% contain 96%; }
+      .journey-plane { animation: journey-plane linear both; animation-timeline: --journey; animation-range: contain 4% contain 96%; }
+    }
+  }
+}
+@keyframes porthole {
+  from { clip-path: inset(calc(var(--py) - var(--b)) calc(var(--px) - var(--b)) round calc(var(--r) + var(--b))); }
+  to { clip-path: inset(calc(0px - var(--b)) round 0); }
+}
+@keyframes ws-zoom { from { transform: scale(1.45); } to { transform: none; } }
+@keyframes ws-shade { from { transform: none; } to { transform: translateY(-101%); } }
+@keyframes ws-out { to { opacity: 0; transform: translateY(-24px); } }
+@keyframes ws-word { from { opacity: 0; transform: translateY(50%); filter: blur(10px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes journey { to { transform: translateX(calc(100% - 100vw)); } }
+@keyframes journey-plane { from { inset-inline-start: 0%; } to { inset-inline-start: calc(100% - 1.25rem); } }
+
+/* keep the fixed mobile trip bar from covering the footer */
+@media (max-width: 1023px) { body:has(.tripbar-mobile) { padding-bottom: 5rem; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* printing: only the branded receipt goes to paper; no browser header/footer (margin 0), colours kept */
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { background: #fff !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  *, ::before, ::after { animation-duration: 0s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
+}
