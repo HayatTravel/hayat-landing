@@ -16,7 +16,7 @@ export const LOCATIONS = [
     return { id: c.slug, name: c.name, country: c.country, code: a?.code, f: { dubai: 1.15, istanbul: 1, baku: 0.95, georgia: 0.9, trabzon: 0.95, antalya: 1, sharm: 0.95, cairo: 0.85, 'kuala-lumpur': 0.9 }[c.slug] ?? 1, img: c.img }
   }),
 ]
-export const location = (id) => LOCATIONS.find((l) => l.id === id) || LOCATIONS.find((l) => l.id === 'istanbul')
+export const location = (id) => LOCATIONS.find((l) => l.id === String(id || '').toLowerCase()) || LOCATIONS.find((l) => l.id === 'istanbul')
 
 export const SUPPLIERS = [N('الحياة درايف', 'Hayat Drive', 'حەیات درایڤ'), N('الرافدين للتأجير', 'Rafidain Rental', 'ڕافیدەین بۆ بەکرێدان'), N('دجلة كار', 'Dijla Car', 'دیجلە کار')]
 
