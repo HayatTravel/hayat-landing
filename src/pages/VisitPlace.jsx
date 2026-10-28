@@ -22,7 +22,7 @@ export default function VisitPlace() {
 
   return (
     <>
-      <section className="relative isolate flex min-h-[420px] items-end overflow-hidden bg-ink pt-24 sm:h-[56svh]">
+      <section className="relative isolate flex min-h-[420px] items-end overflow-hidden bg-ink pt-28 sm:min-h-[56svh] lg:pt-36">
         <Img k={p.photo} eager alt={i.L(p.name)} className="absolute inset-0 -z-20 size-full" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink/90 via-ink/30 to-ink/10" />
         <div className="container-x pb-10 text-white">

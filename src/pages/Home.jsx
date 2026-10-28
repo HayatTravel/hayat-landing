@@ -21,7 +21,7 @@ const AIRLINES = ['IA', 'IF', 'TK', 'QR', 'EK', 'FZ', 'RJ', 'PC', 'J2', 'MS', 'M
 function Hero() {
   const { t } = useI18n()
   return (
-    <section className="relative isolate flex min-h-[440px] items-center overflow-hidden bg-ink pt-18 sm:h-[52svh]">
+    <section className="relative isolate flex min-h-[440px] items-center overflow-hidden bg-ink pt-24 sm:min-h-[52svh] lg:pt-36">
       <img src={media('hero-wing')} alt="" fetchPriority="high" className="absolute inset-0 -z-20 size-full object-cover" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-l from-ink/85 via-ink/45 to-ink/30 ltr:bg-gradient-to-r" />
       <div className="container-x pb-24">

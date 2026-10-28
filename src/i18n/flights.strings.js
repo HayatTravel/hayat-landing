@@ -81,7 +81,7 @@ export default {
   "fl.chOp": ["رحلة الحياة المباشرة، تشغيل {name}","Hayat charter, operated by {name}","فڕینی ڕاستەوخۆی حەیات، بە {name}"],
   "fl.loading": ["نبحث عن الرحلات","Finding flights","گەڕان بۆ فڕینەکان"],
   "fl.none": ["لا توجد رحلات على هذا الطريق","No flights on this route","هیچ فڕینێک لەم ڕێگایەدا نییە"],
-  "fl.noneD": ["جرّب مطاراً آخر في العراق أو وجهة قريبة.","Try another Iraqi airport or a nearby destination.","فڕۆکەخانەیەکی تری عێراق یان شوێنێکی نزیک تاقی بکەرەوە."],
+  "fl.noneD": ["جرّب مطاراً آخر في العراق أو مدينة قريبة.","Try another Iraqi airport or a nearby destination.","فڕۆکەخانەیەکی تری عێراق یان شوێنێکی نزیک تاقی بکەرەوە."],
   "fl.noneCh": ["هذا الطريق برنامج مباشر يعمل كل {day}.","This route is a direct programme that flies every {day}.","ئەم ڕێگایە بەرنامەیەکی ڕاستەوخۆیە، ڕۆژانی {day} دەفڕێت."],
   "fl.goNext": ["اعرض رحلة {date}","Show the {date} flight","فڕینی {date} پیشان بدە"],
   "fl.past": ["اختر تاريخاً قادماً","Choose a future date","بەروارێکی داهاتوو هەڵبژێرە"],

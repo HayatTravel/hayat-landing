@@ -21,7 +21,7 @@ export default function Document() {
 
   if (!b || !k) {
     return (
-      <div className="container-x pt-32 pb-20 text-center">
+      <div className="container-x pt-32 pb-20 text-center lg:pt-40">
         <Icon name="documents" className="mx-auto size-9 text-muted" />
         <h1 className="mt-3 text-2xl font-bold">{t('doc.notFound')}</h1><p className="mt-1 text-muted">{t('doc.notFoundD')}</p>
         <Link to={b ? `/trips/${b.ref}` : '/trips'} className="btn-primary mt-6">{t('doc.back')}</Link>
@@ -37,7 +37,7 @@ export default function Document() {
   const wa = `https://wa.me/${D.company.whatsapp}?text=${encodeURIComponent(`${t('wa.hi')}\n${t('doc.waText', { ref: b.ref, title: o?.title || b.title })}\n${k.label}`)}`
 
   return (
-    <div className="bg-mist pt-24 pb-16 print:bg-white print:p-0">
+    <div className="bg-mist pt-28 pb-16 lg:pt-36 print:bg-white print:p-0">
       <div className="container-x print:hidden">
         <div className="mx-auto max-w-[210mm]">
           <Link to={`/trips/${b.ref}`} className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"><Icon name="arrow" className="size-4 ltr:-scale-x-100" />{t('doc.back')}</Link>

@@ -1,8 +1,8 @@
 /* Destinations explorer (travelling from Iraq). [ar, en, ku] */
 export default {
-  "ds.nav": ["الوجهات", "Destinations", "شوێنەکان"],
+  "ds.nav": ["حول العالم", "Destinations", "شوێنەکان"],
   "ds.title": ["إلى أين يسافر العراقيون", "Where Iraqis travel", "عێراقییەکان بۆ کوێ گەشت دەکەن"],
-  "ds.sub": ["وجهات حول العالم مع التأشيرة لجواز السفر العراقي، والرحلات من بغداد، وأفضل وقت للزيارة.", "Destinations worldwide with the visa for an Iraqi passport, flights from Baghdad and the best time to go.", "شوێنەکانی جیهان لەگەڵ ڤیزا بۆ پاسپۆرتی عێراقی، فڕین لە بەغداوە و باشترین کات بۆ سەردان."],
+  "ds.sub": ["مدن ودول حول العالم مع التأشيرة لجواز السفر العراقي، والرحلات من بغداد، وأفضل وقت للزيارة.", "Destinations worldwide with the visa for an Iraqi passport, flights from Baghdad and the best time to go.", "شوێنەکانی جیهان لەگەڵ ڤیزا بۆ پاسپۆرتی عێراقی، فڕین لە بەغداوە و باشترین کات بۆ سەردان."],
   "ds.th.beach": ["شواطئ", "Beach", "کەنار دەریا"],
   "ds.th.shopping": ["تسوق", "Shopping", "بازاڕکردن"],
   "ds.th.nature": ["طبيعة", "Nature", "سروشت"],
@@ -31,7 +31,7 @@ export default {
   "ds.direct": ["مباشرة", "Direct", "ڕاستەوخۆ"],
   "ds.stop": ["توقف واحد", "1 stop", "1 وەستان"],
   "ds.from": ["من بغداد", "From Baghdad", "لە بەغداوە"],
-  "ds.none": ["لا توجد وجهات بهذه الاختيارات", "No destinations match these choices", "هیچ شوێنێک لەگەڵ ئەم هەڵبژاردنانە ناگونجێت"],
+  "ds.none": ["لا توجد أماكن تطابق هذه الاختيارات", "No destinations match these choices", "هیچ شوێنێک لەگەڵ ئەم هەڵبژاردنانە ناگونجێت"],
   "ds.noneD": ["جرّب نوع رحلة أو شهراً آخر.", "Try another kind of trip or month.", "جۆرێکی تری گەشت یان مانگێکی تر تاقی بکەرەوە."],
   "ds.clear": ["امسح الاختيارات", "Clear filters", "هەڵبژاردنەکان پاک بکەرەوە"],
   "ds.why": ["لماذا يذهب العراقيون", "Why Iraqis go", "بۆچی عێراقییەکان دەچن"],
@@ -48,6 +48,6 @@ export default {
   "ds.budgetGuide": ["دليل الميزانية", "Budget guide", "ڕێنمایی بودجە"],
   "ds.flightLine": ["حوالي {t} · {s}", "About {t} · {s}", "نزیکەی {t} · {s}"],
   "ds.guide": ["معلومات إرشادية؛ نؤكد التفاصيل عند الحجز.", "Guidance only; we confirm the details when you book.", "تەنها ڕێنمایی؛ لە کاتی حیجزدا وردەکارییەکان پشتڕاست دەکەینەوە."],
-  "ds.home.s": ["أفكار أبعد من الوجهات المعتادة، حسب نوع رحلتك.", "Further ideas beyond the usual routes, by the kind of trip you want.", "بیرۆکەی زیاتر لە دەرەوەی ڕێگا باوەکان، بەپێی جۆری گەشتەکەت."],
-  "ds.home.all": ["كل الوجهات", "All destinations", "هەموو شوێنەکان"],
+  "ds.home.s": ["أفكار أبعد من الأماكن المعتادة، حسب نوع رحلتك.", "Further ideas beyond the usual routes, by the kind of trip you want.", "بیرۆکەی زیاتر لە دەرەوەی ڕێگا باوەکان، بەپێی جۆری گەشتەکەت."],
+  "ds.home.all": ["كل المدن والدول", "All destinations", "هەموو شوێنەکان"],
 }

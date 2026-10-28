@@ -13,7 +13,7 @@ export default function VisitHome() {
   const { t } = useI18n()
   return (
     <>
-      <section className="relative isolate flex min-h-[500px] items-center overflow-hidden bg-ink pt-18 sm:h-[60svh]">
+      <section className="relative isolate flex min-h-[500px] items-center overflow-hidden bg-ink pt-24 sm:min-h-[60svh] lg:pt-36">
         <Img k="ur" eager className="absolute inset-0 -z-20 size-full" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/85 via-ink/50 to-ink/25 rtl:bg-gradient-to-l" />
         <div className="container-x pb-24">

@@ -45,7 +45,7 @@ export function ModeSwitch({ dark, big = false }) {
       <div role="radiogroup" aria-label={t('mode.label')} className="inline-flex rounded-lg bg-white/10 p-1 backdrop-blur">
         {opts.map(([m, k, ic]) => (
           <button key={m} role="radio" aria-checked={mode === m} onClick={() => pick(m)}
-            className={`flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition sm:px-5 ${mode === m ? 'bg-white text-ink shadow' : 'text-white/80 hover:text-white'}`}>
+            className={`flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition sm:px-5 ${mode === m ? 'bg-white text-ink shadow' : 'text-white/80 hover:text-white'}`}>
             <Icon name={ic} className="size-4" />{t(k)}
           </button>
         ))}
@@ -53,10 +53,10 @@ export function ModeSwitch({ dark, big = false }) {
     )
   }
   return (
-    <div role="radiogroup" aria-label={t('mode.label')} className={`hidden rounded-md p-0.5 text-xs font-semibold lg:flex ${dark ? 'bg-white/10' : 'bg-mist'}`}>
+    <div role="radiogroup" aria-label={t('mode.label')} className={`flex shrink-0 rounded-md p-0.5 text-xs font-semibold ${dark ? 'bg-white/10' : 'bg-mist'}`}>
       {opts.map(([m, k]) => (
         <button key={m} role="radio" aria-checked={mode === m} onClick={() => pick(m)}
-          className={`rounded px-2.5 py-1.5 ${mode === m ? 'bg-white text-ink shadow-sm' : dark ? 'text-white/70' : 'text-muted'}`}>{t(`${k}.short`)}</button>
+          className={`rounded px-2.5 py-1.5 whitespace-nowrap ${mode === m ? 'bg-white text-ink shadow-sm' : dark ? 'text-white/70' : 'text-muted'}`}>{t(`${k}.short`)}</button>
       ))}
     </div>
   )
@@ -189,10 +189,13 @@ function Navbar() {
     <header className={`fixed inset-x-0 top-0 z-50 transition duration-300 print:hidden ${glass ? 'bg-white/90 shadow-[0_1px_0_var(--color-line)] backdrop-blur' : 'bg-gradient-to-b from-ink/80 via-ink/40 to-transparent'}`}>
       {!scrolled && (
         <div className={`hidden border-b text-xs lg:block ${glass ? 'border-line text-ink/60' : 'border-white/10 text-white/70'}`}>
-          <div className="container-x flex h-8 items-center justify-between gap-6">
+          <div className="container-x flex h-9 items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+            <ModeSwitch dark={!glass} />
             <nav aria-label={t('ft.company')} className="flex items-center gap-5">
               {[['ft.about', '/about'], ['ft.offices', '/about/offices'], ['ft.business', '/business'], ['ft.guides', '/guides'], ['ft.careers', '/careers']].map(([k, to]) => <Link key={to} to={to} className={glass ? 'hover:text-ink' : 'hover:text-white'}>{t(k)}</Link>)}
             </nav>
+            </div>
             <div className="flex items-center gap-5">
               <Link to="/flight-status" className={glass ? 'hover:text-ink' : 'hover:text-white'}>{t('ft.status')}</Link>
               <Link to="/help" className={glass ? 'hover:text-ink' : 'hover:text-white'}>{t('ft.helpCenter')}</Link>
@@ -206,16 +209,15 @@ function Navbar() {
         <Logo light={dark} className="h-10" to={useMode().mode === 'in' ? '/visit' : '/'} />
         <nav className="hidden items-center gap-0.5 xl:flex" aria-label={t('nav.label')}>
           {nav.map((n) => (
-            <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition ${isActive ? (glass ? 'bg-ink text-white' : 'bg-white text-ink') : glass ? 'text-ink/70 hover:bg-mist hover:text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>
-              <Icon name={n.icon} className="size-4" />{t(n.label)}
+            <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition ${isActive ? (glass ? 'bg-ink text-white' : 'bg-white text-ink') : glass ? 'text-ink/70 hover:bg-mist hover:text-ink' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}>
+              <Icon name={n.icon} className="hidden size-4 2xl:block" />{t(n.label)}
             </NavLink>
           ))}
         </nav>
         <div className="flex items-center gap-1.5">
-          <ModeSwitch dark={dark} />
           <LangMenu dark={dark} />
           <CurSwitch dark={dark} />
-          <Link to="/trips" className={`hidden h-10 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium md:flex ${dark ? 'text-white/85 hover:bg-white/10' : 'text-ink/75 hover:bg-mist'}`}><Icon name="ticket" className="size-4" />{t('nav.trips')}</Link>
+          <Link to="/trips" className={`hidden h-10 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium md:flex ${dark ? 'text-white/85 hover:bg-white/10' : 'text-ink/75 hover:bg-mist'}`} aria-label={t('nav.trips')} title={t('nav.trips')}><Icon name="ticket" className="size-4" /><span className="hidden 2xl:inline">{t('nav.trips')}</span></Link>
           <button onClick={account} className={`hidden items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition sm:flex ${glass ? 'bg-ink text-white hover:bg-brand' : 'bg-white text-ink hover:bg-sky'}`}>
             <Icon name="user" className="size-4" />{user ? user.name.split(' ')[0] : t('nav.signin')}
           </button>
@@ -360,7 +362,7 @@ export default function Layout() {
 function PageLoading() {
   return (
     <div aria-busy="true">
-      <div className="page-head h-56 bg-[#070b16]" />
+      <div className="page-head h-56 bg-[#070b16] lg:h-64" />
       <div className="container-x grid gap-4 py-10">{[0, 1, 2].map((k) => <div key={k} className="h-28 animate-pulse rounded-lg bg-mist" />)}</div>
     </div>
   )
@@ -369,7 +371,7 @@ function PageLoading() {
 // Inner-page header band so the fixed nav never overlaps content: a calm dark stage with an optional photo.
 export function PageHead({ children, className = '', photo }) {
   return (
-    <div className={`page-head relative isolate pt-28 pb-8 ${className}`}>
+    <div className={`page-head relative isolate pt-28 pb-8 lg:pt-36 ${className}`}>
       <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
         {photo && (
           <div className="absolute inset-y-0 start-0 w-full opacity-40 [mask-image:linear-gradient(to_left,black,transparent_75%)] sm:w-2/3">
