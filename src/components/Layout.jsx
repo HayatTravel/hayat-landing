@@ -274,12 +274,18 @@ function useTabTitle() {
   }, [pathname, search, lang])
 }
 
+function SkipLink() {
+  const { t } = useI18n()
+  return <a href="#main" className="fixed start-3 top-3 z-[100] -translate-y-24 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white transition focus:translate-y-0">{t('skip')}</a>
+}
+
 export default function Layout() {
   useTabTitle()
   return (
     <>
+      <SkipLink />
       <Navbar />
-      <main className="min-h-dvh print:min-h-0">
+      <main id="main" tabIndex={-1} className="min-h-dvh outline-none print:min-h-0">
         <Suspense fallback={<PageLoading />}>
           <Outlet />
         </Suspense>

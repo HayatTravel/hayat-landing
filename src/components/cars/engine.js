@@ -5,7 +5,8 @@ import { addDaysIso, inDays } from '../../lib/i18n'
 import { img } from '../../lib/format'
 import { seed } from '../flights/engine'
 
-const N = (ar, en, ku) => ({ ar, en, ku })
+/** Texts: ar, en, ku, plus optional { fa, tr, fr, de } for visitors (L() falls back to en). */
+const N = (ar, en, ku, x = {}) => ({ ar, en, ku, ...x })
 
 /** Pick-up cities: Iraqi airports and the destinations we sell. */
 export const LOCATIONS = [
@@ -20,20 +21,20 @@ export const location = (id) => LOCATIONS.find((l) => l.id === id) || LOCATIONS.
 export const SUPPLIERS = [N('الحياة درايف', 'Hayat Drive', 'حەیات درایڤ'), N('الرافدين للتأجير', 'Rafidain Rental', 'ڕافیدەین بۆ بەکرێدان'), N('دجلة كار', 'Dijla Car', 'دیجلە کار')]
 
 export const CATS = {
-  eco: N('اقتصادية', 'Economy', 'ئابووری'), sed: N('سيدان', 'Sedan', 'سیدان'), csuv: N('دفع رباعي صغيرة', 'Compact SUV', 'SUVی بچووک'),
-  suv: N('دفع رباعي', 'SUV', 'SUV'), ev: N('كهربائية', 'Electric', 'کارەبایی'), '4x4': N('دفع رباعي كبيرة', 'Large 4x4', '4x4ی گەورە'),
-  van: N('عائلية', 'People carrier', 'خێزانی'), lux: N('فاخرة', 'Premium', 'پریمیەم'),
+  eco: N('اقتصادية', 'Economy', 'ئابووری', { fa: 'اقتصادی', tr: 'Ekonomik', fr: 'Économique', de: 'Kleinwagen' }), sed: N('سيدان', 'Sedan', 'سیدان', { fa: 'سدان', tr: 'Sedan', fr: 'Berline', de: 'Limousine' }), csuv: N('دفع رباعي صغيرة', 'Compact SUV', 'SUVی بچووک', { fa: 'شاسی‌بلند کوچک', tr: 'Kompakt SUV', fr: 'SUV compact', de: 'Kompakt-SUV' }),
+  suv: N('دفع رباعي', 'SUV', 'SUV', { fa: 'شاسی‌بلند', tr: 'SUV', fr: 'SUV', de: 'SUV' }), ev: N('كهربائية', 'Electric', 'کارەبایی', { fa: 'برقی', tr: 'Elektrikli', fr: 'Électrique', de: 'Elektro' }), '4x4': N('دفع رباعي كبيرة', 'Large 4x4', '4x4ی گەورە', { fa: 'شاسی‌بلند بزرگ 4x4', tr: 'Büyük 4x4', fr: 'Grand 4x4', de: 'Großer Geländewagen' }),
+  van: N('عائلية', 'People carrier', 'خێزانی', { fa: 'ون خانوادگی', tr: 'Minivan', fr: 'Monospace', de: 'Van' }), lux: N('فاخرة', 'Premium', 'پریمیەم', { fa: 'لوکس', tr: 'Premium', fr: 'Premium', de: 'Premium' }),
 }
 /** daily = USD per day; excess = what you pay on damage with the included cover; deposit held on a card at pick-up. */
 export const CLASSES = [
-  { id: 'eco', name: N('بيجو 208 أو مشابهة', 'Peugeot 208 or similar', 'پیجۆ 208 یان هاوشێوە'), photo: 'photo-1692305610636-f5157dbe6008', seats: 5, bags: 1, doors: 5, daily: 29, excess: 700, deposit: 250, km: null, manualOnly: true },
-  { id: 'sed', name: N('تويوتا كورولا أو مشابهة', 'Toyota Corolla or similar', 'تۆیۆتا کۆرۆلا یان هاوشێوە'), photo: 'photo-1623869675781-80aa31012a5a', seats: 5, bags: 2, doors: 4, daily: 40, excess: 800, deposit: 300, km: null },
-  { id: 'csuv', name: N('سوزوكي فيتارا أو مشابهة', 'Suzuki Vitara or similar', 'سوزوکی ڤیتارا یان هاوشێوە'), photo: 'photo-1642345810417-eecf7dda339b', seats: 5, bags: 2, doors: 5, daily: 49, excess: 900, deposit: 350, km: null },
-  { id: 'suv', name: N('كيا سبورتاج أو مشابهة', 'Kia Sportage or similar', 'کیا سپۆرتەیج یان هاوشێوە'), photo: 'photo-1684849311625-b66671fb66d5', seats: 5, bags: 3, doors: 5, daily: 60, excess: 1000, deposit: 400, km: null },
-  { id: 'ev', name: N('تسلا موديل 3 أو مشابهة', 'Tesla Model 3 or similar', 'تێسلا مۆدێل 3 یان هاوشێوە'), photo: 'photo-1610470832703-95d40c3fad55', seats: 5, bags: 2, doors: 4, daily: 73, excess: 1200, deposit: 500, km: null, electric: true },
-  { id: '4x4', name: N('تويوتا لاند كروزر أو مشابهة', 'Toyota Land Cruiser or similar', 'تۆیۆتا لاند کرۆزەر یان هاوشێوە'), photo: 'photo-1709620435533-56483034bdd4', seats: 7, bags: 4, doors: 5, daily: 111, excess: 1500, deposit: 800, km: 300, over25: true },
-  { id: 'van', name: N('فولكس فاغن ID. Buzz أو مشابهة', 'Volkswagen ID. Buzz or similar', 'ڤۆلکسڤاگن ID. Buzz یان هاوشێوە'), photo: 'photo-1724479839764-65981526641d', seats: 7, bags: 5, doors: 5, daily: 92, excess: 1200, deposit: 600, km: null, electric: true },
-  { id: 'lux', name: N('مرسيدس الفئة E أو مشابهة', 'Mercedes E-Class or similar', 'مێرسیدس E-Class یان هاوشێوە'), photo: 'photo-1609703048009-d3576872b32c', seats: 5, bags: 3, doors: 4, daily: 145, excess: 2000, deposit: 1000, km: 250, over25: true },
+  { id: 'eco', name: N('بيجو 208 أو مشابهة', 'Peugeot 208 or similar', 'پیجۆ 208 یان هاوشێوە', { fa: 'پژو 208 یا مشابه', tr: 'Peugeot 208 veya benzeri', fr: 'Peugeot 208 ou similaire', de: 'Peugeot 208 oder ähnlich' }), photo: 'photo-1692305610636-f5157dbe6008', seats: 5, bags: 1, doors: 5, daily: 29, excess: 700, deposit: 250, km: null, manualOnly: true },
+  { id: 'sed', name: N('تويوتا كورولا أو مشابهة', 'Toyota Corolla or similar', 'تۆیۆتا کۆرۆلا یان هاوشێوە', { fa: 'تویوتا کرولا یا مشابه', tr: 'Toyota Corolla veya benzeri', fr: 'Toyota Corolla ou similaire', de: 'Toyota Corolla oder ähnlich' }), photo: 'photo-1623869675781-80aa31012a5a', seats: 5, bags: 2, doors: 4, daily: 40, excess: 800, deposit: 300, km: null },
+  { id: 'csuv', name: N('سوزوكي فيتارا أو مشابهة', 'Suzuki Vitara or similar', 'سوزوکی ڤیتارا یان هاوشێوە', { fa: 'سوزوکی ویتارا یا مشابه', tr: 'Suzuki Vitara veya benzeri', fr: 'Suzuki Vitara ou similaire', de: 'Suzuki Vitara oder ähnlich' }), photo: 'photo-1642345810417-eecf7dda339b', seats: 5, bags: 2, doors: 5, daily: 49, excess: 900, deposit: 350, km: null },
+  { id: 'suv', name: N('كيا سبورتاج أو مشابهة', 'Kia Sportage or similar', 'کیا سپۆرتەیج یان هاوشێوە', { fa: 'کیا اسپورتیج یا مشابه', tr: 'Kia Sportage veya benzeri', fr: 'Kia Sportage ou similaire', de: 'Kia Sportage oder ähnlich' }), photo: 'photo-1684849311625-b66671fb66d5', seats: 5, bags: 3, doors: 5, daily: 60, excess: 1000, deposit: 400, km: null },
+  { id: 'ev', name: N('تسلا موديل 3 أو مشابهة', 'Tesla Model 3 or similar', 'تێسلا مۆدێل 3 یان هاوشێوە', { fa: 'تسلا مدل 3 یا مشابه', tr: 'Tesla Model 3 veya benzeri', fr: 'Tesla Model 3 ou similaire', de: 'Tesla Model 3 oder ähnlich' }), photo: 'photo-1610470832703-95d40c3fad55', seats: 5, bags: 2, doors: 4, daily: 73, excess: 1200, deposit: 500, km: null, electric: true },
+  { id: '4x4', name: N('تويوتا لاند كروزر أو مشابهة', 'Toyota Land Cruiser or similar', 'تۆیۆتا لاند کرۆزەر یان هاوشێوە', { fa: 'تویوتا لندکروزر یا مشابه', tr: 'Toyota Land Cruiser veya benzeri', fr: 'Toyota Land Cruiser ou similaire', de: 'Toyota Land Cruiser oder ähnlich' }), photo: 'photo-1709620435533-56483034bdd4', seats: 7, bags: 4, doors: 5, daily: 111, excess: 1500, deposit: 800, km: 300, over25: true },
+  { id: 'van', name: N('فولكس فاغن ID. Buzz أو مشابهة', 'Volkswagen ID. Buzz or similar', 'ڤۆلکسڤاگن ID. Buzz یان هاوشێوە', { fa: 'فولکس‌واگن ID. Buzz یا مشابه', tr: 'Volkswagen ID. Buzz veya benzeri', fr: 'Volkswagen ID. Buzz ou similaire', de: 'Volkswagen ID. Buzz oder ähnlich' }), photo: 'photo-1724479839764-65981526641d', seats: 7, bags: 5, doors: 5, daily: 92, excess: 1200, deposit: 600, km: null, electric: true },
+  { id: 'lux', name: N('مرسيدس الفئة E أو مشابهة', 'Mercedes E-Class or similar', 'مێرسیدس E-Class یان هاوشێوە', { fa: 'مرسدس کلاس E یا مشابه', tr: 'Mercedes E-Class veya benzeri', fr: 'Mercedes E-Class ou similaire', de: 'Mercedes E-Class oder ähnlich' }), photo: 'photo-1609703048009-d3576872b32c', seats: 5, bags: 3, doors: 4, daily: 145, excess: 2000, deposit: 1000, km: 250, over25: true },
 ]
 /** perDay in USD; all are charged once per booking for the whole rental. */
 export const EXTRAS = [
