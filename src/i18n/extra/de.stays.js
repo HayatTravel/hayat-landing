@@ -195,4 +195,10 @@ export default {
   "st.dec": "Weniger {what}",
   "st.inc": "Mehr {what}",
   "ht.photo": "Foto {n} von {total}",
+  "ht.feat.title": "Ausgewählte Hotels",
+  "ht.feat.lede": "Hotels in den meistbesuchten Städten unserer Kunden, kostenlos stornierbar bis zu einem festen Datum.",
+  "ht.feat.all": "Alle Hotels",
+  "ht.feat.allCities": "Alle Städte",
+  "ht.feat.cities": "Städte",
+  "ht.freeCancel": "Kostenlose Stornierung",
 }

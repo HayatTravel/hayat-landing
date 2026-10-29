@@ -45,4 +45,8 @@ export default {
   "fs.via": "از طریق {city}",
   "fs.updated": "به‌روزرسانی {time}",
   "fs.mine": "وضعیت پرواز",
+  "fs.feat.t": "پروازهای امروز",
+  "fs.feat.s": "از بغداد و اربیل. برای دیدن وضعیت هر پرواز آن را باز کنید.",
+  "fs.feat.from": "حرکت از {city}",
+  "fs.feat.more": "یافتن پرواز",
 }

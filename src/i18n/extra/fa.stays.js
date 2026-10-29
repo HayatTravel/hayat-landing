@@ -195,4 +195,10 @@ export default {
   "st.dec": "کاهش {what}",
   "st.inc": "افزایش {what}",
   "ht.photo": "عکس {n} از {total}",
+  "ht.feat.title": "هتل‌های منتخب",
+  "ht.feat.lede": "هتل‌هایی در پربازدیدترین شهرهای مشتریان ما، با لغو رایگان تا تاریخی مشخص.",
+  "ht.feat.all": "همهٔ هتل‌ها",
+  "ht.feat.allCities": "همهٔ شهرها",
+  "ht.feat.cities": "شهرها",
+  "ht.freeCancel": "لغو رایگان",
 }

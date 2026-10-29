@@ -72,4 +72,9 @@ export default {
   "car.co.terms": "Teslimden 48 saat öncesine kadar ücretsiz iptal.",
   "car.doc.voucher": "Kiralama voucher'ı",
   "car.doc.receipt": "Ödeme makbuzu",
+  "car.feat.t": "Popüler araç kiralama noktaları",
+  "car.feat.s": "İki hafta sonrası için dört günlük örnek fiyatlar; teslimden 48 saat öncesine kadar ücretsiz iptal.",
+  "car.feat.from": "Günlük {amount}'dan başlayan",
+  "car.feat.all": "{city} içindeki tüm araçlar",
+  "car.feat.free": "48 saate kadar ücretsiz iptal",
 }

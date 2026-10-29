@@ -45,4 +45,8 @@ export default {
   "fs.via": "via {city}",
   "fs.updated": "Mis à jour à {time}",
   "fs.mine": "Statut du vol",
+  "fs.feat.t": "Départs du jour",
+  "fs.feat.s": "Au départ de Bagdad et d’Erbil. Ouvrez un vol pour voir son statut.",
+  "fs.feat.from": "Départs de {city}",
+  "fs.feat.more": "Trouver un vol",
 }

@@ -176,4 +176,6 @@ export default {
   "iq.plan.visa": "Visum für den Irak",
   "iq.plan.sim": "SIM-Karte zur Tour hinzufügen",
   "iq.plan.arbaeen": "Reise nach Kerbela und Nadschaf",
+  "iq.feat.lede": "Hotels nahe den Schreinen, Stätten und Souks in irakischen Städten.",
+  "iq.feat.all": "Alle Hotels im Irak",
 }

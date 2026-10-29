@@ -176,4 +176,6 @@ export default {
   "iq.plan.visa": "Irak vizesi",
   "iq.plan.sim": "Turunuza SIM ekleyin",
   "iq.plan.arbaeen": "Kerbela ve Necef ziyareti",
+  "iq.feat.lede": "Irak şehirlerinde türbelere, ören yerlerine ve çarşılara yakın oteller.",
+  "iq.feat.all": "Irak'taki tüm oteller",
 }

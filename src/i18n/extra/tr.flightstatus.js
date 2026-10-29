@@ -45,4 +45,8 @@ export default {
   "fs.via": "{city} üzerinden",
   "fs.updated": "Güncellendi: {time}",
   "fs.mine": "Uçuş durumu",
+  "fs.feat.t": "Bugünkü kalkışlar",
+  "fs.feat.s": "Bağdat ve Erbil'den. Durumunu görmek için bir uçuşu açın.",
+  "fs.feat.from": "{city} kalkışlı",
+  "fs.feat.more": "Uçuş bul",
 }

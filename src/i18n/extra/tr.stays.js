@@ -195,4 +195,10 @@ export default {
   "st.dec": "{what}: azalt",
   "st.inc": "{what}: artır",
   "ht.photo": "Fotoğraf {n} / {total}",
+  "ht.feat.title": "Öne çıkan oteller",
+  "ht.feat.lede": "Müşterilerimizin en çok gittiği şehirlerde, belirli bir tarihe kadar ücretsiz iptal edilebilen oteller.",
+  "ht.feat.all": "Tüm oteller",
+  "ht.feat.allCities": "Tüm şehirler",
+  "ht.feat.cities": "Şehirler",
+  "ht.freeCancel": "Ücretsiz iptal",
 }

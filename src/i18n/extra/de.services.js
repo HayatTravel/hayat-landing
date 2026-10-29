@@ -267,4 +267,10 @@ export default {
   "vi.d.company": "Schreiben Ihres Unternehmens",
   "vi.d.onward": "Ticket für den Weiterflug",
   "vi.d.finalvisa": "Visum für Ihr Endziel",
+  "vi.home2T": "Visa für Inhaber eines irakischen Passes",
+  "vi.home2S": "Beginnen Sie mit Ihrem Reisezweck oder mit den meistgefragten Ländern.",
+  "vi.popular": "Am häufigsten angefragt",
+  "es.featT": "Beliebte eSIM-Tarife",
+  "es.week": "Eine Woche",
+  "tr.perCarShort": "pro Wagen",
 }

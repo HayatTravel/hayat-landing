@@ -195,4 +195,10 @@ export default {
   "st.dec": "Moins de {what}",
   "st.inc": "Plus de {what}",
   "ht.photo": "Photo {n} sur {total}",
+  "ht.feat.title": "Hôtels à la une",
+  "ht.feat.lede": "Des hôtels dans les villes que nos clients visitent le plus, avec annulation gratuite jusqu’à une date précise.",
+  "ht.feat.all": "Tous les hôtels",
+  "ht.feat.allCities": "Toutes les villes",
+  "ht.feat.cities": "Villes",
+  "ht.freeCancel": "Annulation gratuite",
 }

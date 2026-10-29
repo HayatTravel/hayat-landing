@@ -72,4 +72,9 @@ export default {
   "car.co.terms": "Kostenlose Stornierung bis 48 Stunden vor der Übernahme.",
   "car.doc.voucher": "Mietwagen-Voucher",
   "car.doc.receipt": "Zahlungsbeleg",
+  "car.feat.t": "Beliebte Mietwagen-Übernahmeorte",
+  "car.feat.s": "Richtpreise für vier Tage in zwei Wochen, kostenlos stornierbar bis 48 Stunden vor der Übernahme.",
+  "car.feat.from": "Ab {amount} pro Tag",
+  "car.feat.all": "Alle Mietwagen in {city}",
+  "car.feat.free": "Kostenlose Stornierung bis 48 Std.",
 }

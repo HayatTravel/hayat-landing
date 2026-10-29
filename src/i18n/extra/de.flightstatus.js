@@ -45,4 +45,8 @@ export default {
   "fs.via": "über {city}",
   "fs.updated": "Aktualisiert {time}",
   "fs.mine": "Flugstatus",
+  "fs.feat.t": "Heutige Abflüge",
+  "fs.feat.s": "Ab Bagdad und Erbil. Öffnen Sie einen Flug, um seinen Status zu sehen.",
+  "fs.feat.from": "Abflug {city}",
+  "fs.feat.more": "Flug suchen",
 }

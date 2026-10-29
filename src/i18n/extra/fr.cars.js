@@ -72,4 +72,9 @@ export default {
   "car.co.terms": "Annulation gratuite jusqu’à 48 heures avant la prise en charge.",
   "car.doc.voucher": "Bon de location",
   "car.doc.receipt": "Reçu de paiement",
+  "car.feat.t": "Lieux de location populaires",
+  "car.feat.s": "Prix indicatifs pour quatre jours dans deux semaines, avec annulation gratuite jusqu’à 48 heures avant la prise en charge.",
+  "car.feat.from": "À partir de {amount} par jour",
+  "car.feat.all": "Toutes les voitures à {city}",
+  "car.feat.free": "Annulation gratuite jusqu’à 48 h",
 }

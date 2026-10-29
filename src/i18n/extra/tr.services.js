@@ -267,4 +267,10 @@ export default {
   "vi.d.company": "Şirketinizden yazı",
   "vi.d.onward": "Devam uçuşu bileti",
   "vi.d.finalvisa": "Son varış ülkenizin vizesi",
+  "vi.home2T": "Irak pasaportu sahipleri için vizeler",
+  "vi.home2S": "Seyahat amacınızdan ya da en çok sorulan ülkelerden başlayın.",
+  "vi.popular": "En çok talep edilenler",
+  "es.featT": "Popüler eSIM paketleri",
+  "es.week": "Bir hafta",
+  "tr.perCarShort": "araç başı",
 }
