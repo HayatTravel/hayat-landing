@@ -1,23 +1,25 @@
-/* Flight status adapter — MOCK implementation for the design mockup.
+/* Flight status adapter — MOCK implementation for the design mockup. Hayat shows status for its OWN bookings only;
+   any other flight is linked out to free public sites (no paid public tracker for now).
 
-   Real provider contract (to be implemented on the website server; the browser never calls a provider directly):
-     GET /api/v1/flight-status?flight=IA233&date=YYYY-MM-DD        → FlightStatus | 404
-     GET /api/v1/flight-status?from=BGW&to=IST&date=YYYY-MM-DD      → FlightStatus[]  (all departures of the day)
-     POST /api/v1/flight-status/follow { flight, date, phone }      → 204  (updates are sent on WhatsApp)
-   The server queries the flight-data provider chosen in production (schedules + live positions), caches results
-   for about 60 s and normalises them to:
-     FlightStatus = {
-       id, flight: 'IA 233', carrier: 'IA', from: 'BGW', to: 'IST', date: 'YYYY-MM-DD',
-       sched: { dep, arr },  est: { dep, arr },        // minutes after local midnight at each airport (arr may exceed 1440)
-       status: 'scheduled'|'boarding'|'departed'|'air'|'landed'|'delayed'|'cancelled',
-       delay: minutes, terminal: { dep, arr }, gate: string|null, aircraft: string|null,
-       dur: minutes, progress: 0..1,                    // share of the flight flown (live position in production)
-     }
-   The client polls about every 30 s while a flight is between boarding and landing. Swap the functions below for
-   fetch() calls; everything else in the UI stays the same. */
-import { IRAQ, airport, clock, norm, searchFlights, seed } from '../../components/flights/engine'
+   Data sources in production (behind the website server; the browser never calls them directly):
+     - Hayat charter programmes: Products / Charter operations status (departure, delay, gate, landed).
+     - GDS bookings: Sabre FLIFO (flight information) for the booked segments.
+     - Iraqi Airways NDC bookings: IA NDC flight status.
+     - Later, only for transfers / notifications at volume: a paid feed (e.g. FlightAware Standard).
+   Server contract:
+     GET /api/v1/customer/orders/:ref/flight-status       → FlightStatus[]  (one per segment of the booking)
+     GET /api/v1/charter/departures?from=YYYY-MM-DD&days=7 → FlightStatus[]  (Hayat charter week)
+     POST /api/v1/customer/orders/:ref/follow             → 204  (status updates sent on WhatsApp through the CRM)
+   FlightStatus = {
+     id, flight: 'IA 233', carrier, from, to, date: 'YYYY-MM-DD',
+     sched: { dep, arr }, est: { dep, arr },              // minutes after local midnight at each airport (arr may exceed 1440)
+     status: 'scheduled'|'boarding'|'departed'|'air'|'landed'|'delayed'|'cancelled',
+     delay, terminal: { dep, arr }, gate, aircraft, dur, progress: 0..1,
+   }
+   The client re-reads about every 30 s between boarding and landing. Swap the functions below for fetch() calls. */
+import { IRAQ, clock, norm, searchFlights, seed } from '../../components/flights/engine'
 import D from '../../data/catalog'
-import { WORLD_ROUTES, WORLD_TZ } from '../../components/flights/world'
+import { WORLD_TZ } from '../../components/flights/world'
 
 const TZ = { IST: 0, AYT: 0, TZX: 0, DXB: 1, SHJ: 1, DOH: 0, GYD: 1, TBS: 1, BUS: 1, SSH: -1, CAI: -1, AMM: 0, BEY: -1, KUL: 5, MLE: 2, ...WORLD_TZ }
 const tz = (c) => (IRAQ.includes(c) ? 0 : TZ[c] ?? 0)
@@ -66,49 +68,29 @@ function fromSegment(s, date, leg) {
   }
 }
 
-const ROUTE_DESTS = () => [...new Set([...D.routes.map((r) => r.to), ...WORLD_ROUTES.map((r) => r.to)])]
-/** Every segment flown on a date, from the same generator as flight search (both directions). */
-function segmentsOn(date) {
+/** Status for every flight segment of a saved booking (flights and holidays). `legsOf(b)` returns the booked legs. */
+export async function forBooking(b, legsOf) {
+  const f = legsOf(b)
+  if (!f) return []
+  return f.x.legs.flatMap((l) => l.segs.map((sg) => ({ ...statusAt(fromSegment(sg, l.date)), ref: b.ref })))
+}
+
+/** Hayat charter departures in the next `days` days, both directions of each programme. */
+export async function charterWeek(days = 7, at = Date.now()) {
+  const start = baghdadNow(at).iso
   const out = []
-  for (const iq of IRAQ) for (const d of ROUTE_DESTS()) for (const [a, b] of [[iq, d], [d, iq]]) {
-    if (!airport(a) || !airport(b)) continue
-    searchFlights(norm({ from: a, to: b, d1: date, trip: 'ow' })).list.forEach((x) => x.legs[0].segs.forEach((s) => out.push(s)))
+  for (let k = 0; k < days; k += 1) {
+    const d = new Date(`${start}T00:00:00`); d.setDate(d.getDate() + k)
+    const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    D.charters.forEach((ch) => [[ch.from, ch.to], [ch.to, ch.from]].forEach(([a, z]) => {
+      const x = searchFlights(norm({ from: a, to: z, d1: date, trip: 'ow' })).list.find((y) => y.kind === 'charter' && y.id === ch.id)
+      if (x) out.push({ ...statusAt(fromSegment(x.legs[0].segs[0], date)), programme: ch.id })
+    }))
   }
-  return out
+  return out.sort((a, b) => (a.date === b.date ? a.sched.dep - b.sched.dep : a.date < b.date ? -1 : 1))
 }
 
-/** Find one flight by number on a date. Resolves null when the number is not recognised. */
-export async function findByNumber({ flight, date }) {
-  const p = parseFlight(flight)
-  if (!p) return null
-  const label = flightLabel(p)
-  const s = segmentsOn(date).find((x) => x.fn === label)
-  if (s) return statusAt(fromSegment(s, date))
-  // Not in the generated schedule: keep the number and place it on a route that carrier flies, so the design shows a result.
-  const any = segmentsOn(date).find((x) => x.c === p.carrier)
-  return any ? statusAt(fromSegment({ ...any, fn: label }, date)) : null
-}
-
-/** All flights of a day on a route (first segment of each option; connections show their first flight). */
-export async function findByRoute({ from, to, date }) {
-  const q = norm({ from, to, d1: date, trip: 'ow' })
-  return searchFlights(q).list.map((x) => {
-    const s = x.legs[0].segs[0]
-    return { ...statusAt(fromSegment(s, date, x.legs[0])), via: x.legs[0].via, finalTo: x.legs[0].to, finalArr: x.legs[0].arr }
-  }).sort((a, b) => a.sched.dep - b.sched.dep)
-}
-
-/** Departures from one airport on a date (first `limit` by time). Real: GET /api/v1/flight-status?airport=BGW&date=… */
-export async function departures({ airport: code, date, limit = 6 }) {
-  const seen = new Set()
-  const all = segmentsOn(date).filter((x) => x.from === code && !seen.has(x.fn) && seen.add(x.fn)).sort((a, b) => a.dep - b.dep)
-  // Today: start about an hour before now so the board shows what is boarding and leaving next.
-  const now = baghdadNow()
-  const from = now.iso === date ? Math.max(0, Math.min(all.findIndex((x) => x.dep >= now.min - 60), all.length - limit)) : 0
-  return all.slice(from < 0 ? Math.max(0, all.length - limit) : from, (from < 0 ? all.length : from + limit)).map((x) => statusAt(fromSegment(x, date)))
-}
-
-/** Mock: the server would register the phone for WhatsApp updates. */
+/** Mock: own bookings only — the server registers the booking for WhatsApp updates through the CRM. */
 export async function follow() { return true }
 
 export const fmt = (m) => clock(m)

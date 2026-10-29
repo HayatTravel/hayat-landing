@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import Icon from '../Icon'
-import Combobox from '../Combobox'
-import { Ltr } from '../ui'
-import { inDays, useI18n } from '../../lib/i18n'
-import { store } from '../../lib/store'
+import { useI18n } from '../../lib/i18n'
+import { trips } from '../../lib/store'
 import { parseFlight } from '../../lib/providers/flightStatus'
-import { Field, airportOptions, control } from './FlightForm'
-import { qs, place } from './engine'
+import { Field, control } from './FlightForm'
+import { place } from './engine'
 import { GEO } from './geo'
+import { AIRLINE_SITES } from './world'
 
 const TONE = {
   scheduled: 'bg-mist text-ink/75', boarding: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', departed: 'bg-brand/10 text-brand', air: 'bg-brand/10 text-brand',
@@ -16,64 +15,62 @@ const TONE = {
 }
 /** Status pill used on the status page, the home departures boards and lists. */
 export const Pill = ({ s }) => { const { t } = useI18n(); return <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold ${TONE[s]}`}>{(s === 'air' || s === 'boarding') && <span className="size-1.5 rounded-full bg-current" />}{t(`fs.s.${s}`)}</span> }
-const RECENT = 'fs-recent'
-export const recentSearches = () => store.get(RECENT, [])
-export const remember = (s) => store.set(RECENT, [s, ...recentSearches().filter((x) => JSON.stringify(x) !== JSON.stringify(s))].slice(0, 5))
-export const statusHref = (s) => `/flight-status?${qs(s)}`
+const digits = (v) => String(v || '').replace(/\D/g, '').slice(-9)
+/** Find a saved booking by number + phone (same rule as My trips). Returns the booking or an error key. */
+export function lookupBooking(ref, phone) {
+  const r = String(ref || '').replace(/\s/g, '').toUpperCase(); const ph = digits(phone)
+  if (r.length < 6 || ph.length < 9) return { err: 'fs.lookup.need' }
+  const b = trips.find(r)
+  return b && digits(b.phone) === ph ? { b } : { err: 'fs.lookup.err' }
+}
 
-/** Search by flight number, or by route + date. Navigates to /flight-status?flight=&date= or ?from=&to=&date=. */
-export function StatusForm({ initial = {}, bare = false }) {
-  const i = useI18n(); const { t } = i
+/** Booking number + phone → /flight-status with the booking (passed in router state, never in the URL). */
+export function BookingLookup({ bare = false, onFound }) {
+  const { t } = useI18n()
   const go = useNavigate()
-  const [mode, setMode] = useState(initial.from ? 'route' : 'no')
-  const [no, setNo] = useState(initial.flight || '')
-  const [from, setFrom] = useState(initial.from || 'BGW')
-  const [to, setTo] = useState(initial.to || 'IST')
-  const [date, setDate] = useState(initial.date || inDays(0))
   const [err, setErr] = useState('')
-  const opts = airportOptions(i.L)
   const submit = (e) => {
     e.preventDefault()
-    let s
-    if (mode === 'no') { const p = parseFlight(no); if (!p) return setErr(t('fs.badNo')); s = { flight: `${p.carrier}${p.number}`, date } } else s = { from, to, date }
-    setErr(''); remember(s); go(statusHref(s))
+    const f = e.currentTarget
+    const r = lookupBooking(f.ref.value, f.phone.value)
+    if (r.err) return setErr(t(r.err))
+    setErr('')
+    if (onFound) onFound(r.b); else go('/flight-status', { state: { ref: r.b.ref } })
   }
   return (
     <form onSubmit={submit} noValidate className={`space-y-3 text-ink ${bare ? '' : 'rounded-lg border border-line bg-white p-4 sm:p-5'}`}>
-      <div role="group" aria-label={t('fs.title')} className="inline-flex rounded-md bg-mist p-1">
-        {[['no', 'fs.byNo'], ['route', 'fs.byRoute']].map(([v, k]) => (
-          <button key={v} type="button" aria-pressed={mode === v} onClick={() => setMode(v)} className={`rounded px-4 py-1.5 text-sm font-semibold transition ${mode === v ? 'bg-white text-ink shadow-sm' : 'text-muted hover:text-ink'}`}>{t(k)}</button>
-        ))}
-      </div>
-      <div className={`grid gap-3 ${mode === 'no' ? 'md:grid-cols-[1.4fr_1fr_auto]' : 'md:grid-cols-[1fr_1fr_1fr_auto]'}`}>
-        {mode === 'no' ? (
-          <Field label={t('fs.no')} icon="plane"><input className={`${control} uppercase`} dir="ltr" value={no} onChange={(e) => setNo(e.target.value)} placeholder={t('fs.noPh')} autoComplete="off" /></Field>
-        ) : (<>
-          <Combobox label={t('fl.from')} icon="plane" value={from} onChange={setFrom} options={opts.filter((o) => o.value !== to)} placeholder={t('fl.cityPh')} />
-          <Combobox label={t('fl.to')} icon="pin" value={to} onChange={setTo} options={opts.filter((o) => o.value !== from)} placeholder={t('fl.cityPh')} />
-        </>)}
-        <Field label={t('fs.date')} icon="calendar"><input type="date" className={control} value={date} min={inDays(-2)} max={inDays(330)} onChange={(e) => e.target.value && setDate(e.target.value)} /></Field>
-        <button className="btn-primary min-h-14 w-full px-8 text-base md:w-auto"><Icon name="search" className="size-5" />{t('fs.go')}</button>
+      <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+        <Field label={t('fs.lookup.ref')} icon="ticket"><input name="ref" className={`${control} uppercase`} dir="ltr" placeholder="HY…" autoComplete="off" maxLength={10} /></Field>
+        <Field label={t('fs.lookup.phone')} icon="phone">
+          <span className="flex items-center gap-2" dir="ltr"><span className="text-sm text-muted">+964</span><input name="phone" type="tel" inputMode="tel" className={control} placeholder="770 000 0000" autoComplete="tel-national" /></span>
+        </Field>
+        <button className="btn-primary min-h-14 w-full px-8 text-base md:w-auto"><Icon name="search" className="size-5" />{t('fs.lookup.go')}</button>
       </div>
       {err && <p role="alert" className="text-sm font-medium text-red-600">{err}</p>}
     </form>
   )
 }
 
-/** Recent searches as chips. */
-export function RecentSearches() {
-  const i = useI18n(); const { t } = i
-  const list = recentSearches()
-  if (!list.length) return null
+/** Any other flight: link out to free public sources (no paid tracker). */
+export function OtherFlight() {
+  const { t } = useI18n()
+  const [no, setNo] = useState('')
+  const p = parseFlight(no)
+  const ident = p ? `${p.carrier}${p.number}` : ''
+  const airline = p && AIRLINE_SITES[p.carrier] ? AIRLINE_SITES[p.carrier] : `https://www.google.com/search?q=${encodeURIComponent(`${ident} flight status`)}`
+  const off = 'pointer-events-none opacity-50'
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm">
-      <span className="text-xs text-muted">{t('fs.recent')}</span>
-      {list.map((s) => (
-        <Link key={JSON.stringify(s)} to={statusHref(s)} className="chip hover:border-brand hover:text-brand">
-          {s.flight ? <Ltr>{s.flight.replace(/^(..)/, '$1 ')}</Ltr> : `${place(s.from, i.L)} – ${place(s.to, i.L)}`} · {i.date(s.date)}
-        </Link>
-      ))}
-    </div>
+    <section className="card p-6">
+      <h2 className="font-bold">{t('fs.other.t')}</h2>
+      <p className="mt-1 text-sm text-muted">{t('fs.other.s')}</p>
+      <div className="mt-4 grid gap-3 md:grid-cols-[1fr_auto_auto] md:items-end">
+        <Field label={t('fs.no')} icon="plane"><input className={`${control} uppercase`} dir="ltr" value={no} onChange={(e) => setNo(e.target.value)} placeholder={t('fs.noPh')} autoComplete="off" /></Field>
+        <a href={p ? `https://www.flightradar24.com/data/flights/${ident.toLowerCase()}` : undefined} target="_blank" rel="noopener" aria-disabled={!p} className={`btn-ghost px-5 py-3 text-sm ${p ? '' : off}`}>{t('fs.other.fr24')}<Icon name="arrow" className="size-4 rtl:-scale-x-100" /></a>
+        <a href={p ? airline : undefined} target="_blank" rel="noopener" aria-disabled={!p} className={`btn-ghost px-5 py-3 text-sm ${p ? '' : off}`}>{t('fs.other.airline')}<Icon name="arrow" className="size-4 rtl:-scale-x-100" /></a>
+      </div>
+      {no && !p && <p className="mt-2 text-sm text-red-600">{t('fs.badNo')}</p>}
+      <p className="mt-3 text-xs text-muted">{t('fs.other.note')}</p>
+    </section>
   )
 }
 

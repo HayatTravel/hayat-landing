@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { Link, useLocation, useSearchParams } from 'react-router'
 import { PageHead } from '../components/Layout'
 import Icon from '../components/Icon'
 import { Ltr } from '../components/ui'
 import { Logo } from '../components/flights/parts'
-import { FlightMap, Pill, RecentSearches, StatusForm, remember, statusHref } from '../components/flights/Status'
+import { BookingLookup, FlightMap, OtherFlight, Pill } from '../components/flights/Status'
 import { airlineName, clock, place } from '../components/flights/engine'
-import { inDays, useI18n } from '../lib/i18n'
-import { findByNumber, findByRoute, follow, parseFlight, statusAt } from '../lib/providers/flightStatus'
+import { flightOf, packageFlight } from '../components/docs/index'
+import { useI18n } from '../lib/i18n'
+import { openSignIn, trips, useStore } from '../lib/store'
+import { follow, forBooking, statusAt } from '../lib/providers/flightStatus'
 
 const T = ({ m, className = '' }) => { const c = clock(m); return <Ltr className={className}>{c.hm}{c.day ? <sup className="ms-0.5 text-[10px]">{c.day > 0 ? '+' : ''}{c.day}</sup> : null}</Ltr> }
 const useNow = (ms = 30000) => { const [n, setN] = useState(Date.now()); useEffect(() => { const x = setInterval(() => setN(Date.now()), ms); return () => clearInterval(x) }, [ms]); return n }
+const legsOf = (b) => (b.type === 'flight' ? flightOf(b) : b.type === 'package' ? packageFlight(b) : null)
+const FLIGHT_TYPES = ['flight', 'package']
 
 function End({ f, side }) {
   const i = useI18n(); const { t } = i
@@ -33,19 +37,15 @@ function End({ f, side }) {
   )
 }
 
-function Result({ f0, onToast }) {
+/** One flight segment of a Hayat booking: status, times, progress, live map, follow. */
+function Leg({ f0, onToast }) {
   const i = useI18n(); const { t } = i
   const now = useNow()
   const f = statusAt(f0, now)
   const pct = Math.round(f.progress * 100)
   const left = Math.max(0, Math.round(f.dur * (1 - f.progress)))
-  const share = async () => {
-    const url = location.href
-    try { if (navigator.share) await navigator.share({ title: `${f.flight} · ${t(`fs.s.${f.status}`)}`, url }); else { await navigator.clipboard.writeText(url); onToast(t('fs.copied')) } } catch { /* dismissed */ }
-  }
-  const hhmm = (ms) => { const d = new Date(ms); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}` }
   return (
-    <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+    <div className="grid gap-5 lg:grid-cols-2">
       <section className="card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3"><Logo c={f.carrier} className="h-7 w-16" />
@@ -57,7 +57,7 @@ function Result({ f0, onToast }) {
         <div className="mt-6">
           <div className="relative h-2 rounded-full bg-mist" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label={t('fs.flown', { pct })}>
             <span className="absolute inset-y-0 start-0 rounded-full bg-brand transition-[width] duration-1000" style={{ width: `${pct}%` }} />
-            <span className="absolute top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-full border border-line bg-white text-brand transition-[inset-inline-start] duration-1000 ltr:-translate-x-1/2 rtl:translate-x-1/2" style={{ insetInlineStart: `${pct}%` }}>
+            <span className="absolute top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-full border border-line bg-white text-brand ltr:-translate-x-1/2 rtl:translate-x-1/2" style={{ insetInlineStart: `${pct}%` }}>
               <Icon name="plane" className="size-3.5 rtl:-scale-x-100" /></span>
           </div>
           <p className="mt-3 flex justify-between text-xs text-muted"><span>{t('fs.flown', { pct })}</span>{f.status === 'air' && <span>{t('fs.left', { time: i.dur(left) })}</span>}</p>
@@ -66,14 +66,10 @@ function Result({ f0, onToast }) {
           <div><dt className="text-xs text-muted">{t('fs.aircraft')}</dt><dd className="font-semibold"><Ltr>{f.aircraft}</Ltr></dd></div>
           <div><dt className="text-xs text-muted">{t('fs.dur')}</dt><dd className="font-semibold">{i.dur(f.dur)}</dd></div>
         </dl>
-        <div className="mt-6 flex flex-wrap gap-2">
-          <button type="button" onClick={async () => { await follow({ flight: f.flight, date: f.date }); onToast(t('fs.followed')) }} className="btn-primary px-5 py-2.5 text-sm"><Icon name="bell" className="size-4" />{t('fs.follow')}</button>
-          <button type="button" onClick={share} className="btn-ghost px-5 py-2.5 text-sm"><Icon name="send" className="size-4" />{t('fs.share')}</button>
-        </div>
-        <p className="mt-4 text-xs text-muted">{t('fs.updated', { time: hhmm(now) })}</p>
+        <button type="button" onClick={async () => { await follow({ ref: f.ref, flight: f.flight }); onToast(t('fs.followed')) }} className="btn-primary mt-6 px-5 py-2.5 text-sm"><Icon name="bell" className="size-4" />{t('fs.follow')}</button>
       </section>
       <section className="card p-6">
-        <h2 className="mb-3 flex items-center gap-2 font-bold"><Icon name="map" className="size-4 text-muted" />{t('fs.map')}</h2>
+        <h3 className="mb-3 flex items-center gap-2 font-bold"><Icon name="map" className="size-4 text-muted" />{t('fs.map')}</h3>
         <FlightMap from={f.from} to={f.to} progress={f.progress} status={f.status} />
         <p className="mt-3 text-xs text-muted">{t('fs.mapNote')}</p>
       </section>
@@ -81,68 +77,58 @@ function Result({ f0, onToast }) {
   )
 }
 
-function DayList({ list }) {
-  const i = useI18n(); const { t } = i
-  const now = useNow()
+/** All flight segments of one booking. */
+function BookingFlights({ b, onToast }) {
+  const { t } = useI18n()
+  const [legs, setLegs] = useState(null)
+  useEffect(() => { let live = true; forBooking(b, legsOf).then((r) => live && setLegs(r)); return () => { live = false } }, [b.ref])
   return (
-    <ul className="grid gap-2">
-      {list.map((f0) => {
-        const f = statusAt(f0, now)
-        return (
-          <li key={f.id}>
-            <Link to={statusHref({ flight: f.flight.replace(' ', ''), date: f.date })} onClick={() => remember({ flight: f.flight.replace(' ', ''), date: f.date })}
-              className="card card-hover grid grid-cols-[auto_1fr_auto] items-center gap-4 p-4">
-              <Logo c={f.carrier} className="h-6 w-14" />
-              <span className="grid gap-0.5">
-                <span className="font-semibold"><Ltr>{f.flight}</Ltr> · {airlineName(f.carrier, i.L)}</span>
-                <span className="text-sm text-muted"><T m={f.est.dep} /> <Ltr>{f.from}</Ltr> – <T m={f.est.arr} /> <Ltr>{f.to}</Ltr>{f.via ? ` · ${t('fs.via', { city: place(f.via, i.L) })}` : ''}</span>
-              </span>
-              <Pill s={f.status} />
-            </Link>
-          </li>
-        )
-      })}
-    </ul>
+    <section className="grid gap-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h3 className="font-bold">{t('fs.mine.bk', { ref: '' })}<Ltr className="font-mono">{b.ref}</Ltr> · <span className="font-normal text-muted">{b.title}</span></h3>
+        <Link to={`/trips/${b.ref}`} className="text-sm font-semibold text-brand">{t('fs.mine.open')}</Link>
+      </div>
+      {!legs ? <p role="status" className="card p-6 text-center text-sm text-muted">{t('fs.loading')}</p>
+        : legs.length ? legs.map((f) => <Leg key={f.id} f0={f} onToast={onToast} />)
+          : <p className="card p-6 text-center text-sm text-muted">{t('fs.lookup.noFlights')}</p>}
+    </section>
   )
 }
 
-/** /flight-status?flight=IA233&date=  or  ?from=BGW&to=IST&date= */
+/** /flight-status (?booking=REF from My trips): status of Hayat bookings; other flights link out to free sources. */
 export default function FlightStatus() {
-  const i = useI18n(); const { t } = i
+  useStore()
+  const { t } = useI18n()
   const [sp] = useSearchParams()
-  const q = Object.fromEntries(sp)
-  const date = /^\d{4}-\d{2}-\d{2}$/.test(q.date || '') ? q.date : inDays(0)
-  const key = `${q.flight || ''}|${q.from || ''}|${q.to || ''}|${date}`
-  const [state, setState] = useState({ key: '', busy: false, one: null, list: null })
+  const loc = useLocation()
+  const [found, setFound] = useState(() => trips.find(loc.state?.ref || sp.get('booking') || ''))
+  useEffect(() => { const b = trips.find(loc.state?.ref || sp.get('booking') || ''); if (b) setFound(b) }, [loc.key]) // eslint-disable-line react-hooks/exhaustive-deps
   const [toast, setToast] = useState('')
-  useEffect(() => {
-    let live = true
-    if (!q.flight && !(q.from && q.to)) { setState({ key, busy: false, one: null, list: null }); return undefined }
-    setState({ key, busy: true, one: null, list: null })
-    const job = q.flight ? findByNumber({ flight: q.flight, date }).then((one) => ({ one })) : findByRoute({ from: q.from, to: q.to, date }).then((list) => ({ list }))
-    job.then((r) => live && setState({ key, busy: false, one: null, list: null, ...r }))
-    return () => { live = false }
-  }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (!toast) return undefined; const x = setTimeout(() => setToast(''), 2600); return () => clearTimeout(x) }, [toast])
-  const searched = !!(q.flight || (q.from && q.to))
-  const p = parseFlight(q.flight)
+  const mine = trips.list().filter((b) => FLIGHT_TYPES.includes(b.type) && b.status !== 'cancelled' && b.ref !== found?.ref)
 
   return (
     <>
       <PageHead>
         <h1 className="text-3xl font-bold sm:text-4xl">{t('fs.title')}</h1>
         <p className="mt-2 max-w-2xl text-muted">{t('fs.sub')}</p>
-        <div className="mt-8"><StatusForm key={key} initial={{ ...q, flight: p ? `${p.carrier} ${p.number}` : q.flight, date }} /></div>
+        <div className="mt-8"><BookingLookup onFound={setFound} /></div>
       </PageHead>
-      <div className="container-x grid gap-6 py-10">
-        <RecentSearches />
-        {searched && state.busy && <p role="status" className="card p-8 text-center text-sm text-muted">{t('fs.loading')}</p>}
-        {searched && !state.busy && q.flight && (state.one ? <Result f0={state.one} onToast={setToast} />
-          : <div className="card p-10 text-center"><h2 className="text-lg font-bold">{t('fs.notFound')}</h2><p className="mt-1 text-sm text-muted">{t('fs.notFoundD')}</p></div>)}
-        {searched && !state.busy && !q.flight && state.list && (
-          <section><h2 className="mb-3 font-bold">{t('fs.dayList', { date: i.date(date, { weekday: true }) })} · {place(q.from, i.L)} – {place(q.to, i.L)}</h2>
-            {state.list.length ? <DayList list={state.list} /> : <p className="card p-8 text-center text-sm text-muted">{t('fs.noRoute')}</p>}</section>
-        )}
+      <div className="container-x grid gap-10 py-10">
+        {found && <BookingFlights b={found} onToast={setToast} />}
+        {(mine.length > 0 || !found) && <section className="grid gap-6">
+          <h2 className="text-xl font-bold">{t('fs.mine.t')}</h2>
+          {mine.length ? mine.map((b) => <BookingFlights key={b.ref} b={b} onToast={setToast} />) : !found && (
+            <div className="card flex flex-wrap items-center justify-between gap-4 p-6">
+              <p className="text-sm text-ink/80">{t('fs.mine.none')}</p>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => openSignIn()} className="btn-primary px-5 py-2.5 text-sm"><Icon name="user" className="size-4" />{t('nav.signin')}</button>
+                <Link to="/trips" className="btn-ghost px-5 py-2.5 text-sm">{t('fs.lookup.t')}</Link>
+              </div>
+            </div>
+          )}
+        </section>}
+        <OtherFlight />
         <p className="text-xs text-muted">{t('fs.source')}</p>
       </div>
       <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-24 z-[70] flex justify-center px-4 print:hidden">

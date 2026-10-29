@@ -95,3 +95,12 @@ export const IRAQ_AIRPORTS = [
   { code: 'NJF', region: 'fed', links: ['IKA', 'MHD', 'IST', 'DXB', 'DOH', 'BEY', 'KHI'] },
   { code: 'BSR', region: 'fed', links: ['DXB', 'DOH', 'IST', 'AMM', 'IKA'] },
 ]
+
+/** Airline websites, for "Check with the airline" (flight status pages change; the home page is stable). */
+export const AIRLINE_SITES = {
+  IA: 'https://www.iraqiairways.com', IF: 'https://www.flybaghdad.net', TK: 'https://www.turkishairlines.com', PC: 'https://www.flypgs.com',
+  FZ: 'https://www.flydubai.com', EK: 'https://www.emirates.com', QR: 'https://www.qatarairways.com', J2: 'https://www.azal.az', RJ: 'https://www.rj.com',
+  MS: 'https://www.egyptair.com', ME: 'https://www.mea.com.lb', G9: 'https://www.airarabia.com', IR: 'https://www.iranair.com', W5: 'https://www.mahan.aero',
+  LH: 'https://www.lufthansa.com', OS: 'https://www.austrian.com', KU: 'https://www.kuwaitairways.com', PK: 'https://www.piac.com.pk',
+  SV: 'https://www.saudia.com', XY: 'https://www.flynas.com', OV: 'https://www.salamair.com',
+}

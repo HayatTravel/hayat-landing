@@ -94,5 +94,5 @@ export { nightsBetween }
 export function flightStatusHref(b) {
   const f = b?.type === 'flight' ? flightOf(b) : b?.type === 'package' ? packageFlight(b) : null
   const s = f?.x.legs[0].segs[0]
-  return s ? `/flight-status?flight=${s.fn.replace(' ', '')}&date=${f.x.legs[0].date}` : null
+  return s ? `/flight-status?booking=${b.ref}` : null
 }
