@@ -1,7 +1,9 @@
-import { Link } from 'react-router'
+import { data, Link } from 'react-router'
 import Icon from '../components/Icon'
 import { PageHead } from '../components/Layout'
 import { useI18n } from '../lib/i18n'
+
+export const loader = () => data(null, { status: 404 })
 
 export default function NotFound() {
   const { t } = useI18n()

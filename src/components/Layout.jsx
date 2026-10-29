@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router'
 import Icon from './Icon'
 import { Logo } from './ui'
@@ -346,25 +346,13 @@ export default function Layout() {
       <SkipLink />
       <Navbar />
       <main id="main" tabIndex={-1} className="min-h-dvh outline-none print:min-h-0">
-        <Suspense fallback={<PageLoading />}>
-          <Outlet />
-        </Suspense>
+        <Outlet />
       </main>
       <Footer />
       <Help />
       <SignIn />
       <ScrollRestoration />
     </>
-  )
-}
-
-/** Shown only if a page is opened before its code has arrived: the dark band plus a calm skeleton. */
-function PageLoading() {
-  return (
-    <div aria-busy="true">
-      <div className="page-head h-56 bg-[#070b16] lg:h-64" />
-      <div className="container-x grid gap-4 py-10">{[0, 1, 2].map((k) => <div key={k} className="h-28 animate-pulse rounded-lg bg-mist" />)}</div>
-    </div>
   )
 }
 

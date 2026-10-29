@@ -1,10 +1,13 @@
-import { Link, useSearchParams } from 'react-router'
+import { Link, useLoaderData, useSearchParams } from 'react-router'
 import { PageHead } from '../components/Layout'
 import SearchTabs from '../components/SearchTabs'
-import D, { media } from '../data/catalog'
+import { media } from '../data/catalog'
+import { catalog } from '../lib/catalog.server'
 import { useI18n } from '../lib/i18n'
 import { PriceFrom } from '../components/stays/ui'
 import { baseQ, cheapest, imgSrc, hotelCities, hq, plural, withQs } from '../components/stays/lib'
+
+export const loader = async () => ({ hotels: await catalog.hotels.list() })
 
 /** #/hotels — search (tab fixed) and the cities we book most, each leading to its results. */
 export default function Hotels() {
@@ -12,6 +15,7 @@ export default function Hotels() {
   const [sp] = useSearchParams()
   const q = Object.fromEntries(sp)
   const h = hq()
+  const { hotels } = useLoaderData()
   return (
     <>
       <PageHead photo={media('hotel')}>
@@ -24,7 +28,7 @@ export default function Hotels() {
         <p className="mt-2 text-muted">{t('ht.whereD')}</p>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {hotelCities().map((c) => {
-            const hs = D.hotels.filter((x) => x.city === c.slug)
+            const hs = hotels.filter((x) => x.city === c.slug)
             return (
               <Link key={c.slug} to={withQs('/hotels/results', baseQ({ ...h, city: c.slug }))} className="card card-hover group overflow-hidden">
                 <div className="aspect-[16/10] overflow-hidden bg-mist"><img src={imgSrc(c.img)} alt="" loading="lazy" className="size-full object-cover transition duration-700 group-hover:scale-105" /></div>
