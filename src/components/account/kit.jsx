@@ -4,7 +4,7 @@ import Icon from '../Icon'
 import { Logo, Ltr } from '../ui'
 import { inDays, iso, addDaysIso } from '../../lib/i18n'
 import { buildOrder } from '../../lib/products'
-import { openHelp, openSignIn, store, trips } from '../../lib/store'
+import { isHydrated, openHelp, openSignIn, store, trips } from '../../lib/store'
 import D, { media } from '../../data/catalog'
 
 /* Shared pieces of the account area: booking helpers, sample bookings, status badges,
@@ -40,7 +40,7 @@ const city = (i, code) => i.L(D.airports.find((a) => a.code === code)?.city) || 
 
 /* ---------- lookups made without signing in (this tab only) ---------- */
 const LK = 'hayat-lookup'
-export const lookups = () => { try { return JSON.parse(sessionStorage.getItem(LK)) || [] } catch { return [] } }
+export const lookups = () => { if (!isHydrated()) return []; try { return JSON.parse(sessionStorage.getItem(LK)) || [] } catch { return [] } }
 const addLookup = (ref) => { try { sessionStorage.setItem(LK, JSON.stringify([...new Set([...lookups(), ref])])) } catch { /* blocked */ } }
 
 /* ---------- sample bookings (demo only, rebuilt in the current language) ---------- */

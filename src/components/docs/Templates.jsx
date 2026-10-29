@@ -11,6 +11,7 @@ import { tourEnd } from '../incoming/lib'
 import { Callout, DocShell, F, QR, Rows, code, isPaid, names } from './kit'
 import ETicket from './ETicket'
 import { flightOf, packageFlight } from './index'
+import { origin } from '../../lib/store'
 
 /* ---------- voucher (hotel, holiday hotel, car, transfer, tour) ---------- */
 function VoucherCard({ b, heading, sub, rows, show, extra }) {
@@ -218,7 +219,7 @@ export function Application({ b, o }) {
   const n = o?.travellers?.count || b.travellers?.length || 1
   const steps = ['doc.a.s1', 'doc.a.s2', 'doc.a.s3', 'doc.a.s4']
   const now = paid ? 1 : 0
-  const track = `${window.location.origin}${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/trips/${b.ref}`
+  const track = `${origin()}${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/trips/${b.ref}`
   return (
     <>
       <section className="rounded-lg border border-line p-6 break-inside-avoid">

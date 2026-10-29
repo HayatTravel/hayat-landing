@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { EXTRA, STRINGS, loadExtra } from '../i18n'
+import { setCookie } from './store'
 
 /* Languages. Base: ar (default) · ckb (Kurdish Sorani) · en — every string has these three ([ar, en, ku]).
    International (offered to visitors coming to Iraq): fa · tr · fr · de — strings in src/i18n/extra/<lang>.js
@@ -21,8 +22,6 @@ const idx = { ar: 0, en: 1, ckb: 2 }
 const RATE = 1310 // illustrative IQD per USD
 const nf = new Intl.NumberFormat('en-US')
 
-const read = (k, d) => { try { return localStorage.getItem(k) ?? d } catch { return d } }
-const write = (k, v) => { try { localStorage.setItem(k, v) } catch { /* blocked */ } }
 
 const MONTHS = {
   ar: ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'],
@@ -37,32 +36,13 @@ const WEEKDAYS = {
 
 const Ctx = createContext(null)
 
-export function I18nProvider({ children }) {
-  const [lang, setLangState] = useState(() => {
-    const q = new URLSearchParams(location.search).get('lang')
-    const l = q || read('hayat-lang', 'ar')
-    return LANG_INFO[l] ? l : 'ar'
-  })
-  // international languages load on demand; render waits for them so English never flashes first
-  const [ready, setReady] = useState(() => idx[lang] != null || !!EXTRA[lang])
-  useEffect(() => {
-    if (idx[lang] != null || EXTRA[lang]) { setReady(true); return }
-    let on = true
-    setReady(false)
-    loadExtra(lang).then(() => on && setReady(true))
-    return () => { on = false }
-  }, [lang])
-  const [cur, setCurState] = useState(() => (read('hayat-cur', 'IQD') === 'USD' ? 'USD' : 'IQD'))
-
-  useEffect(() => {
-    const r = document.documentElement
-    r.lang = lang
-    r.dir = LANG_INFO[lang].dir
-    document.title = LANG_INFO[lang].title
-  }, [lang])
-
-  const setLang = useCallback((l) => { write('hayat-lang', l); setLangState(l) }, [])
-  const setCur = useCallback((c) => { write('hayat-cur', c); setCurState(c) }, [])
+/** `lang` and `cur` come from the root loader (query or cookie); the server and the first client render agree. */
+export function I18nProvider({ children, lang: lang0, cur: cur0 }) {
+  const [lang, setLangState] = useState(lang0)
+  const [cur, setCurState] = useState(cur0)
+  // visitor languages load on demand; switch only once their strings are here, so English never flashes first
+  const setLang = useCallback((l) => { setCookie('hayat-lang', l); loadExtra(l).then(() => setLangState(l)) }, [])
+  const setCur = useCallback((c) => { setCookie('hayat-cur', c); setCurState(c) }, [])
 
   const value = useMemo(() => {
     const i = idx[lang]
@@ -88,9 +68,8 @@ export function I18nProvider({ children }) {
     }
     const dur = (mins) => (lang !== 'ar' && lang !== 'ckb' ? `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, '0')}m` : `${Math.floor(mins / 60)}${t('u.h')} ${mins % 60 ? `${mins % 60}${t('u.m')}` : ''}`.trim())
     return { lang, setLang, cur, setCur, t, L, money, iqd, date, dur, monthName: (m) => (base ? MONTHS[lang][m] : new Intl.DateTimeFormat(LANG_INFO[lang].locale, { month: 'long' }).format(new Date(2026, m, 1))), rtl: LANG_INFO[lang].dir === 'rtl', num: (n) => nf.format(n) }
-  }, [lang, cur, setLang, setCur, ready])
+  }, [lang, cur, setLang, setCur])
 
-  if (!ready) return null
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

@@ -3,7 +3,7 @@ import { PageHead } from '../components/Layout'
 import Icon from '../components/Icon'
 import { Logo, Ltr, Stepper } from '../components/ui'
 import { useI18n } from '../lib/i18n'
-import { trips, useStore } from '../lib/store'
+import { origin, trips, useStore } from '../lib/store'
 import { bookingSteps } from './Checkout'
 import D from '../data/catalog'
 import { docKinds } from '../components/docs/index'
@@ -25,7 +25,7 @@ export function Receipt({ b }) {
           <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 rounded-md bg-[#f5f7fb] p-4 text-sm">{b.facts.map(([k, v]) => <div key={k}><dt className="text-[10px] text-[#5b6680]">{k}</dt><dd className="font-bold"><bdi>{v}</bdi></dd></div>)}</dl>
           {b.travellers?.length > 0 && <p className="mt-4 text-sm"><span className="text-[#5b6680]">{t('co.who')}:</span> {b.travellers.join(' · ')}</p>}
           <p className="mt-6 flex justify-between border-t-2 border-[#0b1220] pt-3 text-lg font-bold"><span>{b.status === 'paid' ? t('rc.paid') : t('rc.due')}</span><Ltr>{money(b.total)}</Ltr></p></div>
-        <div className="w-[36mm] shrink-0 text-center"><img src={qr(`${location.origin}${import.meta.env.BASE_URL}trips/${b.ref}`)} alt="" className="size-[36mm]" /><p className="mt-2 text-[10px] text-[#5b6680]">{t('rc.scan')}</p></div>
+        <div className="w-[36mm] shrink-0 text-center"><img src={qr(`${origin()}${import.meta.env.BASE_URL}trips/${b.ref}`)} alt="" className="size-[36mm]" /><p className="mt-2 text-[10px] text-[#5b6680]">{t('rc.scan')}</p></div>
       </section>
       <footer className="mt-auto border-t border-[#e3e8f2] pt-4 text-[10px] leading-5 text-[#5b6680]">{t('rc.foot')}</footer>
     </div>

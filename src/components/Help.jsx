@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router'
 import Icon from './Icon'
 import { useI18n } from '../lib/i18n'
-import { session } from '../lib/store'
+import { origin, session } from '../lib/store'
 import D from '../data/catalog'
 
 /* The one help entry point: a chat panel that continues on WhatsApp (CRM web chat in production).
@@ -36,7 +36,7 @@ export default function Help() {
     setTimeout(() => setMsgs((m) => [...m, { who: 'in', text: t('help.reply') }]), 700)
   }
   const user = session.user()
-  const wa = `https://wa.me/${D.company.whatsapp}?text=${encodeURIComponent(`${t('wa.hi')}${ctx ? `\n${ctx}` : ''}\n${location.origin}${pathname}`)}`
+  const wa = `https://wa.me/${D.company.whatsapp}?text=${encodeURIComponent(`${t('wa.hi')}${ctx ? `\n${ctx}` : ''}\n${origin()}${pathname}`)}`
 
   return (
     <div className="print:hidden">

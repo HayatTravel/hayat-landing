@@ -40,7 +40,8 @@ export default function FlightsResults() {
   const [open, setOpen] = useState(null)
   const [fare, setFare] = useState(null)
   const [how, setHow] = useState('seat')
-  const [filtersOpen, setFiltersOpen] = useState(() => typeof matchMedia === 'undefined' || matchMedia('(min-width: 1024px)').matches)
+  const [filtersOpen, setFiltersOpen] = useState(true) // the server can't know the width; closed on small screens after hydration
+  useEffect(() => { if (!matchMedia('(min-width: 1024px)').matches) setFiltersOpen(false) }, [])
 
   const all = res.list
   const airlines = [...new Set(all.map((x) => x.carrier))]
