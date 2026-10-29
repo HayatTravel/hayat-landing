@@ -38,7 +38,7 @@ export default {
 
   /* places */
   'iq.places.title': ['أماكن في العراق', 'Places in Iraq', 'شوێنەکانی عێراق'],
-  'iq.places.lede': ['ثلاثة عشر مكاناً بين الآثار والمراقد والجبال والأهوار.', 'Thirteen destinations, from ancient cities and shrines to mountains and marshes.', 'سێزدە شوێن، لە شارە کۆنەکان و حەرەمەکانەوە تا چیا و هۆرەکان.'],
+  'iq.places.lede': ['ثلاث عشرة وجهة بين الآثار والمراقد والجبال والأهوار.', 'Thirteen destinations, from ancient cities and shrines to mountains and marshes.', 'سێزدە شوێن، لە شارە کۆنەکان و حەرەمەکانەوە تا چیا و هۆرەکان.'],
   'iq.place.see': ['ما تراه', 'What to see', 'چی ببینیت'], 'iq.place.tours': ['جولات تشمل {place}', 'Tours that include {place}', 'ئەو گەشتانەی {place} لەخۆدەگرن'], 'iq.place.near': ['قريب ومشابه', 'Nearby and similar', 'نزیک و هاوشێوە'],
   'iq.place.season': ['أفضل وقت', 'Best time', 'باشترین کات'], 'iq.place.howLong': ['كم تحتاج', 'How long', 'چەند کاتت پێویستە'], 'iq.place.reach': ['الوصول', 'Getting there', 'گەیشتن'],
   'iq.place.hotels': ['الفنادق القريبة', 'Hotels nearby', 'هوتێلە نزیکەکان'], 'iq.place.visa': ['هل أحتاج تأشيرة؟', 'Do I need a visa?', 'ئایا ڤیزام پێویستە؟'],

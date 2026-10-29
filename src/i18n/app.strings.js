@@ -9,7 +9,7 @@ export default {
   'mode.label': ['نوع رحلتك', 'Your trip', 'جۆری گەشتەکەت'],
   'mode.out': ['مسافر من العراق', 'Travelling from Iraq', 'گەشت لە عێراقەوە'], 'mode.in': ['زيارة العراق', 'Visiting Iraq', 'سەردانی عێراق'],
   'mode.out.short': ['من العراق', 'From Iraq', 'لە عێراقەوە'], 'mode.in.short': ['إلى العراق', 'To Iraq', 'بۆ عێراق'],
-  'nav.destinations': ['حول العالم', 'Destinations', 'شوێنەکان'],
+  'nav.destinations': ['وجهات', 'Destinations', 'شوێنەکان'],
   'in.nav.home': ['زر العراق', 'Visit Iraq', 'سەردانی عێراق بکە'], 'in.nav.places': ['الأماكن', 'Places', 'شوێنەکان'], 'in.nav.tours': ['الجولات', 'Tours', 'گەشتەکان'],
   'in.nav.flights': ['رحلات إلى العراق', 'Flights to Iraq', 'فڕین بۆ عێراق'], 'in.nav.visa': ['تأشيرة العراق', 'Visa to Iraq', 'ڤیزای عێراق'], 'in.nav.hotels': ['فنادق العراق', 'Hotels in Iraq', 'هوتێلەکانی عێراق'], 'in.nav.plan': ['خطط رحلتك', 'Plan your trip', 'گەشتەکەت پلان بکە'],
   'in.ft.title': ['زيارة العراق', 'Visiting Iraq', 'سەردانی عێراق'],

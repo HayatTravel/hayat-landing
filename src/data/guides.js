@@ -28,7 +28,7 @@ export const GUIDES = [
       N('الرسوم الرسمية يحددها الاتحاد الأوروبي، ونخبرك بالمبلغ الحالي قبل الدفع.', 'The official fee is set by the EU; we tell you the current amount before you pay.', 'تێچووی فەرمی یەکێتی ئەورووپا دیاری دەکات؛ پێش پارەدان بڕی ئێستات پێدەڵێین.'),
       N('القواعد تتغير؛ نتحقق من كل شيء قبل التقديم.', 'Rules change; we check everything before you apply.', 'یاساکان دەگۆڕێن؛ پێش پێشکەشکردن هەموو شتێک دەپشکنین.'),
     ],
-    related: [['/visa/SCH', 'passport', N('تأشيرة شنغن', 'Schengen visa', 'ڤیزای شەنگن')], ['/visa?purpose=family', 'users', N('حالة الزيارة العائلية', 'Family visit case', 'حاڵەتی سەردانی خێزان')], ['/destinations?visa=embassy', 'globe', N('دول أوروبا', 'European destinations', 'شوێنەکانی ئەورووپا')]],
+    related: [['/visa/SCH', 'passport', N('تأشيرة شنغن', 'Schengen visa', 'ڤیزای شەنگن')], ['/visa?purpose=family', 'users', N('حالة الزيارة العائلية', 'Family visit case', 'حاڵەتی سەردانی خێزان')], ['/destinations?visa=embassy', 'globe', N('وجهات أوروبا', 'European destinations', 'شوێنەکانی ئەورووپا')]],
   },
   {
     slug: 'first-time-istanbul', mode: 'out', img: 'istanbul', updated: '2026-09-15',
@@ -70,7 +70,7 @@ export const GUIDES = [
       N('الجو في دلهي حار جداً في أيار وحزيران، وجودة الهواء قد تسوء في أوائل الشتاء.', 'Delhi is very hot in May and June, and air quality can be poor in early winter.', 'دەلهی لە ئایار و حوزەیراندا زۆر گەرمە، و لە سەرەتای زستاندا لەوانەیە کوالیتی هەوا خراپ بێت.'),
       N('احتفظ بنسخ رقمية من كل الأوراق على هاتفك.', 'Keep digital copies of every paper on your phone.', 'کۆپی دیجیتاڵی هەموو بەڵگەنامەکان لەسەر مۆبایلەکەت هەڵبگرە.'),
     ],
-    related: [['/visa/IN?purpose=medical', 'passport', N('تأشيرة الهند للعلاج', 'India visa for treatment', 'ڤیزای هیندستان بۆ چارەسەر')], ['/destinations/delhi', 'globe', N('دلهي', 'Delhi', 'دەلهی')], ['/destinations?theme=medical', 'heart', N('مدن العلاج', 'Medical destinations', 'شوێنەکانی چارەسەر')]],
+    related: [['/visa/IN?purpose=medical', 'passport', N('تأشيرة الهند للعلاج', 'India visa for treatment', 'ڤیزای هیندستان بۆ چارەسەر')], ['/destinations/delhi', 'globe', N('دلهي', 'Delhi', 'دەلهی')], ['/destinations?theme=medical', 'heart', N('وجهات العلاج', 'Medical destinations', 'شوێنەکانی چارەسەر')]],
   },
   {
     slug: 'family-week-georgia', mode: 'out', img: 'georgia', updated: '2026-08-20',
@@ -97,7 +97,7 @@ export const GUIDES = [
     intro: N('السفر مع الأطفال ممتع إذا رُتّبت الأوراق مسبقاً. هذه قائمة واضحة لما تحتاجه.', 'Travelling with children is a pleasure when the papers are ready in advance. Here is a clear list of what you need.', 'گەشت لەگەڵ منداڵ خۆشە کاتێک بەڵگەنامەکان پێشوەختە ئامادە بن. ئەمە لیستێکی ڕوونی ئەو شتانەیە کە پێویستن.'),
     sections: [
       { h: N('جواز لكل طفل', 'A passport for every child', 'پاسپۆرت بۆ هەر منداڵێک'),
-        p: N('كل طفل يحتاج جواز سفر خاصاً به حتى الرضّع، وتأشيرة خاصة به إن كان البلد يتطلب تأشيرة. تأكد من صلاحية الجواز قبل الحجز بوقت كافٍ.', 'Every child needs their own passport, babies included, and their own visa where the destination requires one. Check passport validity well before booking.', 'هەر منداڵێک پاسپۆرتی خۆی پێویستە، تەنانەت ساوایانیش، و ڤیزای خۆی ئەگەر شوێنەکە ڤیزای بوێت. زوو پێش حیجز بەکاربوونی پاسپۆرت بپشکنە.') },
+        p: N('كل طفل يحتاج جواز سفر خاصاً به حتى الرضّع، وتأشيرة خاصة به إن كانت الوجهة تتطلب تأشيرة. تأكد من صلاحية الجواز قبل الحجز بوقت كافٍ.', 'Every child needs their own passport, babies included, and their own visa where the destination requires one. Check passport validity well before booking.', 'هەر منداڵێک پاسپۆرتی خۆی پێویستە، تەنانەت ساوایانیش، و ڤیزای خۆی ئەگەر شوێنەکە ڤیزای بوێت. زوو پێش حیجز بەکاربوونی پاسپۆرت بپشکنە.') },
       { h: N('السفر مع أحد الوالدين', 'Travelling with one parent', 'گەشت لەگەڵ یەکێک لە دایک و باوک'),
         p: N('إذا سافر الطفل مع أحد والديه فقط، احمل موافقة مكتوبة من الوالد الآخر مع نسخة من هويته. كثير من الدول والسفارات تطلبها، وبعض شركات الطيران كذلك.', 'If a child travels with only one parent, carry written consent from the other parent with a copy of their ID. Many countries and embassies ask for it, and some airlines do too.', 'ئەگەر منداڵ تەنها لەگەڵ یەکێک لە دایک و باوکی گەشت بکات، ڕەزامەندی نووسراوی ئەوی تریان لەگەڵ کۆپی ناسنامەکەی ببە. زۆر وڵات و باڵیۆزخانە داوای دەکەن، و هەندێک هێڵی ئاسمانیش.') },
       { h: N('في المطار والطائرة', 'At the airport and on board', 'لە فڕۆکەخانە و ناو فڕۆکە'),
@@ -108,7 +108,7 @@ export const GUIDES = [
       N('ضع الأدوية الضرورية في الحقيبة اليدوية لا في الحقيبة المشحونة.', 'Keep essential medicines in hand luggage, not in checked bags.', 'دەرمانە پێویستەکان لە جانتای دەستدا دابنێ، نەک لە جانتای بارکراودا.'),
       N('اسأل عن مقعد الأطفال عند حجز النقل أو السيارة.', 'Ask for a child seat when booking a transfer or car.', 'لە کاتی حیجزی گواستنەوە یان ئۆتۆمبێلدا داوای کورسی منداڵ بکە.'),
     ],
-    related: [['/destinations?theme=family', 'users', N('رحلات للعائلة', 'Family destinations', 'شوێنەکان بۆ خێزان')], ['/flights', 'plane', N('رحلات الطيران', 'Flights', 'فڕین')], ['/transfers', 'car', N('نقل المطار', 'Airport transfers', 'گواستنەوەی فڕۆکەخانە')]],
+    related: [['/destinations?theme=family', 'users', N('وجهات للعائلة', 'Family destinations', 'شوێنەکان بۆ خێزان')], ['/flights', 'plane', N('رحلات الطيران', 'Flights', 'فڕین')], ['/transfers', 'car', N('نقل المطار', 'Airport transfers', 'گواستنەوەی فڕۆکەخانە')]],
   },
   {
     slug: 'esim-explained', mode: 'out', img: 'esim-phone', updated: '2026-07-30',
@@ -127,7 +127,7 @@ export const GUIDES = [
       N('لا تحذف eSIM من الهاتف قبل انتهاء الرحلة.', 'Do not delete the eSIM from your phone before the trip ends.', 'پێش کۆتایی گەشت eSIM لە مۆبایلەکەت مەسڕەوە.'),
       N('الباقة قابلة للاسترداد ما لم يُمسح الرمز.', 'A plan is refundable until the code is scanned.', 'تا کۆدەکە سکان نەکرابێت پارەی پاکێج دەگەڕێندرێتەوە.'),
     ],
-    related: [['/esim', 'sim', N('باقات eSIM', 'eSIM plans', 'پاکێجەکانی eSIM')], ['/destinations', 'globe', N('حول العالم', 'Destinations', 'شوێنەکان')]],
+    related: [['/esim', 'sim', N('باقات eSIM', 'eSIM plans', 'پاکێجەکانی eSIM')], ['/destinations', 'globe', N('الوجهات', 'Destinations', 'شوێنەکان')]],
   },
 
   /* ---------------- visiting Iraq ---------------- */
