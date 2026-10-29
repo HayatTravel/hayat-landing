@@ -98,6 +98,16 @@ export async function findByRoute({ from, to, date }) {
   }).sort((a, b) => a.sched.dep - b.sched.dep)
 }
 
+/** Departures from one airport on a date (first `limit` by time). Real: GET /api/v1/flight-status?airport=BGW&date=… */
+export async function departures({ airport: code, date, limit = 6 }) {
+  const seen = new Set()
+  const all = segmentsOn(date).filter((x) => x.from === code && !seen.has(x.fn) && seen.add(x.fn)).sort((a, b) => a.dep - b.dep)
+  // Today: start about an hour before now so the board shows what is boarding and leaving next.
+  const now = baghdadNow()
+  const from = now.iso === date ? Math.max(0, Math.min(all.findIndex((x) => x.dep >= now.min - 60), all.length - limit)) : 0
+  return all.slice(from < 0 ? Math.max(0, all.length - limit) : from, (from < 0 ? all.length : from + limit)).map((x) => statusAt(fromSegment(x, date)))
+}
+
 /** Mock: the server would register the phone for WhatsApp updates. */
 export async function follow() { return true }
 

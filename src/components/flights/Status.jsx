@@ -10,6 +10,12 @@ import { Field, airportOptions, control } from './FlightForm'
 import { qs, place } from './engine'
 import { GEO } from './geo'
 
+const TONE = {
+  scheduled: 'bg-mist text-ink/75', boarding: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', departed: 'bg-brand/10 text-brand', air: 'bg-brand/10 text-brand',
+  landed: 'bg-emerald-50 text-emerald-800', delayed: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', cancelled: 'bg-red-50 text-red-700',
+}
+/** Status pill used on the status page, the home departures boards and lists. */
+export const Pill = ({ s }) => { const { t } = useI18n(); return <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold ${TONE[s]}`}>{(s === 'air' || s === 'boarding') && <span className="size-1.5 rounded-full bg-current" />}{t(`fs.s.${s}`)}</span> }
 const RECENT = 'fs-recent'
 export const recentSearches = () => store.get(RECENT, [])
 export const remember = (s) => store.set(RECENT, [s, ...recentSearches().filter((x) => JSON.stringify(x) !== JSON.stringify(s))].slice(0, 5))

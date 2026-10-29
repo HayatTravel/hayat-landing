@@ -45,4 +45,8 @@ export default {
   'fs.via': ['عبر {city}', 'via {city}', 'بە ڕێگای {city}'],
   'fs.updated': ['آخر تحديث {time}', 'Updated {time}', 'نوێکراوە {time}'],
   'fs.mine': ['حالة الرحلة', 'Flight status', 'دۆخی فڕین'],
+  "fs.feat.t": ["رحلات المغادرة اليوم", "Today’s departures", "فڕینەکانی ئەمڕۆ"],
+  "fs.feat.s": ["من بغداد وأربيل. افتح أي رحلة لترى حالتها.", "From Baghdad and Erbil. Open any flight to see its status.", "لە بەغدا و هەولێرەوە. هەر فڕینێک بکەرەوە بۆ بینینی دۆخەکەی."],
+  "fs.feat.from": ["المغادرة من {city}", "Departing {city}", "ڕۆیشتن لە {city}"],
+  "fs.feat.more": ["ابحث عن رحلة", "Find a flight", "بگەڕێ بۆ فڕینێک"],
 }

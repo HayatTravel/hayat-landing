@@ -116,4 +116,6 @@ export default {
   'iq.planPage.toc': ['محتويات الصفحة', 'On this page', 'لەم پەڕەیەدا'], 'iq.planPage.faq': ['أسئلة شائعة', 'Questions', 'پرسیارەکان'], 'iq.planPage.ask': ['سؤال آخر؟ تحدث معنا', 'Another question? Talk to us', 'پرسیارێکی ترت هەیە؟ قسەمان لەگەڵ بکە'],
   'iq.plan.flights': ['رحلات إلى العراق', 'Flights to Iraq', 'فڕین بۆ عێراق'], 'iq.plan.visa': ['تأشيرة العراق', 'Visa to Iraq', 'ڤیزای عێراق'],
   'iq.plan.sim': ['أضف شريحة إلى جولتك', 'Add a SIM to your tour', 'سیمکارت بۆ گەشتەکەت زیاد بکە'], 'iq.plan.arbaeen': ['زيارة كربلاء والنجف', 'Karbala and Najaf visit', 'سەردانی کەربەلا و نەجەف'],
+  'iq.feat.lede': ['فنادق قريبة من المراقد والمواقع والأسواق في المدن العراقية.', 'Hotels close to the shrines, sites and souqs in Iraqi cities.', 'هوتێلی نزیک حەرەم، شوێنەوار و بازاڕەکان لە شارەکانی عێراق.'],
+  'iq.feat.all': ['كل فنادق العراق', 'All hotels in Iraq', 'هەموو هوتێلەکانی عێراق'],
 }

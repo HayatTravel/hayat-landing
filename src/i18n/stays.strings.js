@@ -196,4 +196,10 @@ export default {
   "st.dec": ["إنقاص {what}","Fewer {what}","کەمکردنەوەی {what}"],
   "st.inc": ["زيادة {what}","More {what}","زیادکردنی {what}"],
   "ht.photo": ["صورة {n} من {total}","Photo {n} of {total}","وێنەی {n} لە {total}"],
+  "ht.feat.title": ["فنادق مختارة", "Featured hotels", "هوتێلە هەڵبژێردراوەکان"],
+  "ht.feat.lede": ["فنادق في المدن التي يسافر إليها عملاؤنا أكثر، مع إلغاء مجاني حتى موعد محدد.", "Hotels in the cities our customers visit most, with free cancellation up to a set date.", "هوتێل لەو شارانەی کڕیارەکانمان زیاتر سەردانیان دەکەن، بە هەڵوەشاندنەوەی بەخۆڕایی تا ڕێکەوتێکی دیاریکراو."],
+  "ht.feat.all": ["كل الفنادق", "All hotels", "هەموو هوتێلەکان"],
+  "ht.feat.allCities": ["كل المدن", "All cities", "هەموو شارەکان"],
+  "ht.feat.cities": ["المدن", "Cities", "شارەکان"],
+  "ht.freeCancel": ["إلغاء مجاني", "Free cancellation", "هەڵوەشاندنەوەی بەخۆڕایی"],
 }

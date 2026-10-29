@@ -2,7 +2,7 @@
 export default {
   "ds.nav": ["المدن", "Destinations", "شوێنەکان"],
   "ds.title": ["إلى أين يسافر العراقيون", "Where Iraqis travel", "عێراقییەکان بۆ کوێ گەشت دەکەن"],
-  "ds.sub": ["وجهات حول العالم مع التأشيرة لجواز السفر العراقي، والرحلات من بغداد، وأفضل وقت للزيارة.", "Destinations worldwide with the visa for an Iraqi passport, flights from Baghdad and the best time to go.", "شوێنەکانی جیهان لەگەڵ ڤیزا بۆ پاسپۆرتی عێراقی، فڕین لە بەغداوە و باشترین کات بۆ سەردان."],
+  "ds.sub": ["مدن وبلدان حول العالم مع التأشيرة لجواز السفر العراقي، والرحلات من بغداد، وأفضل وقت للزيارة.", "Destinations worldwide with the visa for an Iraqi passport, flights from Baghdad and the best time to go.", "شوێنەکانی جیهان لەگەڵ ڤیزا بۆ پاسپۆرتی عێراقی، فڕین لە بەغداوە و باشترین کات بۆ سەردان."],
   "ds.th.beach": ["شواطئ", "Beach", "کەنار دەریا"],
   "ds.th.shopping": ["تسوق", "Shopping", "بازاڕکردن"],
   "ds.th.nature": ["طبيعة", "Nature", "سروشت"],

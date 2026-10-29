@@ -5,6 +5,7 @@ import Combobox from '../components/Combobox'
 import D from '../data/catalog'
 import { inDays, useI18n } from '../lib/i18n'
 import TransferForm from '../components/services/TransferForm'
+import { EsimFeatured, TransfersFeatured } from '../components/services/Featured'
 import { visaOptions } from '../components/services/VisaChecker'
 import { PURPOSES, esDays, esim, evCities, minPlan, monthText, nextMonths, purposeOk, purposesOf, qs, visa } from '../components/services/data'
 import { Field, Seg, Submit, control } from '../components/services/ui'
@@ -79,7 +80,7 @@ function EventsForm({ initial = {} }) {
 
 export default [
   { id: 'visa', icon: 'passport', label: 'nav.visa', order: 5, Form: VisaForm },
-  { id: 'esim', icon: 'sim', label: 'nav.esim', order: 6, Form: EsimForm },
+  { id: 'esim', icon: 'sim', label: 'nav.esim', order: 6, Form: EsimForm, Featured: EsimFeatured },
   { id: 'events', icon: 'ticket', label: 'nav.events', order: 7, Form: EventsForm },
-  { id: 'transfers', icon: 'car', label: 'nav.transfers', order: 8, Form: TransferForm },
+  { id: 'transfers', icon: 'car', label: 'nav.transfers', order: 8, Form: TransferForm, Featured: TransfersFeatured },
 ]

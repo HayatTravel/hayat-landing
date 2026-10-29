@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router'
 import SearchTabs from '../components/SearchTabs'
+import { useFeatured } from '../components/TabFeatured'
 import { ModeSwitch } from '../components/Layout'
 import { useMode } from '../lib/mode'
 import Icon from '../components/Icon'
@@ -70,13 +71,16 @@ function HowItWorks() {
 
 export default function Home() {
   const { mode } = useMode()
+  const featured = useFeatured(SECTIONS)
   if (mode === 'in') return <Navigate to="/visit" replace />
   return (
     <>
       <Hero />
       <section className="container-x relative z-10 -mt-20"><SearchTabs /></section>
+      {/* follows the selected search tab (hotels → featured hotels, cars → popular pick-ups, …) */}
+      {featured.node}
       <div className="mt-10"><AirlineStrip /></div>
-      {SECTIONS.map(({ id, Component }) => <Component key={id} />)}
+      {SECTIONS.filter((x) => x.id !== featured.taken).map(({ id, Component }) => <Component key={id} />)}
       <HowItWorks />
     </>
   )

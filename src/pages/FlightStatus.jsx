@@ -4,16 +4,11 @@ import { PageHead } from '../components/Layout'
 import Icon from '../components/Icon'
 import { Ltr } from '../components/ui'
 import { Logo } from '../components/flights/parts'
-import { FlightMap, RecentSearches, StatusForm, remember, statusHref } from '../components/flights/Status'
+import { FlightMap, Pill, RecentSearches, StatusForm, remember, statusHref } from '../components/flights/Status'
 import { airlineName, clock, place } from '../components/flights/engine'
 import { inDays, useI18n } from '../lib/i18n'
 import { findByNumber, findByRoute, follow, parseFlight, statusAt } from '../lib/providers/flightStatus'
 
-const TONE = {
-  scheduled: 'bg-mist text-ink/75', boarding: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', departed: 'bg-brand/10 text-brand', air: 'bg-brand/10 text-brand',
-  landed: 'bg-emerald-50 text-emerald-800', delayed: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200', cancelled: 'bg-red-50 text-red-700',
-}
-export const Pill = ({ s }) => { const { t } = useI18n(); return <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold ${TONE[s]}`}>{(s === 'air' || s === 'boarding') && <span className="size-1.5 rounded-full bg-current" />}{t(`fs.s.${s}`)}</span> }
 const T = ({ m, className = '' }) => { const c = clock(m); return <Ltr className={className}>{c.hm}{c.day ? <sup className="ms-0.5 text-[10px]">{c.day > 0 ? '+' : ''}{c.day}</sup> : null}</Ltr> }
 const useNow = (ms = 30000) => { const [n, setN] = useState(Date.now()); useEffect(() => { const x = setInterval(() => setN(Date.now()), ms); return () => clearInterval(x) }, [ms]); return n }
 

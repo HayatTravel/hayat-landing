@@ -1,4 +1,5 @@
 import SearchTabs from '../components/SearchTabs'
+import { useFeatured } from '../components/TabFeatured'
 import { ModeSwitch } from '../components/Layout'
 import { useI18n } from '../lib/i18n'
 import { HOME_SECTIONS } from './Home'
@@ -9,6 +10,7 @@ const SECTIONS = HOME_SECTIONS.filter((x) => x.mode === 'in')
 
 /** /visit — the "Visiting Iraq" home: hero, search (tours · flights to Iraq · visa · hotels), then the incoming sections. */
 export default function VisitHome() {
+  const featured = useFeatured(SECTIONS)
   useVisitMode()
   const { t } = useI18n()
   return (
@@ -25,7 +27,8 @@ export default function VisitHome() {
         <Credit k="ur" light className="absolute end-4 bottom-24" />
       </section>
       <section className="container-x relative z-10 -mt-20"><SearchTabs /></section>
-      {SECTIONS.map(({ id, Component }) => <Component key={id} />)}
+      {featured.node}
+      {SECTIONS.filter((x) => x.id !== featured.taken).map(({ id, Component }) => <Component key={id} />)}
     </>
   )
 }

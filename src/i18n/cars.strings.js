@@ -72,4 +72,9 @@ export default {
   'car.co.terms': ['إلغاء مجاني حتى 48 ساعة قبل الاستلام.', 'Free cancellation up to 48 hours before pick-up.', 'هەڵوەشاندنەوەی بەخۆڕایی تا 48 کاتژمێر پێش وەرگرتن.'],
   'car.doc.voucher': ['قسيمة الإيجار', 'Rental voucher', 'پسوولەی کرێ'],
   'car.doc.receipt': ['إيصال الدفع', 'Payment receipt', 'پسوولەی پارەدان'],
+  "car.feat.t": ["أماكن استلام السيارات الشائعة", "Popular car rental pick-ups", "شوێنە باوەکانی وەرگرتنی ئۆتۆمبێل"],
+  "car.feat.s": ["أسعار تقديرية لأربعة أيام بعد أسبوعين، مع إلغاء مجاني حتى 48 ساعة قبل الاستلام.", "Indicative prices for four days, two weeks from now, with free cancellation up to 48 hours before pick-up.", "نرخی خەمڵێنراو بۆ چوار ڕۆژ، دوو هەفتە دواتر، بە هەڵوەشاندنەوەی بەخۆڕایی تا 48 کاتژمێر پێش وەرگرتن."],
+  "car.feat.from": ["من {amount} في اليوم", "From {amount} per day", "لە {amount} بۆ هەر ڕۆژێک"],
+  "car.feat.all": ["كل السيارات في {city}", "All cars in {city}", "هەموو ئۆتۆمبێلەکان لە {city}"],
+  "car.feat.free": ["إلغاء مجاني حتى 48 ساعة", "Free cancellation up to 48 h", "هەڵوەشاندنەوەی بەخۆڕایی تا 48 کاتژمێر"],
 }
