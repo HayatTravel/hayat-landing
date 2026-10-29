@@ -77,8 +77,8 @@ export default function Cars() {
   const days = rentalDays(q)
   const dl = days === 1 ? t('car.days1') : t('car.daysN', { n: days })
   const all = searchCars(q)
-  const [busy, setBusy] = useState(true)
-  useEffect(() => { setBusy(true); const tm = setTimeout(() => setBusy(false), 500); return () => clearTimeout(tm) }, [key])
+  const [busy, setBusy] = useState(false)
+  useEffect(() => { setBusy(false) }, [key]) // mockup answers instantly; a real supplier call sets busy while it waits
   const [editing, setEditing] = useState(!raw.city)
   const [open, setOpen] = useState(null)
 

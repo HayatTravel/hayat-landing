@@ -29,8 +29,9 @@ const router = createBrowserRouter([
 ], { basename: import.meta.env.BASE_URL })
 
 /* Warm every page in the background once the first page is on screen, so moving around never waits on the network. */
-const warm = () => Object.values(import.meta.glob('./pages/*.jsx')).forEach((load, k) => setTimeout(load, 120 * k))
-if ('requestIdleCallback' in window) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2500)
+// all at once (the browser fetches them in parallel), shortly after the first page has drawn
+const warm = () => Object.values(import.meta.glob('./pages/*.jsx')).forEach((load) => load())
+window.addEventListener('load', () => setTimeout(warm, 300), { once: true })
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

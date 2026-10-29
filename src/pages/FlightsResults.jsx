@@ -34,8 +34,8 @@ export default function FlightsResults() {
   const rt = q.trip === 'rt'
   const key = qs(searchParams(q))
   const res = useMemo(() => searchFlights(q), [key]) // eslint-disable-line react-hooks/exhaustive-deps
-  const [busy, setBusy] = useState(true)
-  useEffect(() => { setBusy(true); const tm = setTimeout(() => setBusy(false), 600); return () => clearTimeout(tm) }, [key])
+  const [busy, setBusy] = useState(false)
+  useEffect(() => { setBusy(false) }, [key]) // mockup answers instantly; a real supplier call sets busy while it waits
   const [editing, setEditing] = useState(false)
   const [open, setOpen] = useState(null)
   const [fare, setFare] = useState(null)
